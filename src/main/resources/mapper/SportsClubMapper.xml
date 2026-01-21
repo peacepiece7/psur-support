@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.service.demo.domain.sportsclub.mapper.SportsClubMapper">
+
+  <resultMap id="SportsClubMap" type="com.service.demo.domain.sportsclub.entity.SportsClubEntity">
+    <id property="id" column="id"/>
+    <result property="name" column="name"/>
+    <result property="location" column="location"/>
+    <result property="representativeName" column="representative_name"/>
+    <result property="representativeTelno" column="representative_telno"/>
+    <result property="clubNo" column="club_no"/>
+    <result property="businessNo" column="business_no"/>
+    <result property="clubRoleCodeId" column="club_role_code_id"/>
+    <result property="isActive" column="is_active"/>
+    <result property="createdAt" column="created_at"/>
+    <result property="updatedAt" column="updated_at"/>
+    <result property="deletedAt" column="deleted_at"/>
+  </resultMap>
+
+  <resultMap id="SportsClubCategoryMap" type="com.service.demo.domain.sportsclub.entity.SportsClubCategoryEntity">
+    <result property="clubId" column="club_id"/>
+    <result property="categoryId" column="category_id"/>
+  </resultMap>
+
+  <insert id="insertClub" parameterType="com.service.demo.domain.sportsclub.entity.SportsClubEntity" useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO sports_club (name, location, representative_name, representative_telno, club_no, business_no, club_role_code_id)
+    VALUES (#{name}, #{location}, #{representativeName}, #{representativeTelno}, #{clubNo}, #{businessNo}, #{clubRoleCodeId})
+  </insert>
+
+  <update id="updateClub" parameterType="com.service.demo.domain.sportsclub.entity.SportsClubEntity">
+    UPDATE sports_club
+    SET name = #{name},
+        location = #{location},
+        representative_name = #{representativeName},
+        representative_telno = #{representativeTelno},
+        club_no = #{clubNo},
+        business_no = #{businessNo},
+        club_role_code_id = #{clubRoleCodeId},
+        is_active = #{isActive}
+    WHERE id = #{id} AND deleted_at IS NULL
+  </update>
+
+  <update id="softDeleteClub">
+    UPDATE sports_club
+    SET is_active = 0,
+        deleted_at = NOW()
+    WHERE id = #{id} AND deleted_at IS NULL
+  </update>
+
+  <select id="findById" resultMap="SportsClubMap">
+    SELECT * FROM sports_club
+    WHERE id = #{id} AND deleted_at IS NULL
+  </select>
+
+  <select id="findAll" resultMap="SportsClubMap">
+    SELECT * FROM sports_club
+    WHERE deleted_at IS NULL
+    ORDER BY id DESC
+  </select>
+
+  <delete id="deleteCategoriesByClubId">
+    DELETE FROM sports_club_category WHERE club_id = #{clubId}
+  </delete>
+
+  <insert id="insertCategories">
+    INSERT INTO sports_club_category (club_id, category_id)
+    VALUES
+    <foreach collection="items" item="item" separator=",">
+      (#{item.clubId}, #{item.categoryId})
+    </foreach>
+  </insert>
+
+  <select id="findCategoryIdsByClubId" resultType="long">
+    SELECT category_id FROM sports_club_category
+    WHERE club_id = #{clubId} AND deleted_at IS NULL
+  </select>
+
+  <select id="findCategoryPairsByClubIds" resultMap="SportsClubCategoryMap">
+    SELECT club_id, category_id FROM sports_club_category
+    WHERE club_id IN
+    <foreach collection="clubIds" item="id" open="(" close=")" separator=",">
+      #{id}
+    </foreach>
+      AND deleted_at IS NULL
+  </select>
+
+</mapper>

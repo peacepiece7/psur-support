@@ -1,0 +1,124 @@
+CREATE TABLE IF NOT EXISTS users (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  login_id VARCHAR(50) NOT NULL,
+  username VARCHAR(100) NOT NULL,
+  email VARCHAR(255) NULL,
+  telno VARCHAR(30) NULL,
+  password_hash VARCHAR(255) NOT NULL,
+  ci VARCHAR(100) NULL,
+  status VARCHAR(20) NOT NULL DEFAULT 'ACTIVE',
+  is_active TINYINT(1) NOT NULL DEFAULT 1,
+  last_login_at DATETIME NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  deleted_at DATETIME NULL,
+  UNIQUE KEY uk_users_login_id (login_id),
+  KEY idx_users_email (email)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS roles (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  code VARCHAR(50) NOT NULL,
+  name VARCHAR(100) NOT NULL,
+  description VARCHAR(255) NULL,
+  is_active TINYINT(1) NOT NULL DEFAULT 1,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  deleted_at DATETIME NULL,
+  UNIQUE KEY uk_roles_code (code)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS user_roles (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  user_id BIGINT NOT NULL,
+  role_id BIGINT NOT NULL,
+  is_active TINYINT(1) NOT NULL DEFAULT 1,
+  assigned_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  deleted_at DATETIME NULL,
+  UNIQUE KEY uk_user_roles_user_role (user_id, role_id),
+  KEY idx_user_roles_role_id (role_id),
+  CONSTRAINT fk_user_roles_user_id FOREIGN KEY (user_id) REFERENCES users(id),
+  CONSTRAINT fk_user_roles_role_id FOREIGN KEY (role_id) REFERENCES roles(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS common_code_group (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  group_code VARCHAR(50) NOT NULL,
+  group_name VARCHAR(100) NOT NULL,
+  parent_group_id BIGINT NULL,
+  level INT NOT NULL,
+  sort_order INT NOT NULL DEFAULT 0,
+  is_active TINYINT(1) NOT NULL DEFAULT 1,
+  description VARCHAR(255) NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  deleted_at DATETIME NULL,
+  UNIQUE KEY uk_ccg_group_code (group_code),
+  KEY idx_ccg_parent_group_id (parent_group_id),
+  CONSTRAINT fk_ccg_parent_group_id FOREIGN KEY (parent_group_id) REFERENCES common_code_group(id),
+  CONSTRAINT chk_ccg_level CHECK (level BETWEEN 1 AND 3)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS common_code (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  group_id BIGINT NOT NULL,
+  code VARCHAR(50) NOT NULL,
+  code_name VARCHAR(100) NOT NULL,
+  sort_order INT NOT NULL DEFAULT 0,
+  is_active TINYINT(1) NOT NULL DEFAULT 1,
+  description VARCHAR(255) NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  deleted_at DATETIME NULL,
+  UNIQUE KEY uk_common_code_group_code (group_id, code),
+  KEY idx_common_code_group_id (group_id),
+  CONSTRAINT fk_common_code_group_id FOREIGN KEY (group_id) REFERENCES common_code_group(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS sports_category (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  parent_id BIGINT NULL,
+  level INT NOT NULL,
+  sort_order INT NOT NULL DEFAULT 0,
+  is_active TINYINT(1) NOT NULL DEFAULT 1,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  deleted_at DATETIME NULL,
+  KEY idx_sports_category_parent_id (parent_id),
+  CONSTRAINT fk_sports_category_parent_id FOREIGN KEY (parent_id) REFERENCES sports_category(id),
+  CONSTRAINT chk_sports_category_level CHECK (level BETWEEN 1 AND 3)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS sports_club (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(200) NOT NULL,
+  location VARCHAR(255) NULL,
+  representative_name VARCHAR(100) NULL,
+  representative_telno VARCHAR(30) NULL,
+  club_no VARCHAR(50) NULL,
+  business_no VARCHAR(50) NULL,
+  club_role_code_id BIGINT NULL,
+  is_active TINYINT(1) NOT NULL DEFAULT 1,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  deleted_at DATETIME NULL,
+  UNIQUE KEY uk_sports_club_club_no (club_no),
+  UNIQUE KEY uk_sports_club_business_no (business_no),
+  KEY idx_sports_club_role_code_id (club_role_code_id),
+  CONSTRAINT fk_sports_club_role_code_id FOREIGN KEY (club_role_code_id) REFERENCES common_code(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS sports_club_category (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  club_id BIGINT NOT NULL,
+  category_id BIGINT NOT NULL,
+  is_active TINYINT(1) NOT NULL DEFAULT 1,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  deleted_at DATETIME NULL,
+  UNIQUE KEY uk_sports_club_category (club_id, category_id),
+  KEY idx_scc_category_id (category_id),
+  CONSTRAINT fk_scc_club_id FOREIGN KEY (club_id) REFERENCES sports_club(id),
+  CONSTRAINT fk_scc_category_id FOREIGN KEY (category_id) REFERENCES sports_category(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

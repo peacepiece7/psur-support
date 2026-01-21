@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.service.demo.domain.commoncode.mapper.CommonCodeMapper">
+
+  <resultMap id="CommonCodeGroupMap" type="com.service.demo.domain.commoncode.entity.CommonCodeGroupEntity">
+    <id property="id" column="id"/>
+    <result property="groupCode" column="group_code"/>
+    <result property="groupName" column="group_name"/>
+    <result property="parentGroupId" column="parent_group_id"/>
+    <result property="level" column="level"/>
+    <result property="sortOrder" column="sort_order"/>
+    <result property="description" column="description"/>
+  </resultMap>
+
+  <resultMap id="CommonCodeMap" type="com.service.demo.domain.commoncode.entity.CommonCodeEntity">
+    <id property="id" column="id"/>
+    <result property="groupId" column="group_id"/>
+    <result property="code" column="code"/>
+    <result property="codeName" column="code_name"/>
+    <result property="sortOrder" column="sort_order"/>
+    <result property="description" column="description"/>
+  </resultMap>
+
+  <select id="findGroupByCode" resultMap="CommonCodeGroupMap">
+    SELECT * FROM common_code_group
+    WHERE group_code = #{groupCode}
+      AND is_active = 1
+      AND deleted_at IS NULL
+  </select>
+
+  <select id="findGroupsByParentId" resultMap="CommonCodeGroupMap">
+    SELECT * FROM common_code_group
+    WHERE parent_group_id = #{parentId}
+      AND is_active = 1
+      AND deleted_at IS NULL
+    ORDER BY sort_order, id
+  </select>
+
+  <select id="findGroupsByParentIds" resultMap="CommonCodeGroupMap">
+    SELECT * FROM common_code_group
+    WHERE parent_group_id IN
+    <foreach collection="parentIds" item="id" open="(" close=")" separator=",">
+      #{id}
+    </foreach>
+      AND is_active = 1
+      AND deleted_at IS NULL
+    ORDER BY sort_order, id
+  </select>
+
+  <select id="findCodesByGroupIds" resultMap="CommonCodeMap">
+    SELECT * FROM common_code
+    WHERE group_id IN
+    <foreach collection="groupIds" item="id" open="(" close=")" separator=",">
+      #{id}
+    </foreach>
+      AND is_active = 1
+      AND deleted_at IS NULL
+    ORDER BY sort_order, id
+  </select>
+
+</mapper>
