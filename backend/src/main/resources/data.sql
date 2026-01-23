@@ -24,70 +24,76 @@ ON DUPLICATE KEY UPDATE
   sort_order = VALUES(sort_order),
   is_active = VALUES(is_active);
 
+SET @operating_sport_id := (
+  SELECT id
+  FROM common_code_group
+  WHERE group_code = 'OPERATING_SPORT'
+);
+
 INSERT INTO common_code_group (group_code, group_name, parent_group_id, level, sort_order, is_active)
 VALUES
-  ('OPERATING_SPORT_SOCCER', '축구', (SELECT id FROM common_code_group WHERE group_code = 'OPERATING_SPORT'), 2, 1, 1),
-  ('OPERATING_SPORT_BASKETBALL', '농구', (SELECT id FROM common_code_group WHERE group_code = 'OPERATING_SPORT'), 2, 2, 1),
-  ('OPERATING_SPORT_VOLLEYBALL', '배구', (SELECT id FROM common_code_group WHERE group_code = 'OPERATING_SPORT'), 2, 3, 1),
-  ('OPERATING_SPORT_BASEBALL', '야구', (SELECT id FROM common_code_group WHERE group_code = 'OPERATING_SPORT'), 2, 4, 1),
-  ('OPERATING_SPORT_HANDBALL', '핸드볼', (SELECT id FROM common_code_group WHERE group_code = 'OPERATING_SPORT'), 2, 5, 1),
-  ('OPERATING_SPORT_RUGBY', '럭비', (SELECT id FROM common_code_group WHERE group_code = 'OPERATING_SPORT'), 2, 6, 1),
-  ('OPERATING_SPORT_HOCKEY', '하키', (SELECT id FROM common_code_group WHERE group_code = 'OPERATING_SPORT'), 2, 7, 1),
-  ('OPERATING_SPORT_TENNIS', '테니스', (SELECT id FROM common_code_group WHERE group_code = 'OPERATING_SPORT'), 2, 8, 1),
-  ('OPERATING_SPORT_BADMINTON', '배드민턴', (SELECT id FROM common_code_group WHERE group_code = 'OPERATING_SPORT'), 2, 9, 1),
-  ('OPERATING_SPORT_TABLE_TENNIS', '탁구', (SELECT id FROM common_code_group WHERE group_code = 'OPERATING_SPORT'), 2, 10, 1),
-  ('OPERATING_SPORT_SQUASH', '스쿼시', (SELECT id FROM common_code_group WHERE group_code = 'OPERATING_SPORT'), 2, 11, 1),
-  ('OPERATING_SPORT_RACQUETBALL', '라켓볼', (SELECT id FROM common_code_group WHERE group_code = 'OPERATING_SPORT'), 2, 12, 1),
-  ('OPERATING_SPORT_PICKLEBALL', '피클볼', (SELECT id FROM common_code_group WHERE group_code = 'OPERATING_SPORT'), 2, 13, 1),
-  ('OPERATING_SPORT_TAEKWONDO', '태권도', (SELECT id FROM common_code_group WHERE group_code = 'OPERATING_SPORT'), 2, 14, 1),
-  ('OPERATING_SPORT_JUDO', '유도', (SELECT id FROM common_code_group WHERE group_code = 'OPERATING_SPORT'), 2, 15, 1),
-  ('OPERATING_SPORT_KENDO', '검도', (SELECT id FROM common_code_group WHERE group_code = 'OPERATING_SPORT'), 2, 16, 1),
-  ('OPERATING_SPORT_HAPKIDO', '합기도', (SELECT id FROM common_code_group WHERE group_code = 'OPERATING_SPORT'), 2, 17, 1),
-  ('OPERATING_SPORT_SSIREUM', '씨름', (SELECT id FROM common_code_group WHERE group_code = 'OPERATING_SPORT'), 2, 18, 1),
-  ('OPERATING_SPORT_BOXING', '복싱', (SELECT id FROM common_code_group WHERE group_code = 'OPERATING_SPORT'), 2, 19, 1),
-  ('OPERATING_SPORT_WRESTLING', '레슬링', (SELECT id FROM common_code_group WHERE group_code = 'OPERATING_SPORT'), 2, 20, 1),
-  ('OPERATING_SPORT_KARATE', '가라테', (SELECT id FROM common_code_group WHERE group_code = 'OPERATING_SPORT'), 2, 21, 1),
-  ('OPERATING_SPORT_JIU_JITSU', '주짓수', (SELECT id FROM common_code_group WHERE group_code = 'OPERATING_SPORT'), 2, 22, 1),
-  ('OPERATING_SPORT_MUAY_THAI', '무에타이', (SELECT id FROM common_code_group WHERE group_code = 'OPERATING_SPORT'), 2, 23, 1),
-  ('OPERATING_SPORT_ATHLETICS', '육상', (SELECT id FROM common_code_group WHERE group_code = 'OPERATING_SPORT'), 2, 24, 1),
-  ('OPERATING_SPORT_MARATHON', '마라톤', (SELECT id FROM common_code_group WHERE group_code = 'OPERATING_SPORT'), 2, 25, 1),
-  ('OPERATING_SPORT_TRAIL_RUNNING', '트레일러닝', (SELECT id FROM common_code_group WHERE group_code = 'OPERATING_SPORT'), 2, 26, 1),
-  ('OPERATING_SPORT_TRIATHLON', '철인3종', (SELECT id FROM common_code_group WHERE group_code = 'OPERATING_SPORT'), 2, 27, 1),
-  ('OPERATING_SPORT_CYCLING', '사이클', (SELECT id FROM common_code_group WHERE group_code = 'OPERATING_SPORT'), 2, 28, 1),
-  ('OPERATING_SPORT_HIKING', '등산', (SELECT id FROM common_code_group WHERE group_code = 'OPERATING_SPORT'), 2, 29, 1),
-  ('OPERATING_SPORT_CAMPING', '캠핑', (SELECT id FROM common_code_group WHERE group_code = 'OPERATING_SPORT'), 2, 30, 1),
-  ('OPERATING_SPORT_SKATING', '스케이트', (SELECT id FROM common_code_group WHERE group_code = 'OPERATING_SPORT'), 2, 31, 1),
-  ('OPERATING_SPORT_SKATEBOARDING', '스케이트보드', (SELECT id FROM common_code_group WHERE group_code = 'OPERATING_SPORT'), 2, 32, 1),
-  ('OPERATING_SPORT_SURFING', '서핑', (SELECT id FROM common_code_group WHERE group_code = 'OPERATING_SPORT'), 2, 33, 1),
-  ('OPERATING_SPORT_PADDLEBOARD', '패들보드', (SELECT id FROM common_code_group WHERE group_code = 'OPERATING_SPORT'), 2, 34, 1),
-  ('OPERATING_SPORT_SWIMMING', '수영', (SELECT id FROM common_code_group WHERE group_code = 'OPERATING_SPORT'), 2, 35, 1),
-  ('OPERATING_SPORT_WATER_POLO', '수구', (SELECT id FROM common_code_group WHERE group_code = 'OPERATING_SPORT'), 2, 36, 1),
-  ('OPERATING_SPORT_DIVING', '다이빙', (SELECT id FROM common_code_group WHERE group_code = 'OPERATING_SPORT'), 2, 37, 1),
-  ('OPERATING_SPORT_CANOE', '카누', (SELECT id FROM common_code_group WHERE group_code = 'OPERATING_SPORT'), 2, 38, 1),
-  ('OPERATING_SPORT_ROWING', '조정', (SELECT id FROM common_code_group WHERE group_code = 'OPERATING_SPORT'), 2, 39, 1),
-  ('OPERATING_SPORT_YACHT', '요트', (SELECT id FROM common_code_group WHERE group_code = 'OPERATING_SPORT'), 2, 40, 1),
-  ('OPERATING_SPORT_ICE_SKATING', '빙상', (SELECT id FROM common_code_group WHERE group_code = 'OPERATING_SPORT'), 2, 41, 1),
-  ('OPERATING_SPORT_ARCHERY', '양궁', (SELECT id FROM common_code_group WHERE group_code = 'OPERATING_SPORT'), 2, 42, 1),
-  ('OPERATING_SPORT_SHOOTING', '사격', (SELECT id FROM common_code_group WHERE group_code = 'OPERATING_SPORT'), 2, 43, 1),
-  ('OPERATING_SPORT_BOWLING', '볼링', (SELECT id FROM common_code_group WHERE group_code = 'OPERATING_SPORT'), 2, 44, 1),
-  ('OPERATING_SPORT_BILLIARDS', '당구', (SELECT id FROM common_code_group WHERE group_code = 'OPERATING_SPORT'), 2, 45, 1),
-  ('OPERATING_SPORT_GOLF', '골프', (SELECT id FROM common_code_group WHERE group_code = 'OPERATING_SPORT'), 2, 46, 1),
-  ('OPERATING_SPORT_GATEBALL', '게이트볼', (SELECT id FROM common_code_group WHERE group_code = 'OPERATING_SPORT'), 2, 47, 1),
-  ('OPERATING_SPORT_YOGA', '요가', (SELECT id FROM common_code_group WHERE group_code = 'OPERATING_SPORT'), 2, 48, 1),
-  ('OPERATING_SPORT_PILATES', '필라테스', (SELECT id FROM common_code_group WHERE group_code = 'OPERATING_SPORT'), 2, 49, 1),
-  ('OPERATING_SPORT_GYMNASTICS', '체조', (SELECT id FROM common_code_group WHERE group_code = 'OPERATING_SPORT'), 2, 50, 1),
-  ('OPERATING_SPORT_DANCE_SPORTS', '댄스스포츠', (SELECT id FROM common_code_group WHERE group_code = 'OPERATING_SPORT'), 2, 51, 1),
-  ('OPERATING_SPORT_AEROBICS', '에어로빅', (SELECT id FROM common_code_group WHERE group_code = 'OPERATING_SPORT'), 2, 52, 1),
-  ('OPERATING_SPORT_CHEERLEADING', '치어리딩', (SELECT id FROM common_code_group WHERE group_code = 'OPERATING_SPORT'), 2, 53, 1),
-  ('OPERATING_SPORT_CROSSFIT', '크로스핏', (SELECT id FROM common_code_group WHERE group_code = 'OPERATING_SPORT'), 2, 54, 1),
-  ('OPERATING_SPORT_POWERLIFTING', '파워리프팅', (SELECT id FROM common_code_group WHERE group_code = 'OPERATING_SPORT'), 2, 55, 1),
-  ('OPERATING_SPORT_BODYBUILDING', '보디빌딩', (SELECT id FROM common_code_group WHERE group_code = 'OPERATING_SPORT'), 2, 56, 1),
-  ('OPERATING_SPORT_JUMP_ROPE', '줄넘기', (SELECT id FROM common_code_group WHERE group_code = 'OPERATING_SPORT'), 2, 57, 1),
-  ('OPERATING_SPORT_DRONE', '드론', (SELECT id FROM common_code_group WHERE group_code = 'OPERATING_SPORT'), 2, 58, 1),
-  ('OPERATING_SPORT_ESPORTS', 'e스포츠', (SELECT id FROM common_code_group WHERE group_code = 'OPERATING_SPORT'), 2, 59, 1),
-  ('OPERATING_SPORT_PARA_SPORTS', '장애인스포츠', (SELECT id FROM common_code_group WHERE group_code = 'OPERATING_SPORT'), 2, 60, 1),
-  ('OPERATING_SPORT_NEW_SPORTS', '뉴스포츠', (SELECT id FROM common_code_group WHERE group_code = 'OPERATING_SPORT'), 2, 61, 1),
-  ('OPERATING_SPORT_LIFESTYLE_SPORTS', '생활체육', (SELECT id FROM common_code_group WHERE group_code = 'OPERATING_SPORT'), 2, 62, 1)
+  ('OPERATING_SPORT_SOCCER', '축구', @operating_sport_id, 2, 1, 1),
+  ('OPERATING_SPORT_BASKETBALL', '농구', @operating_sport_id, 2, 2, 1),
+  ('OPERATING_SPORT_VOLLEYBALL', '배구', @operating_sport_id, 2, 3, 1),
+  ('OPERATING_SPORT_BASEBALL', '야구', @operating_sport_id, 2, 4, 1),
+  ('OPERATING_SPORT_HANDBALL', '핸드볼', @operating_sport_id, 2, 5, 1),
+  ('OPERATING_SPORT_RUGBY', '럭비', @operating_sport_id, 2, 6, 1),
+  ('OPERATING_SPORT_HOCKEY', '하키', @operating_sport_id, 2, 7, 1),
+  ('OPERATING_SPORT_TENNIS', '테니스', @operating_sport_id, 2, 8, 1),
+  ('OPERATING_SPORT_BADMINTON', '배드민턴', @operating_sport_id, 2, 9, 1),
+  ('OPERATING_SPORT_TABLE_TENNIS', '탁구', @operating_sport_id, 2, 10, 1),
+  ('OPERATING_SPORT_SQUASH', '스쿼시', @operating_sport_id, 2, 11, 1),
+  ('OPERATING_SPORT_RACQUETBALL', '라켓볼', @operating_sport_id, 2, 12, 1),
+  ('OPERATING_SPORT_PICKLEBALL', '피클볼', @operating_sport_id, 2, 13, 1),
+  ('OPERATING_SPORT_TAEKWONDO', '태권도', @operating_sport_id, 2, 14, 1),
+  ('OPERATING_SPORT_JUDO', '유도', @operating_sport_id, 2, 15, 1),
+  ('OPERATING_SPORT_KENDO', '검도', @operating_sport_id, 2, 16, 1),
+  ('OPERATING_SPORT_HAPKIDO', '합기도', @operating_sport_id, 2, 17, 1),
+  ('OPERATING_SPORT_SSIREUM', '씨름', @operating_sport_id, 2, 18, 1),
+  ('OPERATING_SPORT_BOXING', '복싱', @operating_sport_id, 2, 19, 1),
+  ('OPERATING_SPORT_WRESTLING', '레슬링', @operating_sport_id, 2, 20, 1),
+  ('OPERATING_SPORT_KARATE', '가라테', @operating_sport_id, 2, 21, 1),
+  ('OPERATING_SPORT_JIU_JITSU', '주짓수', @operating_sport_id, 2, 22, 1),
+  ('OPERATING_SPORT_MUAY_THAI', '무에타이', @operating_sport_id, 2, 23, 1),
+  ('OPERATING_SPORT_ATHLETICS', '육상', @operating_sport_id, 2, 24, 1),
+  ('OPERATING_SPORT_MARATHON', '마라톤', @operating_sport_id, 2, 25, 1),
+  ('OPERATING_SPORT_TRAIL_RUNNING', '트레일러닝', @operating_sport_id, 2, 26, 1),
+  ('OPERATING_SPORT_TRIATHLON', '철인3종', @operating_sport_id, 2, 27, 1),
+  ('OPERATING_SPORT_CYCLING', '사이클', @operating_sport_id, 2, 28, 1),
+  ('OPERATING_SPORT_HIKING', '등산', @operating_sport_id, 2, 29, 1),
+  ('OPERATING_SPORT_CAMPING', '캠핑', @operating_sport_id, 2, 30, 1),
+  ('OPERATING_SPORT_SKATING', '스케이트', @operating_sport_id, 2, 31, 1),
+  ('OPERATING_SPORT_SKATEBOARDING', '스케이트보드', @operating_sport_id, 2, 32, 1),
+  ('OPERATING_SPORT_SURFING', '서핑', @operating_sport_id, 2, 33, 1),
+  ('OPERATING_SPORT_PADDLEBOARD', '패들보드', @operating_sport_id, 2, 34, 1),
+  ('OPERATING_SPORT_SWIMMING', '수영', @operating_sport_id, 2, 35, 1),
+  ('OPERATING_SPORT_WATER_POLO', '수구', @operating_sport_id, 2, 36, 1),
+  ('OPERATING_SPORT_DIVING', '다이빙', @operating_sport_id, 2, 37, 1),
+  ('OPERATING_SPORT_CANOE', '카누', @operating_sport_id, 2, 38, 1),
+  ('OPERATING_SPORT_ROWING', '조정', @operating_sport_id, 2, 39, 1),
+  ('OPERATING_SPORT_YACHT', '요트', @operating_sport_id, 2, 40, 1),
+  ('OPERATING_SPORT_ICE_SKATING', '빙상', @operating_sport_id, 2, 41, 1),
+  ('OPERATING_SPORT_ARCHERY', '양궁', @operating_sport_id, 2, 42, 1),
+  ('OPERATING_SPORT_SHOOTING', '사격', @operating_sport_id, 2, 43, 1),
+  ('OPERATING_SPORT_BOWLING', '볼링', @operating_sport_id, 2, 44, 1),
+  ('OPERATING_SPORT_BILLIARDS', '당구', @operating_sport_id, 2, 45, 1),
+  ('OPERATING_SPORT_GOLF', '골프', @operating_sport_id, 2, 46, 1),
+  ('OPERATING_SPORT_GATEBALL', '게이트볼', @operating_sport_id, 2, 47, 1),
+  ('OPERATING_SPORT_YOGA', '요가', @operating_sport_id, 2, 48, 1),
+  ('OPERATING_SPORT_PILATES', '필라테스', @operating_sport_id, 2, 49, 1),
+  ('OPERATING_SPORT_GYMNASTICS', '체조', @operating_sport_id, 2, 50, 1),
+  ('OPERATING_SPORT_DANCE_SPORTS', '댄스스포츠', @operating_sport_id, 2, 51, 1),
+  ('OPERATING_SPORT_AEROBICS', '에어로빅', @operating_sport_id, 2, 52, 1),
+  ('OPERATING_SPORT_CHEERLEADING', '치어리딩', @operating_sport_id, 2, 53, 1),
+  ('OPERATING_SPORT_CROSSFIT', '크로스핏', @operating_sport_id, 2, 54, 1),
+  ('OPERATING_SPORT_POWERLIFTING', '파워리프팅', @operating_sport_id, 2, 55, 1),
+  ('OPERATING_SPORT_BODYBUILDING', '보디빌딩', @operating_sport_id, 2, 56, 1),
+  ('OPERATING_SPORT_JUMP_ROPE', '줄넘기', @operating_sport_id, 2, 57, 1),
+  ('OPERATING_SPORT_DRONE', '드론', @operating_sport_id, 2, 58, 1),
+  ('OPERATING_SPORT_ESPORTS', 'e스포츠', @operating_sport_id, 2, 59, 1),
+  ('OPERATING_SPORT_PARA_SPORTS', '장애인스포츠', @operating_sport_id, 2, 60, 1),
+  ('OPERATING_SPORT_NEW_SPORTS', '뉴스포츠', @operating_sport_id, 2, 61, 1),
+  ('OPERATING_SPORT_LIFESTYLE_SPORTS', '생활체육', @operating_sport_id, 2, 62, 1)
 ON DUPLICATE KEY UPDATE
   group_name = VALUES(group_name),
   parent_group_id = VALUES(parent_group_id),
@@ -334,12 +340,34 @@ ON DUPLICATE KEY UPDATE
   sort_order = VALUES(sort_order),
   is_active = VALUES(is_active);
 
+SET @category_soccer_id := (
+  SELECT id
+  FROM sports_category
+  WHERE name = '축구' AND level = 1
+  ORDER BY id DESC
+  LIMIT 1
+);
+SET @category_basketball_id := (
+  SELECT id
+  FROM sports_category
+  WHERE name = '농구' AND level = 1
+  ORDER BY id DESC
+  LIMIT 1
+);
+SET @category_volleyball_id := (
+  SELECT id
+  FROM sports_category
+  WHERE name = '배구' AND level = 1
+  ORDER BY id DESC
+  LIMIT 1
+);
+
 INSERT INTO sports_category (name, parent_id, level, sort_order, is_active)
 VALUES
-  ('풋살', (SELECT id FROM sports_category WHERE name = '축구' AND level = 1), 2, 1, 1),
-  ('족구', (SELECT id FROM sports_category WHERE name = '축구' AND level = 1), 2, 2, 1),
-  ('3x3 농구', (SELECT id FROM sports_category WHERE name = '농구' AND level = 1), 2, 1, 1),
-  ('비치발리볼', (SELECT id FROM sports_category WHERE name = '배구' AND level = 1), 2, 1, 1)
+  ('풋살', @category_soccer_id, 2, 1, 1),
+  ('족구', @category_soccer_id, 2, 2, 1),
+  ('3x3 농구', @category_basketball_id, 2, 1, 1),
+  ('비치발리볼', @category_volleyball_id, 2, 1, 1)
 ON DUPLICATE KEY UPDATE
   name = VALUES(name),
   level = VALUES(level),

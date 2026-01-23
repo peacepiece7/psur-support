@@ -37,7 +37,8 @@ public class AuthController {
 
     @Operation(summary = "Login", description = "Validates credentials and creates a session.")
     @PostMapping("/login")
-    public ApiResponse<LoginResponse> login(@Valid @RequestBody LoginRequest req, HttpSession session) {
+    public ApiResponse<LoginResponse> login(@Valid @RequestBody LoginRequest req,
+                                            @Parameter(hidden = true) HttpSession session) {
         LoginResponse response = authService.login(req);
         session.setAttribute(SessionConst.USER_ID, response.getId());
         return ApiResponse.ok(response);
@@ -45,7 +46,7 @@ public class AuthController {
 
     @Operation(summary = "Logout", description = "Invalidates the current session.")
     @PostMapping("/logout")
-    public ApiResponse<Void> logout(HttpSession session) {
+    public ApiResponse<Void> logout(@Parameter(hidden = true) HttpSession session) {
         session.invalidate();
         return ApiResponse.ok(null);
     }
