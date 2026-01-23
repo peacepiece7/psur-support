@@ -1,6 +1,7 @@
 export default defineNuxtPlugin((nuxtApp) => {
   const api = $fetch.create({
     baseURL: '/api',
+    credentials: 'include',
     async onRequest({ request, options }) {
       const headers = useRequestHeaders(['cookie', 'user-agent'])
 

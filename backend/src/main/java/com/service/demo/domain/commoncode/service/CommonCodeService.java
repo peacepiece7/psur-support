@@ -2,6 +2,7 @@ package com.service.demo.domain.commoncode.service;
 
 import com.service.demo.common.error.ErrorCode;
 import com.service.demo.common.exception.ApiException;
+import com.service.demo.domain.commoncode.dto.CommonCodeGroupListResponse;
 import com.service.demo.domain.commoncode.dto.CommonCodeGroupResponse;
 import com.service.demo.domain.commoncode.dto.CommonCodeGroupSummaryResponse;
 import com.service.demo.domain.commoncode.dto.CommonCodeResponse;
@@ -103,5 +104,65 @@ public class CommonCodeService {
             ));
         }
         return result;
+    }
+
+    public CommonCodeGroupListResponse listGroups(String name,
+                                                  boolean includeInactive,
+                                                  String sortBy,
+                                                  String sortDir,
+                                                  int offset,
+                                                  int limit) {
+        int safeOffset = Math.max(0, offset);
+        int safeLimit = limit <= 0 ? 20 : Math.min(limit, 200);
+        String sortColumn = resolveSortColumn(sortBy);
+        String sortDirection = resolveSortDirection(sortDir);
+
+        int queryLimit = safeLimit + 1;
+        List<CommonCodeGroupEntity> groups = commonCodeMapper.findGroupsFiltered(
+                name, includeInactive, sortColumn, sortDirection, safeOffset, queryLimit
+        );
+
+        boolean hasNext = groups.size() > safeLimit;
+        if (hasNext) {
+            groups = groups.subList(0, safeLimit);
+        }
+
+        List<CommonCodeGroupSummaryResponse> items = new ArrayList<>();
+        for (CommonCodeGroupEntity g : groups) {
+            items.add(new CommonCodeGroupSummaryResponse(
+                    g.getId(),
+                    g.getGroupCode(),
+                    g.getGroupName(),
+                    g.getParentGroupId(),
+                    g.getLevel(),
+                    g.getSortOrder(),
+                    g.getDescription()
+            ));
+        }
+
+        Integer nextOffset = hasNext ? safeOffset + safeLimit : null;
+        return new CommonCodeGroupListResponse(items, nextOffset, hasNext, safeLimit);
+    }
+
+    private String resolveSortColumn(String sortBy) {
+        if (sortBy == null || sortBy.isBlank()) {
+            return "sort_order";
+        }
+        return switch (sortBy) {
+            case "groupCode" -> "group_code";
+            case "groupName" -> "group_name";
+            case "level" -> "level";
+            case "sortOrder" -> "sort_order";
+            case "id" -> "id";
+            case "parentGroupId" -> "parent_group_id";
+            default -> "sort_order";
+        };
+    }
+
+    private String resolveSortDirection(String sortDir) {
+        if (sortDir == null) {
+            return "ASC";
+        }
+        return "desc".equalsIgnoreCase(sortDir) ? "DESC" : "ASC";
     }
 }

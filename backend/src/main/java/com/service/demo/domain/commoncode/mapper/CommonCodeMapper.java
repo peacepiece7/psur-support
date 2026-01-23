@@ -11,6 +11,12 @@ import java.util.List;
 public interface CommonCodeMapper {
     CommonCodeGroupEntity findGroupByCode(@Param("groupCode") String groupCode);
     List<CommonCodeGroupEntity> findAllGroups();
+    List<CommonCodeGroupEntity> findGroupsFiltered(@Param("name") String name,
+                                                   @Param("includeInactive") boolean includeInactive,
+                                                   @Param("sortColumn") String sortColumn,
+                                                   @Param("sortDirection") String sortDirection,
+                                                   @Param("offset") int offset,
+                                                   @Param("limit") int limit);
     List<CommonCodeGroupEntity> findGroupsByParentId(@Param("parentId") Long parentId);
     List<CommonCodeGroupEntity> findGroupsByParentIds(@Param("parentIds") List<Long> parentIds);
     List<CommonCodeEntity> findCodesByGroupIds(@Param("groupIds") List<Long> groupIds);

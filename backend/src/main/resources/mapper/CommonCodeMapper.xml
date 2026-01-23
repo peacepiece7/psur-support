@@ -37,6 +37,22 @@
     ORDER BY level, sort_order, id
   </select>
 
+  <select id="findGroupsFiltered" resultMap="CommonCodeGroupMap">
+    SELECT * FROM common_code_group
+    WHERE deleted_at IS NULL
+    <if test="includeInactive == false">
+      AND is_active = 1
+    </if>
+    <if test="name != null and name != ''">
+      AND (
+        group_name LIKE CONCAT('%', #{name}, '%')
+        OR group_code LIKE CONCAT('%', #{name}, '%')
+      )
+    </if>
+    ORDER BY ${sortColumn} ${sortDirection}, id ASC
+    LIMIT #{limit} OFFSET #{offset}
+  </select>
+
   <select id="findGroupsByParentId" resultMap="CommonCodeGroupMap">
     SELECT * FROM common_code_group
     WHERE parent_group_id = #{parentId}

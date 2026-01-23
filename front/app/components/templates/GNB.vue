@@ -64,26 +64,39 @@
       items.push(myPageMenuItem)
     }
 
-    // if (isLoggedIn.value) {
-    //   // "스포츠클럽 정보" 뒤에 "신청" 메뉴 삽입
-    //   const insertIndex = items.findIndex((i) => i.to === '/info')
-    //   const applyMenu: MenuItem = {
-    //     title: '스포츠클럽 신청',
-    //     to: '/apply',
-    //     children: [
-    //       {
-    //         title: '등록 스포츠클럽 신청',
-    //         to: '/apply/registered-sports-club',
-    //       },
-    //     ],
-    //   }
+    if (isLoggedIn.value) {
+      // "스포츠클럽 정보" 뒤에 "신청" 메뉴 삽입
+      const insertIndex = items.findIndex((i) => i.to === '/info')
+      const applyMenu: MenuItem = {
+        title: '스포츠클럽 신청',
+        to: '/apply',
+        children: [
+          {
+            title: '등록 스포츠클럽 신청',
+            to: '/apply/registered-sports-club',
+          },
+        ],
+      }
 
-    //   if (insertIndex >= 0) {
-    //     items.splice(insertIndex + 1, 0, applyMenu)
-    //   } else {
-    //     items.push(applyMenu)
-    //   }
-    // }
+      if (insertIndex >= 0) {
+        items.splice(insertIndex + 1, 0, applyMenu)
+      } else {
+        items.push(applyMenu)
+      }
+
+      // 관리 메뉴 추가
+      const managementMenu: MenuItem = {
+        title: '관리',
+        to: '/management',
+        children: [
+          {
+            title: '공통코드 관리',
+            to: '/management/common-code',
+          },
+        ],
+      }
+      items.push(managementMenu)
+    }
 
     return items
   })
