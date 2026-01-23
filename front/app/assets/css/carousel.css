@@ -1,0 +1,111 @@
+@layer components {
+  /* ===== app/components/organisms/Carousel.vue (migrated from <style scoped>) ===== */
+  .carousel-wrapper {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .carousel-item-wrapper {
+    height: 100%;
+  }
+
+  .carousel-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+
+    video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+    }
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+    }
+  }
+
+  .carousel-content {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* 케러렐 네비게이션 버튼, 페이지네이션 버튼 스타일 */
+  .carousel-bottom-nav {
+    position: absolute;
+    bottom: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    z-index: 10;
+  }
+
+  .carousel-nav-btn {
+    background-color: rgba(255, 255, 255, 0.8) !important;
+    @apply !text-grey-900;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    @apply transition-colors duration-200 ease-in;
+
+    &:hover:not(:disabled) {
+      background-color: rgba(255, 255, 255, 0.95) !important;
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    :deep(.v-icon) {
+      @apply !text-grey-900;
+    }
+  }
+
+  .carousel-pagination {
+    display: flex;
+    @apply gap-2;
+  }
+
+  .carousel-pagination-btn {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 2px solid #ffffff;
+    background-color: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    transition:
+      background-color 200ms ease-in-out,
+      transform 200ms ease-in-out;
+    @apply p-0;
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.8);
+      transform: scale(1.2);
+    }
+
+    &.carousel-pagination-btn-active {
+      background-color: #ffffff;
+      transform: scale(1.3);
+    }
+  }
+
+}

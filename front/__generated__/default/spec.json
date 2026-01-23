@@ -1,0 +1,1060 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "PSUR Support API",
+    "description": "API documentation for the demo service.",
+    "version": "0.0.1"
+  },
+  "servers": [
+    {
+      "url": "http://127.0.0.1:9090",
+      "description": "Generated server url"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Auth",
+      "description": "Authentication and session management"
+    },
+    {
+      "name": "Common Codes",
+      "description": "Common code group and code lookup"
+    },
+    {
+      "name": "Sports Clubs",
+      "description": "Sports club management"
+    },
+    {
+      "name": "Users",
+      "description": "User profile endpoints"
+    }
+  ],
+  "paths": {
+    "/users/me": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get my profile",
+        "description": "Returns the authenticated user's profile.",
+        "operationId": "me",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseUserResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "sessionAuth": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Update my profile",
+        "description": "Updates the authenticated user's profile.",
+        "operationId": "update",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateProfileRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseUserResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "sessionAuth": []
+          }
+        ]
+      }
+    },
+    "/sports-clubs/{id}": {
+      "get": {
+        "tags": [
+          "Sports Clubs"
+        ],
+        "summary": "Get sports club",
+        "description": "Returns a sports club by ID.",
+        "operationId": "get",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Sports club ID",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseSportsClubResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "sessionAuth": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "Sports Clubs"
+        ],
+        "summary": "Update sports club",
+        "description": "Updates a sports club and its categories.",
+        "operationId": "update_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Sports club ID",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SportsClubUpdateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseSportsClubResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "sessionAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Sports Clubs"
+        ],
+        "summary": "Delete sports club",
+        "description": "Soft deletes a sports club.",
+        "operationId": "delete",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Sports club ID",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseVoid"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "sessionAuth": []
+          }
+        ]
+      }
+    },
+    "/sports-clubs": {
+      "get": {
+        "tags": [
+          "Sports Clubs"
+        ],
+        "summary": "List sports clubs",
+        "description": "Returns all sports clubs.",
+        "operationId": "list",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseListSportsClubListResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "sessionAuth": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Sports Clubs"
+        ],
+        "summary": "Create sports club",
+        "description": "Creates a sports club with optional categories.",
+        "operationId": "create",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SportsClubCreateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseSportsClubResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "sessionAuth": []
+          }
+        ]
+      }
+    },
+    "/auth/register": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Register a new user",
+        "description": "Creates a new user account and returns the profile.",
+        "operationId": "register",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseLoginResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/password/reset": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Reset password",
+        "description": "Changes the password for the authenticated user.",
+        "operationId": "resetPassword",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResetPasswordRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseVoid"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Logout",
+        "description": "Invalidates the current session.",
+        "operationId": "logout",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseVoid"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Login",
+        "description": "Validates credentials and creates a session.",
+        "operationId": "login",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseLoginResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/common-codes/{groupCode}/tree": {
+      "get": {
+        "tags": [
+          "Common Codes"
+        ],
+        "summary": "Get common code tree",
+        "description": "Returns a group tree (up to 3 levels) with codes.",
+        "operationId": "getTree",
+        "parameters": [
+          {
+            "name": "groupCode",
+            "in": "path",
+            "description": "Root group code",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "REGION"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseCommonCodeGroupResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "sessionAuth": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "UpdateProfileRequest": {
+        "required": [
+          "username"
+        ],
+        "type": "object",
+        "properties": {
+          "username": {
+            "maxLength": 100,
+            "minLength": 2,
+            "type": "string",
+            "description": "User name",
+            "example": "Demo User"
+          },
+          "email": {
+            "type": "string",
+            "description": "Email address",
+            "example": "demo@example.com"
+          },
+          "telno": {
+            "type": "string",
+            "description": "Phone number",
+            "example": "010-1234-5678"
+          }
+        }
+      },
+      "ApiResponseUserResponse": {
+        "type": "object",
+        "properties": {
+          "resultCode": {
+            "type": "integer",
+            "description": "Application-level result code",
+            "format": "int32",
+            "example": 200
+          },
+          "resultMessage": {
+            "type": "string",
+            "description": "Application-level result message",
+            "example": "OK"
+          },
+          "data": {
+            "$ref": "#/components/schemas/UserResponse"
+          }
+        },
+        "description": "Standard API wrapper"
+      },
+      "UserResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "User ID",
+            "format": "int64",
+            "example": 1
+          },
+          "loginId": {
+            "type": "string",
+            "description": "User login ID",
+            "example": "demo-user"
+          },
+          "username": {
+            "type": "string",
+            "description": "User name",
+            "example": "Demo User"
+          },
+          "email": {
+            "type": "string",
+            "description": "Email address",
+            "example": "demo@example.com"
+          },
+          "telno": {
+            "type": "string",
+            "description": "Phone number",
+            "example": "010-1234-5678"
+          }
+        },
+        "description": "Response payload"
+      },
+      "SportsClubUpdateRequest": {
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Club name",
+            "example": "Seoul Sports Club"
+          },
+          "location": {
+            "type": "string",
+            "description": "Club location",
+            "example": "Seoul, Korea"
+          },
+          "representativeName": {
+            "type": "string",
+            "description": "Representative name",
+            "example": "Kim Coach"
+          },
+          "representativeTelno": {
+            "type": "string",
+            "description": "Representative phone number",
+            "example": "010-1111-2222"
+          },
+          "clubNo": {
+            "type": "string",
+            "description": "Club number",
+            "example": "CLUB-2024-0001"
+          },
+          "businessNo": {
+            "type": "string",
+            "description": "Business registration number",
+            "example": "123-45-67890"
+          },
+          "clubRoleCodeId": {
+            "type": "integer",
+            "description": "Common code ID for club role",
+            "format": "int64",
+            "example": 10
+          },
+          "isActive": {
+            "type": "boolean",
+            "description": "Club active flag",
+            "example": true
+          },
+          "categoryIds": {
+            "type": "array",
+            "description": "Sports category IDs",
+            "example": [
+              1,
+              2
+            ],
+            "items": {
+              "type": "integer",
+              "description": "Sports category IDs",
+              "format": "int64"
+            }
+          }
+        }
+      },
+      "ApiResponseSportsClubResponse": {
+        "type": "object",
+        "properties": {
+          "resultCode": {
+            "type": "integer",
+            "description": "Application-level result code",
+            "format": "int32",
+            "example": 200
+          },
+          "resultMessage": {
+            "type": "string",
+            "description": "Application-level result message",
+            "example": "OK"
+          },
+          "data": {
+            "$ref": "#/components/schemas/SportsClubResponse"
+          }
+        },
+        "description": "Standard API wrapper"
+      },
+      "SportsClubResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Club ID",
+            "format": "int64",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "description": "Club name",
+            "example": "Seoul Sports Club"
+          },
+          "location": {
+            "type": "string",
+            "description": "Club location",
+            "example": "Seoul, Korea"
+          },
+          "representativeName": {
+            "type": "string",
+            "description": "Representative name",
+            "example": "Kim Coach"
+          },
+          "representativeTelno": {
+            "type": "string",
+            "description": "Representative phone number",
+            "example": "010-1111-2222"
+          },
+          "clubNo": {
+            "type": "string",
+            "description": "Club number",
+            "example": "CLUB-2024-0001"
+          },
+          "businessNo": {
+            "type": "string",
+            "description": "Business registration number",
+            "example": "123-45-67890"
+          },
+          "clubRoleCodeId": {
+            "type": "integer",
+            "description": "Common code ID for club role",
+            "format": "int64",
+            "example": 10
+          },
+          "isActive": {
+            "type": "boolean",
+            "description": "Club active flag",
+            "example": true
+          },
+          "categoryIds": {
+            "type": "array",
+            "description": "Sports category IDs",
+            "example": [
+              1,
+              2
+            ],
+            "items": {
+              "type": "integer",
+              "description": "Sports category IDs",
+              "format": "int64"
+            }
+          }
+        },
+        "description": "Response payload"
+      },
+      "SportsClubCreateRequest": {
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Club name",
+            "example": "Seoul Sports Club"
+          },
+          "location": {
+            "type": "string",
+            "description": "Club location",
+            "example": "Seoul, Korea"
+          },
+          "representativeName": {
+            "type": "string",
+            "description": "Representative name",
+            "example": "Kim Coach"
+          },
+          "representativeTelno": {
+            "type": "string",
+            "description": "Representative phone number",
+            "example": "010-1111-2222"
+          },
+          "clubNo": {
+            "type": "string",
+            "description": "Club number",
+            "example": "CLUB-2024-0001"
+          },
+          "businessNo": {
+            "type": "string",
+            "description": "Business registration number",
+            "example": "123-45-67890"
+          },
+          "clubRoleCodeId": {
+            "type": "integer",
+            "description": "Common code ID for club role",
+            "format": "int64",
+            "example": 10
+          },
+          "categoryIds": {
+            "type": "array",
+            "description": "Sports category IDs",
+            "example": [
+              1,
+              2
+            ],
+            "items": {
+              "type": "integer",
+              "description": "Sports category IDs",
+              "format": "int64"
+            }
+          }
+        }
+      },
+      "RegisterRequest": {
+        "required": [
+          "loginId",
+          "password",
+          "username"
+        ],
+        "type": "object",
+        "properties": {
+          "loginId": {
+            "maxLength": 50,
+            "minLength": 4,
+            "type": "string",
+            "description": "User login ID",
+            "example": "demo-user"
+          },
+          "username": {
+            "maxLength": 100,
+            "minLength": 2,
+            "type": "string",
+            "description": "User name",
+            "example": "Demo User"
+          },
+          "password": {
+            "maxLength": 100,
+            "minLength": 8,
+            "type": "string",
+            "description": "User password",
+            "example": "P@ssw0rd123"
+          },
+          "email": {
+            "type": "string",
+            "description": "Email address",
+            "example": "demo@example.com"
+          },
+          "telno": {
+            "type": "string",
+            "description": "Phone number",
+            "example": "010-1234-5678"
+          }
+        }
+      },
+      "ApiResponseLoginResponse": {
+        "type": "object",
+        "properties": {
+          "resultCode": {
+            "type": "integer",
+            "description": "Application-level result code",
+            "format": "int32",
+            "example": 200
+          },
+          "resultMessage": {
+            "type": "string",
+            "description": "Application-level result message",
+            "example": "OK"
+          },
+          "data": {
+            "$ref": "#/components/schemas/LoginResponse"
+          }
+        },
+        "description": "Standard API wrapper"
+      },
+      "LoginResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "User ID",
+            "format": "int64",
+            "example": 1
+          },
+          "loginId": {
+            "type": "string",
+            "description": "User login ID",
+            "example": "demo-user"
+          },
+          "username": {
+            "type": "string",
+            "description": "User name",
+            "example": "Demo User"
+          },
+          "email": {
+            "type": "string",
+            "description": "Email address",
+            "example": "demo@example.com"
+          },
+          "telno": {
+            "type": "string",
+            "description": "Phone number",
+            "example": "010-1234-5678"
+          }
+        },
+        "description": "Response payload"
+      },
+      "ResetPasswordRequest": {
+        "required": [
+          "currentPassword",
+          "newPassword"
+        ],
+        "type": "object",
+        "properties": {
+          "currentPassword": {
+            "type": "string",
+            "description": "Current password",
+            "example": "OldP@ssw0rd"
+          },
+          "newPassword": {
+            "maxLength": 100,
+            "minLength": 8,
+            "type": "string",
+            "description": "New password",
+            "example": "NewP@ssw0rd123"
+          }
+        }
+      },
+      "ApiResponseVoid": {
+        "type": "object",
+        "properties": {
+          "resultCode": {
+            "type": "integer",
+            "description": "Application-level result code",
+            "format": "int32",
+            "example": 200
+          },
+          "resultMessage": {
+            "type": "string",
+            "description": "Application-level result message",
+            "example": "OK"
+          },
+          "data": {
+            "type": "object",
+            "description": "Response payload"
+          }
+        },
+        "description": "Standard API wrapper"
+      },
+      "LoginRequest": {
+        "required": [
+          "loginId",
+          "password"
+        ],
+        "type": "object",
+        "properties": {
+          "loginId": {
+            "type": "string",
+            "description": "User login ID",
+            "example": "demo-user"
+          },
+          "password": {
+            "type": "string",
+            "description": "User password",
+            "example": "P@ssw0rd123"
+          }
+        }
+      },
+      "ApiResponseListSportsClubListResponse": {
+        "type": "object",
+        "properties": {
+          "resultCode": {
+            "type": "integer",
+            "description": "Application-level result code",
+            "format": "int32",
+            "example": 200
+          },
+          "resultMessage": {
+            "type": "string",
+            "description": "Application-level result message",
+            "example": "OK"
+          },
+          "data": {
+            "type": "array",
+            "description": "Response payload",
+            "items": {
+              "$ref": "#/components/schemas/SportsClubListResponse"
+            }
+          }
+        },
+        "description": "Standard API wrapper"
+      },
+      "SportsClubListResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Club ID",
+            "format": "int64",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "description": "Club name",
+            "example": "Seoul Sports Club"
+          },
+          "location": {
+            "type": "string",
+            "description": "Club location",
+            "example": "Seoul, Korea"
+          },
+          "representativeName": {
+            "type": "string",
+            "description": "Representative name",
+            "example": "Kim Coach"
+          },
+          "representativeTelno": {
+            "type": "string",
+            "description": "Representative phone number",
+            "example": "010-1111-2222"
+          },
+          "clubNo": {
+            "type": "string",
+            "description": "Club number",
+            "example": "CLUB-2024-0001"
+          },
+          "businessNo": {
+            "type": "string",
+            "description": "Business registration number",
+            "example": "123-45-67890"
+          },
+          "clubRoleCodeId": {
+            "type": "integer",
+            "description": "Common code ID for club role",
+            "format": "int64",
+            "example": 10
+          },
+          "isActive": {
+            "type": "boolean",
+            "description": "Club active flag",
+            "example": true
+          }
+        },
+        "description": "Response payload"
+      },
+      "ApiResponseCommonCodeGroupResponse": {
+        "type": "object",
+        "properties": {
+          "resultCode": {
+            "type": "integer",
+            "description": "Application-level result code",
+            "format": "int32",
+            "example": 200
+          },
+          "resultMessage": {
+            "type": "string",
+            "description": "Application-level result message",
+            "example": "OK"
+          },
+          "data": {
+            "$ref": "#/components/schemas/CommonCodeGroupResponse"
+          }
+        },
+        "description": "Standard API wrapper"
+      },
+      "CommonCodeGroupResponse": {
+        "type": "object",
+        "properties": {
+          "groupCode": {
+            "type": "string",
+            "description": "Group code",
+            "example": "CLUB_ROLE"
+          },
+          "groupName": {
+            "type": "string",
+            "description": "Group name",
+            "example": "Sports Club Role"
+          },
+          "description": {
+            "type": "string",
+            "description": "Group description",
+            "example": "Roles available for sports clubs"
+          },
+          "level": {
+            "type": "integer",
+            "description": "Group level (1-3)",
+            "format": "int32",
+            "example": 1
+          },
+          "sortOrder": {
+            "type": "integer",
+            "description": "Sort order",
+            "format": "int32",
+            "example": 1
+          },
+          "codes": {
+            "type": "array",
+            "description": "Codes under this group",
+            "items": {
+              "$ref": "#/components/schemas/CommonCodeResponse"
+            }
+          },
+          "children": {
+            "type": "array",
+            "description": "Child groups",
+            "items": {
+              "$ref": "#/components/schemas/CommonCodeGroupResponse"
+            }
+          }
+        },
+        "description": "Response payload"
+      },
+      "CommonCodeResponse": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "Code value",
+            "example": "REGISTERED"
+          },
+          "codeName": {
+            "type": "string",
+            "description": "Code display name",
+            "example": "Registered Club"
+          },
+          "description": {
+            "type": "string",
+            "description": "Code description",
+            "example": "Club role for registered clubs"
+          },
+          "sortOrder": {
+            "type": "integer",
+            "description": "Sort order",
+            "format": "int32",
+            "example": 1
+          }
+        },
+        "description": "Codes under this group"
+      }
+    },
+    "securitySchemes": {
+      "sessionAuth": {
+        "type": "apiKey",
+        "description": "Session cookie issued after login.",
+        "name": "JSESSIONID",
+        "in": "cookie"
+      }
+    }
+  }
+}

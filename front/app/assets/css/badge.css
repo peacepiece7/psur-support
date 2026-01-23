@@ -1,0 +1,98 @@
+@layer components {
+  /* ===== Atoms: Badge ===== */
+  .badge--md {
+    @apply px-4 py-1;
+  }
+  .badge--sm {
+    @apply px-4 py-1;
+  }
+  /* ===== Type: Tint ===== */
+  /* 배경색이 연한 색상, 텍스트는 진한 색상 */
+  .badge--tint--blue {
+    @apply bg-blue-100 text-blue-700 stroke-blue-700;
+  }
+  .badge--tint--sky-blue {
+    @apply bg-sky-blue-100 text-sky-blue-700 stroke-sky-blue-700;
+  }
+  .badge--tint--green {
+    @apply bg-green-100 text-green-700 stroke-green-700;
+  }
+  .badge--tint--purple {
+    @apply bg-purple-100 text-purple-700 stroke-purple-700;
+  }
+  .badge--tint--red {
+    @apply bg-red-100 text-red-700 stroke-red-700;
+  }
+  .badge--tint--orange {
+    @apply bg-orange-100 text-orange-700 stroke-orange-700;
+  }
+  .badge--tint--yellow {
+    @apply bg-yellow-100 text-yellow-700 stroke-yellow-700;
+  }
+  .badge--tint--grey {
+    @apply bg-grey-100 text-grey-700 stroke-grey-700;
+  }
+  .badge--tint--black {
+    @apply bg-grey-200 text-black stroke-black;
+  }
+
+  /* ===== Type: Solid ===== */
+  /* 배경색이 진한 색상, 텍스트는 흰색 */
+  .badge--solid--blue {
+    @apply bg-blue-600 text-white;
+  }
+  .badge--solid--sky-blue {
+    @apply bg-sky-blue-600 text-white stroke-white;
+  }
+  .badge--solid--green {
+    @apply bg-green-600 text-white stroke-white;
+  }
+  .badge--solid--purple {
+    @apply bg-purple-600 text-white stroke-white;
+  }
+  .badge--solid--red {
+    @apply bg-red-600 text-white stroke-white ;
+  }
+  .badge--solid--orange {
+    @apply bg-orange-600 text-white stroke-white;
+  }
+  .badge--solid--yellow {
+    @apply bg-yellow-600 text-white stroke-white;
+  }
+  .badge--solid--grey {
+    @apply bg-grey-600 text-white stroke-white;
+  }
+  .badge--solid--black {
+    @apply bg-black text-white stroke-white;
+  }
+
+  /* ===== Type: Line ===== */
+  /* 배경색 없음, 테두리만 있고 텍스트는 진한 색상 */
+  .badge--line--blue {
+    @apply border border-blue-400 text-blue-700 stroke-blue-700 bg-transparent;
+  }
+  .badge--line--sky-blue {
+    @apply border border-sky-blue-400 text-sky-blue-700 stroke-sky-blue-700 bg-transparent;
+  }
+  .badge--line--green {
+    @apply border border-green-400 text-green-700 stroke-green-700 bg-transparent;
+  }
+  .badge--line--purple {
+    @apply border border-purple-400 text-purple-700 stroke-purple-700 bg-transparent;
+  }
+  .badge--line--red {
+    @apply border border-red-400 text-red-700 stroke-red-700 bg-transparent;
+  }
+  .badge--line--orange {
+    @apply border border-orange-400 text-orange-700 stroke-orange-700 bg-transparent;
+  }
+  .badge--line--yellow {
+    @apply border border-yellow-400 text-yellow-700 stroke-yellow-700 bg-transparent;
+  }
+  .badge--line--grey {
+    @apply border border-grey-400 text-grey-700 stroke-grey-700 bg-transparent;
+  }
+  .badge--line--black {
+    @apply border border-black text-black stroke-black bg-transparent;
+  }
+}

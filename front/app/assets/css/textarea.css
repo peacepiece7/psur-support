@@ -1,0 +1,194 @@
+@layer components {
+  /* ===== Atoms: Textarea ===== */
+
+  /* Textarea Size Styles */
+  .textarea-size-xs {
+    width: 100%;
+    max-width: 120px;
+  }
+
+  .textarea-size-sm {
+    width: 100%;
+    max-width: 200px;
+  }
+
+  .textarea-size-md {
+    width: 100%;
+    max-width: 280px;
+  }
+
+  .textarea-size-lg {
+    width: 100%;
+    max-width: 360px;
+  }
+
+  .textarea-size-xl {
+    width: 100%;
+    max-width: 480px;
+  }
+
+  .textarea-size-max {
+    width: 100%;
+  }
+
+  /* Textarea Base Styles - Figma Form -> Input 기준 */
+  /* 배경색: #FFFFFF (readonly가 아닐 때만) */
+  .pp-v-textarea:not(.v-input--readonly) :where(.v-field__field) {
+    background-color: var(--color-static-white);
+  }
+
+  .pp-v-textarea.v-input--readonly :where(.field__outline) {
+    background-color: var(--color-neutral-fill-100) !important;
+  }
+
+  /* 기본 보더 색상: #D0D4D9 (Neutral/Stroke/Stroke-300) */
+  .pp-v-textarea :where(.v-field__outline) {
+    color: var(--color-neutral-stroke-300);
+    border-radius: 8px !important;
+  }
+
+  /* Textarea 요소 패딩: 가로세로 16px */
+  .pp-v-textarea :where(.v-field__field) {
+    padding: 4px;
+    border-radius: 8px;
+  }
+
+  .pp-v-textarea {
+    color: var(--color-neutral-text-text);
+  }
+
+  /* Textarea 요소 자체에 패딩: 가로세로 16px */
+  .pp-v-textarea textarea {
+    opacity: 1 !important;
+    padding: 16px !important;
+  }
+
+  /* Textarea Interactive States */
+  /* Hover state - 마우스 오버 시 (readonly 제외) */
+  .pp-v-textarea:not(.v-input--disabled):not(.v-input--readonly):hover
+    :where(.v-field__outline) {
+    @apply text-blue-500;
+    @apply opacity-100! transition-colors duration-200 ease-in-out;
+  }
+
+  /* Focus state - 포커스 시 (readonly, disabled 제외) */
+  .pp-v-textarea:not(.v-input--readonly):not(.v-input--disabled)
+    :where(.v-field--focused .v-field__outline) {
+    @apply text-blue-600;
+    @apply opacity-100! transition-colors duration-200 ease-in-out;
+  }
+
+  /* outline 색상 항상 보이도록 설정 */
+  .pp-v-textarea .v-field__outline__start,
+  .pp-v-textarea .v-field__outline__end {
+    @apply opacity-100!;
+  }
+
+  /* Input 내부 텍스트 색상 */
+  .pp-v-textarea :where(.v-field__input) {
+    color: var(--color-neutral-text-text);
+  }
+
+  /* Placeholder 색상: #6A7583 (Neutral/Text/Placeholder) */
+  .pp-v-textarea :where(.v-field__input::placeholder) {
+    color: var(--color-neutral-text-placeholder);
+  }
+
+  /* Disabled state - 비활성화 시 */
+  .pp-v-textarea :where(.v-field--disabled .v-field__outline) {
+    color: var(--color-neutral-stroke-300);
+  }
+
+  .pp-v-textarea :where(.v-field--disabled .v-field__input) {
+    @apply cursor-not-allowed;
+    color: var(--color-neutral-text-disabled);
+  }
+
+  .pp-v-textarea :where(.v-field--disabled .v-field__field) {
+    background-color: var(--color-neutral-fill-100) !important;
+  }
+
+  .pp-v-textarea :where(.v-field--disabled textarea) {
+    background-color: var(--color-neutral-fill-100) !important;
+    color: var(--color-neutral-text-disabled) !important;
+  }
+
+  .pp-v-textarea .v-field--disabled {
+    opacity: 1 !important;
+  }
+
+  /* Readonly state - 읽기 전용 시 */
+  /* 배경: disabled와 동일, 텍스트 색상: 그대로 유지, border: 그대로 유지 */
+  .pp-v-textarea.v-input--readonly :where(textarea) {
+    background-color: var(--color-neutral-fill-100) !important;
+  }
+
+  /* Readonly 상태에서 focus되어도 배경색 유지 */
+  .pp-v-textarea.v-input--readonly :where(.v-field--focused .v-field__field),
+  .pp-v-textarea.v-input--readonly :where(.v-field--active .v-field__field) {
+    background-color: var(--color-neutral-fill-100) !important;
+  }
+
+  /* Readonly 상태에서 border 색상 유지 (hover, focus, active 모두 회색으로 유지) */
+  .pp-v-textarea.v-input--readonly :where(.v-field__outline) {
+    color: var(--color-neutral-stroke-300) !important;
+    /* background-color: var(--color-neutral-fill-100) !important; */
+  }
+
+  .pp-v-textarea.v-input--readonly:hover :where(.v-field__outline),
+  .pp-v-textarea.v-input--readonly :where(.v-field--focused .v-field__outline),
+  .pp-v-textarea.v-input--readonly :where(.v-field--active .v-field__outline) {
+    color: var(--color-neutral-stroke-300) !important;
+  }
+
+  .pp-v-textarea.v-input--readonly :where(.v-field__input) {
+    color: var(--color-neutral-text-text);
+    /* 텍스트 색상은 그대로 유지 */
+  }
+
+  /* v-field__field 내부 요소들 정렬 */
+  .pp-v-textarea .v-field__field {
+    @apply flex items-start;
+  }
+
+  .pp-v-textarea .v-input__details {
+    display: none !important;
+  }
+
+  /* 문자 카운터 스타일 - 오른쪽 하단에 배치 */
+  .textarea-counter {
+    @apply text-grey-700 absolute right-1 bottom-[-2] text-xs;
+    @apply pointer-events-none;
+    z-index: 1;
+  }
+
+  /* 문자 카운터 영역도 textarea와 동일한 사이즈 적용 */
+  .textarea-size-xs.flex {
+    width: 100%;
+    max-width: 120px;
+  }
+
+  .textarea-size-sm.flex {
+    width: 100%;
+    max-width: 200px;
+  }
+
+  .textarea-size-md.flex {
+    width: 100%;
+    max-width: 280px;
+  }
+
+  .textarea-size-lg.flex {
+    width: 100%;
+    max-width: 360px;
+  }
+
+  .textarea-size-xl.flex {
+    width: 100%;
+    max-width: 480px;
+  }
+
+  .textarea-size-max.flex {
+    width: 100%;
+  }
+}

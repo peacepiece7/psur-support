@@ -1,0 +1,15 @@
+@layer base {
+  :root {
+    --z-request-action: 990;
+    --z-request-action-inner: 991;
+
+    --z-app-bar: 1100;
+    --z-drawer: 1100;
+
+    --z-dialog: 1150;
+    --z-modal: 1200;
+    --z-toast: 1300;
+    --z-alert: 1400;
+  }
+}
+

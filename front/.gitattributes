@@ -1,0 +1,6 @@
+# Auto detect text files and perform LF normalization
+* text=auto
+
+# Treat generated/media assets as binary (no LF normalization)
+public/** -text
+app/assets/lottie/** -text

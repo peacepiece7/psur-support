@@ -1,0 +1,134 @@
+@layer components {
+  /* ===== Atoms: SelectV2 (Vuetify) ===== */
+
+  /* SelectV2 Size Styles - TextField와 동일한 width */
+  .select-v2-size-xs {
+    width: 100%;
+    max-width: 120px;
+  }
+
+  .select-v2-size-sm {
+    width: 100%;
+    max-width: 200px;
+  }
+
+  .select-v2-size-md {
+    width: 100%;
+    max-width: 280px;
+  }
+
+  .select-v2-size-lg {
+    width: 100%;
+    max-width: 360px;
+  }
+
+  .select-v2-size-xl {
+    width: 100%;
+    max-width: 480px;
+  }
+
+  .select-v2-size-max {
+    width: 100%;
+  }
+
+  /* SelectV2 Base Styles - TextField와 동일 */
+  /* 전체 높이: 48px - TextField와 동일 */
+  .pp-v-select-v2 {
+    height: 48px !important;
+    color: var(--color-neutral-text-text);
+  }
+
+  .pp-v-select-v2 .v-field {
+    padding-right: 0 !important;
+  }
+
+  .pp-v-select-v2 .v-input__control {
+    height: 48px !important;
+  }
+  .pp-v-select-v2 .v-field__input {
+    height: 48px;
+    line-height: 30px;
+    background-color: var(--color-static-white) !important;
+  }
+
+  .pp-v-select-v2 input {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .pp-v-select-v2 :where(.v-field) {
+    min-height: 48px !important;
+    height: 48px !important;
+  }
+
+  /* 배경색: #FFFFFF */
+  .pp-v-select-v2 :where(.v-field__field) {
+    background-color: var(--color-static-white);
+    height: 100%;
+  }
+
+  /* 기본 보더 색상: #D0D4D9 (Neutral/Stroke/Stroke-300) */
+  .pp-v-select-v2 :where(.v-field__outline) {
+    color: var(--color-neutral-stroke-300);
+    border-radius: 8px !important;
+  }
+
+  /* outline 색상 항상 보이도록 설정 */
+  .pp-v-select-v2 .v-field__outline__start,
+  .pp-v-select-v2 .v-field__outline__end {
+    opacity: 1 !important;
+  }
+
+  /* SelectV2 Interactive States */
+  /* Hover state - 마우스 오버 시 */
+  .pp-v-select-v2:not(.v-input--disabled):hover :where(.v-field__outline) {
+    @apply text-blue-500;
+    @apply transition-colors duration-200 ease-in-out opacity-100!;
+  }
+
+  /* Focus state - 포커스 시에만 파란색 (선택된 옵션이 있어도 기본은 회색) */
+  .pp-v-select-v2:not(.v-input--disabled) :where(.v-field--focused .v-field__outline) {
+    @apply text-blue-600;
+    @apply transition-colors duration-200 ease-in-out opacity-100!;
+  }
+
+  .v-select__content .v-list-item__overlay {
+    display: none !important;
+  }
+  .v-select__content .v-ripple__container {
+    display: none !important;
+  }
+  .v-select__content .v-list-item {
+    transition: background-color 0.2s ease-in-out !important;
+  }
+
+  /* Hover state - selected가 아닌 경우만 */
+  .v-select__content .v-list-item:not(.v-list-item--active):hover {
+    background-color: var(--color-grey-50) !important;
+  }
+
+  /* Active state (클릭 중) - selected가 아닌 경우 */
+  .v-select__content .v-list-item:not(.v-list-item--active):active {
+    background-color: var(--color-grey-100) !important;
+    color: var(--color-primary-700) !important;
+  }
+
+  /* Selected state - 선택된 항목 (기본 상태) */
+  .v-select__content .v-list-item--active {
+    background-color: var(--color-blue-50) !important;
+    color: var(--color-primary-700) !important;
+  }
+
+  /* Selected + Hover - selected 항목에 hover 시 더 진한 파란색 */
+  .v-select__content .v-list-item--active:hover {
+    background-color: var(--color-blue-100) !important;
+    color: var(--color-primary-700) !important;
+  }
+
+  /* Selected + Active (클릭 중) - selected 항목 클릭 시 */
+  .v-select__content .v-list-item--active:active {
+    background-color: var(--color-blue-200) !important;
+    color: var(--color-primary-700) !important;
+  }
+}

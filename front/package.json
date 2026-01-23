@@ -1,0 +1,77 @@
+{
+  "name": "psur-front",
+  "version": "0.0.0",
+  "type": "module",
+  "homepage": "https://pg-nuxt-vuetify-tailwindcss.netlify.app",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pinegrow/pg-nuxt-vuetify-tailwindcss.git"
+  },
+  "scripts": {
+    "dev": "nuxt dev --dotenv .env.local",
+    "now": "npm run build && npm run preview",
+    "now:dev": "cross-env NITRO_PRESET=node-server npx nuxi build && npx nuxi preview",
+    "gen:icon": "node scripts/iconfont.cjs",
+    "gen:oas": "node scripts/generate-open-api-sepc.cjs",
+    "lighthouse": "npx unlighthouse --no-cache --site https://pg-nuxt-vuetify-tailwindcss.netlify.app",
+    "build": "nuxt build",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare",
+    "analyze": "nuxt analyze",
+    "lint": "npm run lint:fix && npm run format",
+    "lint:fix": "eslint --fix ./",
+    "format": "prettier --write \"**/*.{html,vue,svelte,astro,js,jsx,cjs,mjs,ts,tsx,cts,mts,css,md,mdx,json}\" !public --ignore-path .gitignore"
+  },
+  "dependencies": {
+    "@ckeditor/ckeditor5-vue": "^7.2.0",
+    "@mdi/font": "^7.4.47",
+    "@nuxt/image": "^2.0.0",
+    "@pinia/nuxt": "^0.5.4",
+    "@rive-app/canvas": "^2.33.3",
+    "@vee-validate/nuxt": "^4.13.2",
+    "@vee-validate/yup": "^4.15.1",
+    "@vuepic/vue-datepicker": "^12.1.0",
+    "@vueuse/core": "^11.0.3",
+    "axios": "^1.13.2",
+    "ckeditor5": "^43.2.0",
+    "pinia": "^2.2.2",
+    "uuid": "^13.0.0",
+    "yup": "^1.4.0"
+  },
+  "devDependencies": {
+    "@nuxt/eslint": "^0.7.5",
+    "@tailwindcss/postcss": "^4.1.18",
+    "@types/node": "^22.10.6",
+    "@types/yup": "^0.32.0",
+    "@vueuse/nuxt": "^12.4.0",
+    "cross-env": "^7.0.3",
+    "dayjs-nuxt": "^2.1.11",
+    "eslint": "^9.18.0",
+    "eslint-config-prettier": "^10.0.1",
+    "fontagon": "^1.1.1",
+    "nuxt": "^3.15.1",
+    "openapi-typescript-codegen": "^0.30.0",
+    "postcss": "^8.5.6",
+    "prettier": "^3.4.2",
+    "prettier-plugin-tailwindcss": "^0.7.2",
+    "rimraf": "^6.1.2",
+    "sass": "^1.83.0",
+    "sass-embedded": "^1.77.8",
+    "sass-loader": "^16.0.6",
+    "tailwindcss": "^4.1.18",
+    "typescript": "^5.7.3",
+    "vite-plugin-vuetify": "^2.1.2",
+    "vue3-carousel-nuxt": "^1.1.6",
+    "vuetify": "^3.11.2"
+  },
+  "pnpm": {
+    "overrides": {
+      "nuxi": "3.8.4"
+    }
+  },
+  "overrides": {
+    "nuxi": "3.8.4"
+  },
+  "web-types": "web-types.json"
+}

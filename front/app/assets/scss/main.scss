@@ -1,0 +1,238 @@
+// // Import Design System Variables
+// @import './variables';
+
+// // ============================================
+// // Mixins
+// // ============================================
+
+// // Mixin: CSS 변수 업데이트
+// @mixin update-font-size-vars(
+//   $html-size,
+//   $size-2xl,
+//   $size-3xl,
+//   $size-4xl,
+//   $heading-1,
+//   $heading-2,
+//   $heading-3,
+//   $heading-4,
+//   $heading-5,
+//   $heading-6
+// ) {
+//   font-size: $html-size;
+
+//   // 기본 폰트 사이즈 (변경 없음)
+//   --font-size-xs: 0.75rem;
+//   --font-size-sm: 0.875rem;
+//   --font-size-base: 1rem;
+//   --font-size-md: 1.125rem;
+//   --font-size-lg: 1.25rem;
+//   --font-size-xl: 1.5rem;
+
+//   // 큰 폰트 사이즈 (반응형 조절)
+//   --font-size-2xl: #{$size-2xl};
+//   --font-size-3xl: #{$size-3xl};
+//   --font-size-4xl: #{$size-4xl};
+
+//   // Heading 폰트 사이즈
+//   --font-size-heading-1: #{$heading-1};
+//   --font-size-heading-2: #{$heading-2};
+//   --font-size-heading-3: #{$heading-3};
+//   --font-size-heading-4: #{$heading-4};
+//   --font-size-heading-5: #{$heading-5};
+//   --font-size-heading-6: #{$heading-6};
+// }
+
+// // Mixin: Heading 스타일 적용
+// @mixin apply-heading-styles(
+//   $h1-size,
+//   $h2-size,
+//   $h3-size,
+//   $h4-size,
+//   $h5-size,
+//   $h6-size
+// ) {
+//   h1 {
+//     font-size: $h1-size;
+//   }
+
+//   h2 {
+//     font-size: $h2-size;
+//   }
+
+//   h3 {
+//     font-size: $h3-size;
+//   }
+
+//   h4 {
+//     font-size: $h4-size;
+//   }
+
+//   h5 {
+//     font-size: $h5-size;
+//   }
+
+//   h6 {
+//     font-size: $h6-size;
+//   }
+// }
+
+// // ============================================
+// // Global styles
+// // ============================================
+
+// html {
+//   // Import fonts and change the list accordingly
+//   // font-family: 'Proza Libre', 'Inter var', 'Inter', 'Roboto', 'Helvetica Neue', sans-serif;
+//   font-family: $font-family-primary;
+//   scrollbar-gutter: stable;
+//   width: 100%;
+//   max-width: 100%;
+//   overflow-x: hidden;
+
+//   // CSS 변수로 폰트 사이즈 정의 (미디어 쿼리 우선 적용)
+//   // 모바일 기본값 (<= 768px)
+//   @include update-font-size-vars(
+//     $font-size-html-mobile,
+//     2rem,
+//     // --font-size-2xl
+//     2.5rem,
+//     // --font-size-3xl
+//     3rem,
+//     // --font-size-4xl
+//     $font-size-heading-1-mobile,
+//     $font-size-heading-2-mobile,
+//     $font-size-heading-3-mobile,
+//     $font-size-heading-4-mobile,
+//     $font-size-heading-5-mobile,
+//     $font-size-heading-6-mobile
+//   );
+// }
+
+// body {
+//   margin: 0;
+//   width: 100%;
+//   max-width: 100%;
+//   overflow-x: hidden;
+// }
+
+// * {
+//   -webkit-font-smoothing: auto;
+//   -moz-osx-font-smoothing: auto;
+//   box-sizing: border-box;
+// }
+
+// // Base styles (모바일 기본값)
+// h1 {
+//   font-size: $font-size-heading-1-mobile;
+//   font-weight: bold;
+//   line-height: 1.2;
+// }
+
+// h2 {
+//   font-size: $font-size-heading-2-mobile;
+//   font-weight: bold;
+//   margin-bottom: 1rem;
+// }
+
+// h3 {
+//   font-size: $font-size-heading-3-mobile;
+//   font-weight: bold;
+//   margin-bottom: 0.5rem;
+// }
+
+// h4 {
+//   font-size: $font-size-heading-4-mobile;
+//   font-weight: 600;
+//   margin-bottom: 0.5rem;
+// }
+
+// h5 {
+//   font-size: $font-size-heading-5-mobile;
+//   font-weight: 500;
+//   margin-bottom: 0.5rem;
+// }
+
+// h6 {
+//   font-size: $font-size-heading-6-mobile;
+//   font-weight: 500;
+//   margin-bottom: 0.5rem;
+// }
+
+// input,
+// optgroup,
+// select,
+// textarea {
+//   color: #000;
+// }
+
+// // Dialog가 열릴 때 외부 스크롤 방지
+// body.dialog-open {
+//   overflow: hidden;
+// }
+
+// // ============================================
+// // Responsive Typography (useDevice 기준)
+// // ============================================
+// // 모바일: <= 768px (기본값 - 위에서 정의됨)
+// // 테블릿: 769px ~ 1399px
+// // 데스크톱: >= 1400px
+
+// // 테블릿 (769px ~ 1399px)
+// @media (min-width: $breakpoint-tablet-min) and (max-width: $breakpoint-tablet-max) {
+//   html {
+//     @include update-font-size-vars(
+//       $font-size-html-tablet,
+//       2.25rem,
+//       // --font-size-2xl
+//       2.75rem,
+//       // --font-size-3xl
+//       3.3rem,
+//       // --font-size-4xl
+//       $font-size-heading-1-tablet,
+//       $font-size-heading-2-tablet,
+//       $font-size-heading-3-tablet,
+//       $font-size-heading-4-tablet,
+//       $font-size-heading-5-tablet,
+//       $font-size-heading-6-tablet
+//     );
+//   }
+
+//   @include apply-heading-styles(
+//     $font-size-heading-1-tablet,
+//     $font-size-heading-2-tablet,
+//     $font-size-heading-3-tablet,
+//     $font-size-heading-4-tablet,
+//     $font-size-heading-5-tablet,
+//     $font-size-heading-6-tablet
+//   );
+// }
+
+// // 데스크톱 (1400px 이상)
+// @media (min-width: $breakpoint-desktop-min) {
+//   html {
+//     @include update-font-size-vars(
+//       $font-size-html-desktop,
+//       2.5rem,
+//       // --font-size-2xl
+//       3rem,
+//       // --font-size-3xl
+//       3.6rem,
+//       // --font-size-4xl
+//       $font-size-heading-1-desktop,
+//       $font-size-heading-2-desktop,
+//       $font-size-heading-3-desktop,
+//       $font-size-heading-4-desktop,
+//       $font-size-heading-5-desktop,
+//       $font-size-heading-6-desktop
+//     );
+//   }
+
+//   @include apply-heading-styles(
+//     $font-size-heading-1-desktop,
+//     $font-size-heading-2-desktop,
+//     $font-size-heading-3-desktop,
+//     $font-size-heading-4-desktop,
+//     $font-size-heading-5-desktop,
+//     $font-size-heading-6-desktop
+//   );
+// }

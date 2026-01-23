@@ -1,0 +1,199 @@
+{
+  "$schema": "http://json.schemastore.org/web-types",
+  "name": "project",
+  "framework": "project",
+  "version": "0.0.0",
+  "contributions": {
+    "html": {
+      "elements": [
+        {
+          "name": "VNuxtImage",
+          "description": "A simple wrapper of v-img that optimizes the image source by default.",
+          "attributes": [
+            {
+              "name": "fit",
+              "customType": "select",
+              "default": "cover",
+              "options": ["cover", "contain", "fill", "inside", "outside"]
+            }
+          ]
+        },
+        {
+          "name": "Button",
+          "description": "Vuetify v-btn을 래핑한 Atom 컴포넌트. 모든 v-btn props를 지원하며, 커스텀 size prop을 제공합니다.",
+          "attributes": [
+            {
+              "name": "size",
+              "description": "버튼 크기 (xs: 24px, sm: 32px, md: 40px, lg: 48px, xl: 56px)",
+              "customType": "select",
+              "default": "md",
+              "options": ["xs", "sm", "md", "lg", "xl"]
+            },
+            {
+              "name": "color",
+              "description": "버튼 색상 (primary: 파란색, secondary: 회색, warning: 주황색, dark: 검은색, dark-gray: 어두운 회색, white: 흰색, success: 초록색)",
+              "customType": "select",
+              "default": "primary",
+              "options": [
+                "primary",
+                "secondary",
+                "warning",
+                "dark",
+                "dark-gray",
+                "white",
+                "success"
+              ]
+            },
+            {
+              "name": "variant",
+              "description": "버튼 스타일 변형",
+              "customType": "select",
+              "default": "flat",
+              "options": [
+                "flat",
+                "text",
+                "outlined",
+                "tonal",
+                "plain",
+                "elevated"
+              ]
+            },
+            {
+              "name": "disabled",
+              "description": "버튼 비활성화 여부",
+              "value": {
+                "type": "boolean"
+              }
+            },
+            {
+              "name": "loading",
+              "description": "로딩 상태 표시",
+              "value": {
+                "type": "boolean"
+              }
+            },
+            {
+              "name": "icon",
+              "description": "아이콘 버튼으로 표시",
+              "value": {
+                "type": "boolean"
+              }
+            },
+            {
+              "name": "prepend-icon",
+              "description": "앞쪽 아이콘",
+              "value": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "append-icon",
+              "description": "뒤쪽 아이콘",
+              "value": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "block",
+              "description": "전체 너비 버튼",
+              "value": {
+                "type": "boolean"
+              }
+            },
+            {
+              "name": "rounded",
+              "description": "둥근 모서리",
+              "value": {
+                "type": "boolean | string"
+              }
+            },
+            {
+              "name": "to",
+              "description": "라우터 링크 경로",
+              "value": {
+                "type": "string | object"
+              }
+            },
+            {
+              "name": "href",
+              "description": "외부 링크 URL",
+              "value": {
+                "type": "string"
+              }
+            }
+          ],
+          "slots": [
+            {
+              "name": "default",
+              "description": "버튼 내용"
+            },
+            {
+              "name": "prepend",
+              "description": "앞쪽 슬롯"
+            },
+            {
+              "name": "append",
+              "description": "뒤쪽 슬롯"
+            }
+          ]
+        },
+        {
+          "name": "BaseButtonDemo",
+          "description": "Note, this is not a real component in this project, added here just to show an example of how it is defined in web-types.",
+          "attributes": [
+            {
+              "name": "label",
+              "placeholder": "My Button"
+            },
+            {
+              "name": "size",
+              "customType": "select",
+              "default": "sm",
+              "options": ["2xs", "xs", "sm", "md", "lg", "xl"]
+            },
+            {
+              "name": "variant",
+              "customType": "select",
+              "default": "solid",
+              "options": ["solid", "outline", "soft", "ghost", "link"]
+            },
+            {
+              "name": "target",
+              "customType": "select",
+              "default": "",
+              "options": ["_blank"]
+            }
+          ],
+          "slots": [
+            {
+              "name": "default",
+              "description": "The default Vue slot.",
+              "vue-properties": [
+                {
+                  "name": "disabled-demo",
+                  "description": "Whether or not the Button is disabled. Note, this is not a real slot prop, added here just to show an example of how it is defined in web-types.",
+                  "type": "Boolean"
+                }
+              ]
+            },
+            {
+              "name": "leading",
+              "description": "Use the #leading slot to set the content of the leading icon."
+            },
+            {
+              "name": "trailing",
+              "description": "Use the #trailing slot to set the content of the trailing icon."
+            }
+          ]
+        }
+      ],
+      "attributes": [
+        {
+          "name": "color",
+          "customType": "select",
+          "options": []
+        }
+      ]
+    }
+  }
+}

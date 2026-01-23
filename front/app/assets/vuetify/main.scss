@@ -1,0 +1,30 @@
+// // Any variables in the sass files in this folder - https://github.com/vuetifyjs/vuetify/blob/master/packages/vuetify/src/styles/settings/
+// // 참고: https://vuetifyjs.com/en/features/sass-variables/#usage
+
+// $font-family: 'Inter var', 'Inter', 'Roboto', 'Helvetica Neue', sans-serif;
+
+// @use 'vuetify' with (
+//   // 전역 설정
+//   $utilities: false,
+//   // 유틸리티 클래스 활성화 (기본값: true)
+//   $reset: false,
+//   // CSS reset 활성화 (기본값: true)
+//   $color-pack: false,
+//   // 색상 팩 활성화 (기본값: true)
+//   // 폰트 설정
+//   $body-font-family: $font-family,
+
+//   // 기타 전역 변수들
+//   $border-radius-root: 44px,
+//   $font-size-root: 26px,
+//   $line-height-root: 1.5
+// );
+
+// // Vuetify v-field 내부 loader에서 inline style로 `opacity: NaN`이 찍히는 케이스가 있어
+// // loader 영역에만 한정해 안전한 숫자값으로 덮어씁니다.
+// // .v-field__loader {
+// //   .v-progress-linear__background,
+// //   .v-progress-linear__buffer {
+// //     opacity: 0.3 !important;
+// //   }
+// // }

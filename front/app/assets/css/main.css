@@ -1,0 +1,335 @@
+@import 'tailwindcss';
+@import '../styles/tokens/z-index.css';
+@import '../styles/utilities/z-index.css';
+@import './button.css';
+@import './badge.css';
+@import './selection-group.css';
+@import './select.css';
+@import './select-v2.css';
+@import './textarea.css';
+@import './number-input.css';
+@import './silde-group.css';
+@import './text-field.css';
+
+/* 기본 폰트 설정 */
+@layer base {
+  html,
+  body {
+    font-family:
+      'PretendardGOV',
+      -apple-system,
+      BlinkMacSystemFont,
+      'Segoe UI',
+      Roboto,
+      'Helvetica Neue',
+      Arial,
+      sans-serif;
+  }
+
+
+
+  input,
+  textarea {
+    font-weight: 600;
+  }
+
+  /* 
+    --v-high-emphasis-opacity: 1;
+    --v-medium-emphasis-opacity : 1;
+  */
+  input::placeholder,
+  textarea::placeholder {
+    font-weight: 500;
+    color: var(--color-neutral-text-placeholder) !important;
+    opacity: 1 !important;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  label {
+    font-weight: 500;
+  }
+
+
+  h1, h2, h3, h4, h5, h6 {
+    color: var(--color-neutral-text-title);
+    font-weight: 700;
+  }
+
+
+
+  /* 기본 typography (UI 기준) */
+  h1 { font-size: 3rem; }     /* 페이지 타이틀 (48px) */
+  h2 { font-size: 2.5rem; }   /* 섹션 타이틀 (40px) */
+  h3 { font-size: 2rem; }     /* 서브 섹션 (32px) */
+  h4 { font-size: 1.5rem; }   /* 24px */
+  h5 { font-size: 1.25rem; }  /* 20px */
+  h6 { font-size: 1.125rem; } /* 강조 텍스트 (18px) */
+}
+
+/* figma에서 가져와서 새로 만들 컬러 토큰 */
+@theme {
+
+  /* Blue */
+  --color-blue-50: #f5f8ff;
+  --color-blue-100: #eaf0ff;
+  --color-blue-200: #d2e2ff;
+  --color-blue-300: #a2cbff;
+  --color-blue-400: #66aaff;
+  --color-blue-500: #2485ff;
+  --color-blue-600: #0171d5;
+  --color-blue-700: #0156a8;
+  --color-blue-800: #00407f;
+  --color-blue-900: #003064;
+
+  /* Sky blue */
+  --color-sky-blue-50: #f0faff;
+  --color-sky-blue-100: #e2f6ff;
+  --color-sky-blue-200: #d0f0ff;
+  --color-sky-blue-300: #9fdfff;
+  --color-sky-blue-400: #54c6ff;
+  --color-sky-blue-500: #21b5ff;
+  --color-sky-blue-600: #0291d8;
+  --color-sky-blue-700: #0075af;
+  --color-sky-blue-800: #005c8a;
+  --color-sky-blue-900: #004568;
+
+  /* Cyan */
+  --color-cyan-50: #f0fdff;
+  --color-cyan-100: #e1fafe;
+  --color-cyan-200: #d1f1f6;
+  --color-cyan-300: #92e7f3;
+  --color-cyan-400: #2ed3e9;
+  --color-cyan-500: #04b8cf;
+  --color-cyan-600: #0298ab;
+  --color-cyan-700: #028798;
+  --color-cyan-800: #007482;
+  --color-cyan-900: #01636f;
+
+  /* Green */
+  --color-green-50: #f1fff4;
+  --color-green-100: #e5ffe9;
+  --color-green-200: #d2fadb;
+  --color-green-300: #9af0b0;
+  --color-green-400: #48c16d;
+  --color-green-500: #25a555;
+  --color-green-600: #008a3e;
+  --color-green-700: #006d2f;
+  --color-green-800: #005322;
+  --color-green-900: #003915;
+
+  /* Purple Blue */
+  --color-purple-blue-50: #f8f5ff;
+  --color-purple-blue-100: #efe9ff;
+  --color-purple-blue-200: #ded3ff;
+  --color-purple-blue-300: #b0a3f4;
+  --color-purple-blue-400: #927cf1;
+  --color-purple-blue-500: #7e50f4;
+  --color-purple-blue-600: #5729cb;
+  --color-purple-blue-700: #461dad;
+  --color-purple-blue-800: #310d8b;
+  --color-purple-blue-900: #240967;
+
+  /* Purple */
+  --color-purple-50: #fbf7ff;
+  --color-purple-100: #f5ecff;
+  --color-purple-200: #e7d1ff;
+  --color-purple-300: #d3abfd;
+  --color-purple-400: #b882f2;
+  --color-purple-500: #9b59e0;
+  --color-purple-600: #7729cb;
+  --color-purple-700: #6315b6;
+  --color-purple-800: #511295;
+  --color-purple-900: #3f0978;
+
+  /* Red */
+  --color-red-50: #fff6f7;
+  --color-red-100: #ffdde1;
+  --color-red-200: #ffafb9;
+  --color-red-300: #f77b8a;
+  --color-red-400: #f25569;
+  --color-red-500: #ec354c;
+  --color-red-600: #de1f37;
+  --color-red-700: #bf0018;
+  --color-red-800: #980517;
+  --color-red-900: #760210;
+
+  /* Orange */
+  --color-orange-50: #fff2e5;
+  --color-orange-100: #ffe3c9;
+  --color-orange-200: #ffcd9f;
+  --color-orange-300: #ffb570;
+  --color-orange-400: #fb9c43;
+  --color-orange-500: #f88010;
+  --color-orange-600: #ee6f00;
+  --color-orange-700: #bd4d02;
+  --color-orange-800: #8c3800;
+  --color-orange-900: #6f2e02;
+
+  /* Yellow */
+  --color-yellow-50: #fff8dc;
+  --color-yellow-100: #fff0b2;
+  --color-yellow-200: #ffe57c;
+  --color-yellow-300: #ffd735;
+  --color-yellow-400: #ffcc13;
+  --color-yellow-500: #f3bb01;
+  --color-yellow-600: #dda600;
+  --color-yellow-700: #c08300;
+  --color-yellow-800: #926401;
+  --color-yellow-900: #744f00;
+
+  /* Grey */
+  --color-grey-50: #f9fafb;
+  --color-grey-100: #f3f5f8;
+  --color-grey-200: #e1e7ee;
+  --color-grey-300: #d0d4d9;
+  --color-grey-400: #a2a9b3;
+  --color-grey-500: #858f9d;
+  --color-grey-600: #6a7583;
+  --color-grey-700: #505b69;
+  --color-grey-800: #28303a;
+  --color-grey-900: #181e25;
+
+  /* Static Colors (Figma Static 스타일) */
+  --color-static-white: #ffffff;
+  --color-static-black: #000000;
+
+  /* Primary Colors (Figma Primary 스타일) */
+  --color-primary-50: #f7f9ff;
+  --color-primary-100: #e6ecff;
+  --color-primary-200: #d0dbff;
+  --color-primary-300: #a4bbff;
+  --color-primary-400: #81a0ff;
+  --color-primary-500: #5b81f3;
+  --color-primary-600: #3661e5;
+  --color-primary-700: #1a48d5;
+  --color-primary-800: #0a38c2;
+  --color-primary-900: #0630ae;
+
+  /* Neutral Colors (Figma Neutral 스타일) */
+  /* Neutral/Text */
+  --color-neutral-text-placeholder: #6a7583; /* Neutral/Text/Placeholder */
+  --color-neutral-text-disabled: #858f9d; /* Neutral/Text/Disabled */
+  --color-neutral-text-body: #28303a; /* Neutral/Text/Body */
+  --color-neutral-text-title: #181e25; /* Neutral/Text/Text,Title */
+  --color-neutral-text-text: #181e25; /* Neutral/Text/Text,Title */
+  --color-neutral-text-caption: #505b69; /* Neutral/Text/Caption */
+
+  /* Neutral/Fill */
+  --color-neutral-fill-50: #f9fafb; /* Neutral/Fill/Fill-50 */
+  --color-neutral-fill-50-opacity-50: rgba(
+    249,
+    250,
+    251,
+    0.5
+  ); /* Neutral/Fill/Fill-50 with opacity 0.5 */
+  --color-neutral-fill-100: #f3f5f8; /* Neutral/Fill/Fill-100 */
+  --color-neutral-fill-100-opacity-50: rgba(
+    243,
+    245,
+    248,
+    0.5
+  ); /* Neutral/Fill/Fill-100 with opacity 0.5 */
+  --color-neutral-fill-200: #e1e7ee; /* Neutral/Fill/Fill-200 */
+  --color-neutral-fill-200-opacity-50: rgba(
+    225,
+    231,
+    238,
+    0.5
+  ); /* Neutral/Fill/Fill-200 with opacity 0.5 */
+
+  /* Neutral/Stroke */
+  --color-neutral-stroke-200: #e1e7ee; /* Neutral/Stroke/Stroke-200 */
+  --color-neutral-stroke-300: #d0d4d9; /* Neutral/Stroke/Stroke-300 */
+
+  /* Functional Colors (Figma Functional 스타일) */
+  --color-functional-positive: #008a3e; /* Functional/Positive */
+  --color-functional-negative: #de1f37; /* Functional/Negative */
+  --color-functional-success: #008a3e; /* Functional/Success */
+}
+
+/*
+한가지 속성에 대한 순수 유틸리티
+클래스에 의미를 가지지 않는 순수한 단위로 작성한다.
+
+ex) 
+text-4xl -> 순수 유틸리티 
+heading-1 -> 제목이라는 의미를 가짐 ❌
+card-sm -> 작은 사이즈의 카드를 의미함 ❌ 
+*/
+@layer utilities {
+}
+
+/*
+자주 사용되는 기능에 대한 컴포넌트
+atom, molecule 정도로 작고 자주 반복되는 스타일에 대한 클래스를 작성한다.
+
+신규 기능을 개발하면서 동시에 추가해선 안된다.
+기능 개발이 끝나고 리팩터링하는 과정에서 components layer에서 찾아서 교체하고 동일한 기능을 찾을 수 없을 경우만 추가한다.
+리팩터링을 하지 못했다면 추가하지 않는게 옳다.
+AHA(Avoid Hasty Abstraction)원칙을 지키자
+*/
+@layer components {
+
+}
+
+@layer components {
+  /* ===== Search: Club Card (moved from SFC scoped styles) ===== */
+  /* .search-club-card__sport-item--selected {
+    @apply bg-blue-600 text-white;
+  }
+  .search-club-card__sport-icon {
+    @apply text-grey-600 text-[20px];
+  }
+  .search-club-card__sport-item--selected .search-club-card__sport-icon {
+    @apply text-white;
+  }
+  .search-club-card__more-btn {
+    @apply border-grey-300 bg-grey-100 text-grey-900 hover:border-grey-400 hover:bg-grey-200 active:bg-grey-300 flex w-full items-center justify-center gap-2 rounded-b-lg border px-3 py-1 text-sm font-medium transition focus:outline-none;
+    box-shadow: 0 0 0 0 transparent;
+  }
+  .search-club-card__more-btn:focus {
+    box-shadow: 0 0 0 2px
+      color-mix(in srgb, var(--color-grey-300) 30%, transparent);
+  } */
+
+  /* ===== app/components/molecules/MyCkeditor.vue (migrated from <style scoped>) ===== */
+  .main-container {
+    .invalid {
+      :deep(.ck-editor__editable) {
+        border: 1px solid var(--color-red-500);
+      }
+    }
+  }
+
+  .VFormCKEditor-alert {
+    color: var(--color-red-500);
+    display: block;
+    @apply mt-2;
+  }
+
+  .editor-container__editor {
+    :deep(.ck-content) {
+      max-height: 500px;
+      min-height: 400px;
+      height: 100%;
+    }
+  }
+
+
+
+  /* vuetify 공통 */
+  .v-input input,
+  .v-input textarea {
+    @apply bg-white;
+  }
+
+  /* Drawer 스타일 */
+  /* Mobile Drawer 높이를 100vh - 64px로 설정 */
+  .v-navigation-drawer.v-navigation-drawer--right.v-navigation-drawer--temporary {
+    height: calc(100vh - 64px) !important;
+  }
+}
+
+

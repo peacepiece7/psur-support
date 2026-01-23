@@ -1,0 +1,74 @@
+@layer components {
+  /* ===== Atoms: Select ===== */
+
+  /* Select Size Styles */
+  .select-size-xs {
+    width: 120px;
+  }
+
+  .select-size-sm {
+    width: 200px;
+  }
+
+  .select-size-md {
+    width: 280px;
+  }
+
+  .select-size-lg {
+    width: 360px;
+  }
+
+  .select-size-xl {
+    width: 480px;
+  }
+
+  .select-size-max {
+    width: 100%;
+  }
+
+  /* Select Base Styles */
+  .pp-v-select {
+    @apply block rounded-lg border border-grey-300 bg-white text-grey-900 outline-none;
+    @apply appearance-none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    @apply transition-colors duration-200 ease-in-out;
+    /* 고정 height 40px - 선택 전/후 동일하게 유지 */
+    height: 40px !important;
+    min-height: 40px !important;
+    @apply px-4 text-base;
+    @apply flex items-center;
+  }
+
+  /* Select Interactive States */
+  /* Hover state - 마우스 오버 시 */
+  .pp-v-select:hover:not(:disabled) {
+    @apply border-blue-500;
+  }
+
+  /* Focus state - 포커스 시 */
+  .pp-v-select:focus-visible:not(:disabled) {
+    @apply border-blue-600 outline-none;
+    @apply ring-2 ring-blue-600/25;
+  }
+
+  /* Active state - 클릭/활성화 시 */
+  .pp-v-select:active:not(:disabled) {
+    @apply border-blue-600;
+  }
+
+  /* Placeholder 색상 */
+  .pp-v-select option:disabled {
+    @apply text-grey-500;
+  }
+
+  /* Disabled state - 비활성화 시 */
+  .pp-v-select:disabled {
+    @apply cursor-not-allowed border-grey-300 bg-grey-50 text-grey-400 opacity-50;
+  }
+
+  /* Readonly state - 읽기 전용 시 */
+  .pp-v-select--readonly:disabled {
+    @apply cursor-default bg-white text-grey-900 opacity-100;
+  }
+}

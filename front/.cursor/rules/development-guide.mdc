@@ -1,0 +1,380 @@
+---
+alwaysApply: true
+---
+
+==================================================
+PROJECT OVERVIEW
+==================================================
+
+Project Name: nuxt-playground
+Framework: Nuxt 3 (ESM, TypeScript)
+Styling: Tailwind CSS v4 + Vuetify 3
+State Management: Pinia (Composition API)
+Form Validation: vee-validate + yup
+Deployment: Netlify
+Design Source: Figma MCP 연동
+
+This project strictly follows predefined architecture, design system,
+form handling, store conventions, and SSR hydration safety rules.
+Cursor MUST follow all rules below without deviation.
+
+==================================================
+ARCHITECTURE & DIRECTORY RULES
+==================================================
+
+[Components Structure]
+
+- app/components/atoms
+  - Atomic UI components only
+  - Mostly based on Vuetify components
+  - No business logic
+  - No API calls
+  - Props + emits only
+  - Validation-agnostic
+
+- atoms are pure UI
+- higher-level components may compose atoms
+- atoms must never depend on domain logic
+- do not use svuv
+
+==================================================
+DESIGN SYSTEM RULES (MANDATORY)
+==================================================
+
+[Color Palette]
+
+- ALL colors MUST come from:
+  app/assets/main.css
+
+- Do NOT use:
+  - arbitrary hex values
+  - inline styles
+  - Tailwind default palette unless mapped
+
+If a color is not defined in main.css, it MUST NOT be used.
+
+---
+
+[Figma – Single Source of Truth]
+
+Design reference:
+https://www.figma.com/design/FVp81RJF0kuaYvuYLDYZCp/포털-홈페이지_가이드?node-id=83-2809&m=dev
+
+- Spacing, typography, layout, and behavior must follow Figma
+- When uncertain, follow Figma over assumptions
+
+==================================================
+FORM ARCHITECTURE RULES
+==================================================
+
+This project contains many “신청” (application/request) features.
+All forms MUST follow this pattern.
+
+---
+
+[FormField Integration Pattern]
+
+- All validated inputs MUST be wrapped by FormField
+- FormField integrates with vee-validate
+- Atomic inputs NEVER call useField directly
+
+Example:
+
+<FormField name="representativeName" v-model="representativeName">
+  <template #default="{ bind, field }">
+    <TextField
+      :model-value="field.value"
+      v-bind="bind"
+      label="대표자명"
+      placeholder="대표자명을 입력하세요"
+      size="md"
+    />
+  </template>
+</FormField>
+
+---
+
+[Form Responsibilities]
+
+FormField:
+
+- Validation boundary
+- Receives values injected from API DTOs
+- Controls binding and error state
+
+Atomic Input Components:
+
+- Render only
+- Receive props + bindings
+- No validation logic
+- No business logic
+
+---
+
+[DTO → Form Data Flow]
+
+1. API fetch updates response DTO
+2. DTO values are injected into the form
+3. FormField propagates values to inputs
+4. Inputs render state only
+
+Never bypass FormField for validated inputs.
+
+==================================================
+PINIA STORE ARCHITECTURE RULES
+==================================================
+
+All Pinia stores MUST use Composition API
+and follow strict separation of concerns.
+
+---
+
+[Core Principles]
+
+- State stores RESPONSE (res) data only
+- Request DTOs are derived, never stored
+- Getters are PURE
+- Actions are the ONLY mutation gateway
+- UI state and domain state are separated
+- Prefer atoms, molecules, organisms over direct Vuetify usage
+
+---
+
+[State Rules]
+
+- Response state only:
+
+  const pubGuideRes = reactive(\_createInitialRes())
+
+- Do NOT store:
+  - request DTOs
+  - derived values
+  - temporary calculation results
+
+- UI state (step index, open state, etc.) is allowed
+  but must be clearly separated
+
+---
+
+[Getter Rules – PURE ONLY]
+
+Getters MUST:
+
+- Have no side effects
+- Never mutate state
+- Never call actions
+
+DTO conversion pattern (required):
+
+getters.dto.req() → \_toReq(res)
+
+Validation getters:
+
+- hasError()
+- errorList()
+
+These are reference indicators only.
+Real validation belongs to vee-validate / yup.
+
+---
+
+[Action Rules – PUBLIC API ONLY]
+
+All mutations MUST occur via actions.
+
+- Step control must be:
+  - bounded
+  - defensive
+  - centralized
+
+- Fetch actions:
+  - call API
+  - delegate mutations to internal helpers
+
+---
+
+[Patch & Mutation Pattern]
+
+Public actions:
+
+- Accept Partial<T>
+- Delegate mutation to internal helpers
+
+Examples:
+
+- \_applyResPatch
+- \_applyMembersPatch
+- \_applyDetail
+
+Mutation logic must be centralized and predictable.
+
+---
+
+[Initialize / Reset Rules]
+
+Reset MUST:
+
+- restore response state
+- restore UI state (step index, etc.)
+
+Never rely solely on component unmounting.
+
+==================================================
+HYDRATION & SSR SAFETY RULES (MANDATORY)
+==================================================
+
+This project uses Nuxt 3 with SSR enabled.
+Hydration mismatches are CRITICAL ERRORS,
+not ignorable warnings.
+
+Server Rendered HTML MUST match
+Client Initial Render exactly.
+
+---
+
+[Why Hydration Matters]
+
+Hydration mismatches may cause:
+
+- Full component tree re-rendering
+- Increased Time To Interactive (TTI)
+- UI flickering and layout shifts
+- Broken event listeners
+- State desynchronization
+- SEO indexing inconsistencies
+
+Hydration warnings MUST be fixed immediately.
+
+---
+
+[ABSOLUTE RULES]
+
+1. Browser-only APIs are FORBIDDEN during SSR
+
+FORBIDDEN outside client-only context:
+
+- window
+- document
+- localStorage / sessionStorage
+- navigator
+- innerWidth / innerHeight
+- Date() / Math.random() for render output
+
+Use SSR-safe alternatives ONLY:
+
+- useState
+- useCookie
+- useFetch
+- useAsyncData
+
+---
+
+2. Render output MUST be deterministic
+
+FORBIDDEN:
+
+- Math.random() in templates
+- Date-based logic affecting initial render
+- Environment-dependent branching during SSR
+
+State MUST be shared using useState
+to guarantee server/client consistency.
+
+---
+
+3. Conditional rendering MUST be SSR-safe
+
+FORBIDDEN:
+
+- v-if based on window or browser state
+- Client-only conditions in template logic
+
+REQUIRED:
+
+- CSS media queries
+- Tailwind / Vuetify breakpoints
+- Layout-driven responsiveness
+- ClientOnly wrapper only when unavoidable
+
+---
+
+4. Browser-dependent logic MUST run after hydration
+
+FORBIDDEN:
+
+- Side effects in setup()
+- DOM mutation during SSR
+- Third-party libraries initializing before mount
+
+REQUIRED:
+
+- All browser-only logic inside onMounted()
+
+---
+
+5. Time-based and environment-based content
+
+FORBIDDEN:
+
+- Greeting or UI text derived from current time during SSR
+- Time-sensitive render output
+
+ALLOWED:
+
+- <NuxtTime />
+- ClientOnly with fallback
+- Post-mount updates only
+
+---
+
+[Pinia & Hydration]
+
+- Store initial state MUST be identical on server and client
+- Fetch actions MUST be idempotent
+- Browser-derived UI state MUST NOT live in stores
+
+---
+
+[Enforcement]
+
+Cursor MUST:
+
+- Treat hydration warnings as errors
+- Fix mismatches immediately
+- Prefer deterministic SSR over convenience
+- Use ClientOnly as a last resort only
+
+Preferred mindset:
+
+"SSR first. Client enhancement second."
+
+==================================================
+CURSOR BEHAVIOR RULES (ABSOLUTE)
+==================================================
+
+Cursor MUST:
+
+- Follow existing architecture exactly
+- Respect component boundaries
+- Use FormField for all validated inputs
+- Use palette from main.css only
+- Follow Pinia store conventions strictly
+- Follow SSR & hydration safety rules strictly
+
+Cursor MUST NOT:
+
+- Invent new architectural patterns
+- Mutate state inside getters
+- Store request DTOs in state
+- Use colors outside the palette
+- Bypass FormField or Pinia actions
+- Introduce hydration mismatches
+
+Preferred mindset:
+
+"Consistency over cleverness.
+Existing conventions take priority."
+
+==================================================
+END OF RULES
+==================================================

@@ -1,0 +1,34 @@
+@layer utilities {
+  .z-request-action {
+    z-index: var(--z-request-action);
+  }
+
+  .z-request-action-inner {
+    z-index: var(--z-request-action-inner);
+  }
+
+  .z-app-bar {
+    z-index: var(--z-app-bar);
+  }
+
+  .z-drawer {
+    z-index: var(--z-drawer);
+  }
+
+  .z-dialog {
+    z-index: var(--z-dialog);
+  }
+
+  .z-modal {
+    z-index: var(--z-modal);
+  }
+
+  .z-toast {
+    z-index: var(--z-toast);
+  }
+
+  .z-alert {
+    z-index: var(--z-alert);
+  }
+}
+

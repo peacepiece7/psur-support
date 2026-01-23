@@ -1,0 +1,180 @@
+@layer components {
+  /* ===== Atoms: NumberInput ===== */
+
+  /* NumberInput Size Styles */
+  .number-input-size-xs {
+    width: 100%;
+    max-width: 120px;
+  }
+
+  .number-input-size-sm {
+    width: 100%;
+    max-width: 200px;
+  }
+
+  .number-input-size-md {
+    width: 100%;
+    max-width: 280px;
+  }
+
+  .number-input-size-lg {
+    width: 100%;
+    max-width: 360px;
+  }
+
+  .number-input-size-xl {
+    width: 100%;
+    max-width: 480px;
+  }
+
+  .number-input-size-max {
+    width: 100%;
+  }
+
+  /* NumberInput Base Styles - Figma Form -> Input 기준 */
+  /* 전체 높이: 48px - 모든 레벨에서 명시적으로 설정 */
+  .pp-v-number-input {
+    height: 48px !important;
+    color: var(--color-neutral-text-text);
+  }
+
+  .pp-v-number-input .v-input__control {
+    height: 48px !important;
+  }
+
+  .pp-v-number-input :where(.v-field) {
+    min-height: 48px !important;
+    height: 48px !important;
+  }
+
+  /* 배경색: #FFFFFF (readonly가 아닐 때만) */
+  .pp-v-number-input:not(.v-input--readonly) :where(.v-field__field) {
+    background-color: var(--color-static-white);
+    height: 100%;
+  }
+
+  /* 기본 보더 색상: #D0D4D9 (Neutral/Stroke/Stroke-300) */
+  .pp-v-number-input :where(.v-field__outline) {
+    color: var(--color-neutral-stroke-300);
+    border-radius: 8px !important;
+  }
+
+  /* Input 요소 높이 및 패딩: 상하 12px, 좌우 16px */
+  .pp-v-number-input :where(.v-field__input) {
+    height: 100% !important;
+    min-height: 48px !important;
+    padding: 12px 16px;
+    @apply flex items-center;
+  }
+
+  /* input 요소 자체 높이 */
+  .pp-v-number-input input {
+    height: 100% !important;
+    min-height: 48px !important;
+    opacity: 1 !important;
+  }
+
+  /* NumberInput Interactive States */
+  /* Hover state - 마우스 오버 시 (readonly 제외) */
+  .pp-v-number-input:not(.v-input--disabled):not(.v-input--readonly):hover :where(.v-field__outline) {
+    @apply text-blue-500;
+    @apply transition-colors duration-200 ease-in-out;
+  }
+
+  /* Focus state - 포커스 시 (readonly, disabled 제외) */
+  .pp-v-number-input:not(.v-input--readonly):not(.v-input--disabled) :where(.v-field--focused .v-field__outline) {
+    @apply text-blue-600;
+    @apply transition-colors duration-200 ease-in-out;
+  }
+
+  /* Active state - 클릭/활성화 시 (readonly, disabled 제외) */
+  /* .pp-v-number-input:not(.v-input--readonly):not(.v-input--disabled) :where(.v-field--active .v-field__outline) {
+    @apply text-blue-600;
+  } */
+
+  /* outline 색상 항상 보이도록 설정 */
+  .pp-v-number-input .v-field__outline__start,
+  .pp-v-number-input .v-field__outline__end {
+    @apply opacity-100!
+  }
+
+  /* Disabled state - 비활성화 시 */
+  .pp-v-number-input :where(.v-field--disabled .v-field__outline) {
+    color: var(--color-neutral-stroke-300);
+  }
+
+  .pp-v-number-input :where(.v-field--disabled .v-field__input) {
+    @apply cursor-not-allowed;
+    color: var(--color-neutral-text-disabled);
+  }
+
+  /* Disabled 배경색 (readonly와 동일) */
+  .pp-v-number-input :where(.v-field--disabled .v-field__field) {
+    background-color: var(--color-neutral-fill-100);
+  }
+
+  .pp-v-number-input :where(.v-field--disabled input) {
+    background-color: var(--color-neutral-fill-100) !important;
+    color: var(--color-neutral-text-disabled) !important;
+  }
+  .pp-v-number-input .v-field--disabled {
+    opacity: 1 !important;
+  }
+
+  /* Readonly state - 읽기 전용 시 */
+  /* 배경: disabled와 동일, 텍스트 색상: 그대로 유지, border: 그대로 유지 */
+  .pp-v-number-input.v-input--readonly :where(input) {
+    background-color: var(--color-neutral-fill-100) !important;
+  }
+
+  /* Readonly 상태에서 focus되어도 배경색 유지 */
+  .pp-v-number-input.v-input--readonly :where(.v-field--focused .v-field__field),
+  .pp-v-number-input.v-input--readonly :where(.v-field--active .v-field__field) {
+    background-color: var(--color-neutral-fill-100) !important;
+  }
+
+  /* Readonly 상태에서 border 색상 유지 (hover, focus, active 모두 회색으로 유지) */
+  .pp-v-number-input.v-input--readonly :where(.v-field__outline) {
+    color: var(--color-neutral-stroke-300) !important;
+  }
+
+  .pp-v-number-input.v-input--readonly:hover :where(.v-field__outline),
+  .pp-v-number-input.v-input--readonly :where(.v-field--focused .v-field__outline),
+  .pp-v-number-input.v-input--readonly :where(.v-field--active .v-field__outline) {
+    color: var(--color-neutral-stroke-300) !important;
+  }
+
+  .pp-v-number-input.v-input--readonly :where(.v-field__input) {
+    color: var(--color-neutral-text-text);
+    /* 텍스트 색상은 그대로 유지 */
+  }
+
+
+  .pp-v-number-input .v-field__field {
+    border-radius: 8px;
+  }
+  /* prefix 또는 suffix가 있을 때 컨테이너 스타일 - number-input과 affix를 합쳐서 size에 맞춤 */
+  .number-input-with-affix {
+    @apply flex items-center;
+  }
+
+  .number-input-with-affix .pp-v-number-input {
+    flex: 1;
+  }
+
+  /* 외부 prefix/suffix 스타일 */
+  .number-input-prefix,
+  .number-input-suffix {
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+
+  /* v-field__field 내부 요소들 정렬 */
+  .pp-v-number-input .v-field__field {
+    @apply flex items-center;
+  }
+
+  .pp-v-number-input .v-input__details {
+    @apply hidden!;
+  }
+}

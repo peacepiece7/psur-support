@@ -1,0 +1,170 @@
+@layer components {
+  /* ===== Atoms: CheckboxGroup ===== */
+  .selection-group__items {
+    @apply grid gap-2;
+  }
+
+  .selection-group--horizontal .selection-group__items {
+    @apply flex flex-wrap items-center gap-4;
+  }
+
+  .selection-group__items .v-ripple__container,
+  .v-selection-control .v-ripple__container {
+    display: none !important;
+  }  
+  .selection-group__items .v-selection-control__input::before,
+  .v-selection-control .v-selection-control__input::before {
+    content: '';
+    display: none !important;
+  }
+
+  /* 커스텀 ripple 효과: 원형 투명 하얀색 배경이 퍼지는 효과 */
+  .selection-group__items .v-selection-control,
+  .v-selection-control {
+    position: relative;
+    overflow: visible;
+  }
+
+  .selection-group__items .v-selection-control__input::after,
+  .v-selection-control__input::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 100%; /* radio: 원형 */
+    background: rgba(76, 64, 252, 0.2);
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    opacity: 0;
+  }
+
+  /* checkbox: 네모 모양 */
+  .selection-group__items .v-checkbox .v-selection-control__input::after,
+  .v-checkbox .v-selection-control__input::after {
+    border-radius: 10%;
+  }
+
+  .selection-group__items .v-selection-control__input.selection-ripple-active::after,
+  .v-selection-control__input.selection-ripple-active::after {
+    animation: selection-ripple 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  @keyframes selection-ripple {
+    0% {
+      width: 0;
+      height: 0;
+      opacity: 0;
+    }
+    20% {
+      width: 30px;
+      height: 30px;
+      opacity: 1;
+    }
+    100% {
+      width: 30px;
+      height: 30px;
+      opacity: 0;
+    }
+  }
+
+  /* readonly: pointer-events none, tab 이동 불가 */
+  .v-radio-group.selection-group--readonly .v-selection-control,
+  .v-radio-group[readonly] .v-selection-control,
+  .selection-group.selection-group--readonly .v-selection-control,
+  .selection-group[readonly] .v-selection-control {
+    pointer-events: none;
+    cursor: default !important;
+  }
+
+  .v-radio-group.selection-group--readonly .v-selection-control__input,
+  .v-radio-group[readonly] .v-selection-control__input,
+  .selection-group.selection-group--readonly .v-selection-control__input,
+  .selection-group[readonly] .v-selection-control__input {
+    pointer-events: none;
+    cursor: default !important;
+  }
+
+  /* readonly일 때 cursor: default 적용 */
+  .v-radio-group.selection-group--readonly .v-label,
+  .v-radio-group[readonly] .v-label,
+  .selection-group.selection-group--readonly .v-label,
+  .selection-group[readonly] .v-label {
+    cursor: default !important;
+  }
+
+  .v-radio-group.selection-group--readonly .v-selection-control,
+  .v-radio-group[readonly] .v-selection-control,
+  .selection-group.selection-group--readonly .v-selection-control,
+  .selection-group[readonly] .v-selection-control {
+    cursor: default !important;
+  }
+
+
+
+
+
+  /* :focus-within을 사용하여 부모 요소에 포커스 표시 */
+  .v-radio-group .v-selection-control__input:focus-within {
+    outline: 2px solid rgba(76, 64, 252, 0.5);
+    outline-offset: -6px;
+    border-radius: 4px;
+  }
+
+
+  .selection-group .v-selection-control__input:focus-within {
+    outline: 2px solid rgba(76, 64, 252, 0.5);
+    outline-offset: -6px;
+    border-radius: 25% !important;
+  }
+
+  .selection-group .v-selection-control__input .v-icon{
+    opacity: 1 !important;
+  }
+
+  /* details 숨기기 */
+  .v-radio-group .v-input__details,
+  .selection-group .v-input__details {
+    @apply hidden!
+  }
+
+  /* wrapper: 에러 박스를 위한 relative positioning */
+  .selection-group__wrapper {
+    position: relative;
+    color: var(--color-neutral-text-text);
+  }
+
+  /* fieldset 기본 스타일 */
+  .selection-group__fieldset {
+    @apply border-0 p-0 m-0;
+  }
+
+  /* 에러 박스: absolute positioning으로 컨텐츠 위치에 영향 없음 */
+  .selection-group__error-box {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 1px solid rgb(var(--v-theme-error));
+    border-radius: 4px;
+    pointer-events: none;
+  }
+
+  /* fieldset horizontal 스타일 */
+  .selection-group__fieldset--horizontal {
+    @apply flex flex-wrap items-center gap-4;
+  }
+
+  /* fieldset readonly 스타일 */
+  .selection-group__fieldset--readonly {
+    @apply opacity-60;
+  }
+
+  /* fieldset disabled 스타일 */
+  .selection-group__fieldset:disabled {
+    @apply opacity-60 cursor-not-allowed;
+  }
+
+}

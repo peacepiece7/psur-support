@@ -1,0 +1,679 @@
+@layer components {
+  /* ===== Atoms: Button ===== */
+  /* Vuetify v-btn 기본 스타일 오버라이드 */
+  .v-btn.pp-btn {
+    @apply inline-block! cursor-pointer items-center justify-center gap-2 bg-transparent leading-[1.6] font-semibold whitespace-nowrap select-none shadow-none!;
+  }
+
+  .v-btn.v-btn--size-default{
+    padding: auto;
+    min-width: auto !important;
+  }
+
+  .v-btn .v-btn__overlay {
+    display: none;
+  }
+
+  .v-btn.pp-btn.button-shape-square {
+    @apply rounded-none;
+    border-radius: 0 !important;
+  }
+
+  .v-btn.pp-btn.button-shape-soft {
+    border-radius: 4px !important;
+  }
+
+  .v-btn.pp-btn.button-shape-rounded {
+    border-radius: 8px !important;
+  }
+
+  .v-btn.pp-btn.button-shape-circle {
+    @apply rounded-full;
+    border-radius: 9999px !important;
+    aspect-ratio: 1 / 1;
+  }
+
+  .v-btn.pp-btn.button-size-xs {
+    height: 32px !important;
+    min-height: 32px;
+    @apply text-xs;
+  }
+  .v-btn.pp-btn.button-size-sm {
+    height: 40px !important;
+    min-height: 40px ;
+    @apply text-sm;
+  }
+  .v-btn.pp-btn.button-size-md {
+    height: 48px !important;
+    min-height: 48px ;
+    @apply text-base;
+  }
+  .v-btn.pp-btn.button-size-lg {
+    height: 56px !important;
+    min-height: 56px ;
+    @apply text-lg;
+  }
+  .v-btn.pp-btn.button-size-xl {
+    height: 64px !important;
+    min-height: 64px ;
+    @apply text-xl;
+  }
+  .v-btn.pp-btn.button-size-icon {
+    height: 24px !important;
+    min-height: 24px;
+    min-width: auto;
+    padding: 0;
+  }
+
+
+
+  .pp-btn .vuetify-ripple-effect {
+    color: rgba(255,255,255,0.3) !important;
+  }
+
+  /* ===== Fill Variant (기본값) ===== */
+  .v-btn.pp-btn.button-variant-fill.button-color-primary {
+    background: var(--color-primary-900) !important;
+    border-color: var(--color-primary-900) !important;
+    color: #ffffff !important;
+  }
+  .v-btn.pp-btn.button-variant-fill.button-color-primary:hover:not(:disabled) {
+    background: color-mix(
+      in srgb,
+      var(--color-grey-900) 40%,
+      var(--color-primary-900)
+    ) !important;
+    border-color: color-mix(
+      in srgb,
+      var(--color-grey-900) 40%,
+      var(--color-primary-900)
+    ) !important;
+  }
+  .v-btn.pp-btn.button-variant-fill.button-color-primary:focus-visible:not(
+      :disabled
+    ) {
+    background: color-mix(
+      in srgb,
+      var(--color-grey-900) 40%,
+      var(--color-primary-900)
+    ) !important;
+    border-color: color-mix(
+      in srgb,
+      var(--color-grey-900) 40%,
+      var(--color-primary-900)
+    ) !important;
+  }
+  .v-btn.pp-btn.button-variant-fill.button-color-primary:active:not(:disabled) {
+    background: color-mix(
+      in srgb,
+      var(--color-grey-900) 40%,
+      var(--color-primary-900)
+    ) !important;
+    border-color: color-mix(
+      in srgb,
+      var(--color-grey-900) 40%,
+      var(--color-primary-900)
+    ) !important;
+  }
+
+  .v-btn.pp-btn.button-variant-fill.button-color-secondary {
+    background: color-mix(
+      in srgb,
+      var(--color-grey-900) 40%,
+      var(--color-grey-600)
+    ) !important;
+    border-color: color-mix(
+      in srgb,
+      var(--color-grey-900) 40%,
+      var(--color-grey-600)
+    ) !important;
+    color: #ffffff !important;
+  }
+  .v-btn.pp-btn.button-variant-fill.button-color-secondary:hover:not(
+      :disabled
+    ) {
+    background: color-mix(
+      in srgb,
+      var(--color-grey-900) 40%,
+      var(--color-grey-600)
+    ) !important;
+    border-color: color-mix(
+      in srgb,
+      var(--color-grey-900) 40%,
+      var(--color-grey-600)
+    ) !important;
+  }
+  .v-btn.pp-btn.button-variant-fill.button-color-secondary:focus-visible:not(
+      :disabled
+    ) {
+    background: color-mix(
+      in srgb,
+      var(--color-grey-900) 40%,
+      var(--color-grey-600)
+    ) !important;
+    border-color: color-mix(
+      in srgb,
+      var(--color-grey-900) 40%,
+      var(--color-grey-600)
+    ) !important;
+  }
+  .v-btn.pp-btn.button-variant-fill.button-color-secondary:active:not(
+      :disabled
+    ) {
+    background: color-mix(
+      in srgb,
+      var(--color-grey-900) 40%,
+      var(--color-grey-600)
+    ) !important;
+    border-color: color-mix(
+      in srgb,
+      var(--color-grey-900) 40%,
+      var(--color-grey-600)
+    ) !important;
+  }
+
+  .v-btn.pp-btn.button-variant-fill.button-color-tertiary {
+    background: color-mix(
+      in srgb,
+      var(--color-grey-900) 5%,
+      var(--color-primary-200)
+    ) !important;
+    border-color: color-mix(
+      in srgb,
+      var(--color-grey-900) 5%,
+      var(--color-primary-200)
+    ) !important;
+    color: var(--color-primary-700) !important;
+  }
+  .v-btn.pp-btn.button-variant-fill.button-color-tertiary:hover:not(:disabled) {
+    background: color-mix(
+      in srgb,
+      var(--color-grey-900) 5%,
+      var(--color-primary-200)
+    ) !important;
+    border-color: color-mix(
+      in srgb,
+      var(--color-grey-900) 5%,
+      var(--color-primary-200)
+    ) !important;
+  }
+  .v-btn.pp-btn.button-variant-fill.button-color-tertiary:focus-visible:not(
+      :disabled
+    ) {
+    background: color-mix(
+      in srgb,
+      var(--color-grey-900) 5%,
+      var(--color-primary-200)
+    ) !important;
+    border-color: color-mix(
+      in srgb,
+      var(--color-grey-900) 5%,
+      var(--color-primary-200)
+    ) !important;
+  }
+  .v-btn.pp-btn.button-variant-fill.button-color-tertiary:active:not(
+      :disabled
+    ) {
+    background: color-mix(
+      in srgb,
+      var(--color-grey-900) 5%,
+      var(--color-primary-200)
+    ) !important;
+    border-color: color-mix(
+      in srgb,
+      var(--color-grey-900) 5%,
+      var(--color-primary-200)
+    ) !important;
+  }
+
+  .v-btn.pp-btn.button-variant-fill.button-color-warning {
+    @apply border-orange-500 bg-orange-500 text-white;
+    background-color: var(--color-orange-500) !important;
+    border-color: var(--color-orange-500) !important;
+    color: var(--color-static-white) !important;
+  }
+  .v-btn.pp-btn.button-variant-fill.button-color-warning:hover:not(:disabled) {
+    @apply border-orange-600 bg-orange-600;
+    background-color: var(--color-orange-600) !important;
+    border-color: var(--color-orange-600) !important;
+  }
+  .v-btn.pp-btn.button-variant-fill.button-color-warning:focus-visible:not(
+      :disabled
+    ) {
+    @apply border-orange-600 bg-orange-600;
+    background-color: var(--color-orange-600) !important;
+    border-color: var(--color-orange-600) !important;
+  }
+  .v-btn.pp-btn.button-variant-fill.button-color-warning:active:not(:disabled) {
+    @apply border-orange-700 bg-orange-700;
+    background-color: var(--color-orange-700) !important;
+    border-color: var(--color-orange-700) !important;
+  }
+
+  .v-btn.pp-btn.button-variant-fill.button-color-surface-strong {
+    @apply border-black bg-black text-white;
+    background-color: var(--color-static-black) !important;
+    border-color: var(--color-static-black) !important;
+    color: var(--color-static-white) !important;
+  }
+  .v-btn.pp-btn.button-variant-fill.button-color-surface-strong:hover:not(
+      :disabled
+    ) {
+    @apply border-grey-900 bg-grey-900;
+    background-color: var(--color-grey-900) !important;
+    border-color: var(--color-grey-900) !important;
+  }
+  .v-btn.pp-btn.button-variant-fill.button-color-surface-strong:focus-visible:not(
+      :disabled
+    ) {
+    @apply border-grey-900 bg-grey-900;
+    background-color: var(--color-grey-900) !important;
+    border-color: var(--color-grey-900) !important;
+  }
+  .v-btn.pp-btn.button-variant-fill.button-color-surface-strong:active:not(
+      :disabled
+    ) {
+    @apply border-grey-900 bg-grey-900;
+    background-color: var(--color-grey-900) !important;
+    border-color: var(--color-grey-900) !important;
+  }
+
+  .v-btn.pp-btn.button-variant-fill.button-color-surface {
+    @apply border-grey-800 bg-grey-800 text-white;
+    background-color: var(--color-grey-800) !important;
+    border-color: var(--color-grey-800) !important;
+    color: var(--color-static-white) !important;
+  }
+  .v-btn.pp-btn.button-variant-fill.button-color-surface:hover:not(:disabled) {
+    @apply border-grey-900 bg-grey-900;
+    background-color: var(--color-grey-900) !important;
+    border-color: var(--color-grey-900) !important;
+  }
+  .v-btn.pp-btn.button-variant-fill.button-color-surface:focus-visible:not(
+      :disabled
+    ) {
+    @apply border-grey-900 bg-grey-900;
+    background-color: var(--color-grey-900) !important;
+    border-color: var(--color-grey-900) !important;
+  }
+  .v-btn.pp-btn.button-variant-fill.button-color-surface:active:not(:disabled) {
+    @apply border-grey-900 bg-grey-900;
+    background-color: var(--color-grey-900) !important;
+    border-color: var(--color-grey-900) !important;
+  }
+
+  .v-btn.pp-btn.button-variant-fill.button-color-success {
+    @apply border-green-500 bg-green-500 text-white;
+    background-color: var(--color-green-500) !important;
+    border-color: var(--color-green-500) !important;
+    color: var(--color-static-white) !important;
+  }
+  .v-btn.pp-btn.button-variant-fill.button-color-success:hover:not(:disabled) {
+    @apply border-green-600 bg-green-600;
+    background-color: var(--color-green-600) !important;
+    border-color: var(--color-green-600) !important;
+  }
+  .v-btn.pp-btn.button-variant-fill.button-color-success:focus-visible:not(
+      :disabled
+    ) {
+    @apply border-green-600 bg-green-600;
+    background-color: var(--color-green-600) !important;
+    border-color: var(--color-green-600) !important;
+  }
+  .v-btn.pp-btn.button-variant-fill.button-color-success:active:not(:disabled) {
+    @apply border-green-700 bg-green-700;
+    background-color: var(--color-green-700) !important;
+    border-color: var(--color-green-700) !important;
+  }
+
+  .v-btn.pp-btn.button-variant-fill.button-color-muted {
+    @apply border-grey-400 bg-grey-400 text-white;
+    background-color: var(--color-grey-400) !important;
+    border-color: var(--color-grey-400) !important;
+    color: var(--color-static-white) !important;
+  }
+  .v-btn.pp-btn.button-variant-fill.button-color-muted:hover:not(:disabled) {
+    @apply border-grey-500 bg-grey-500;
+    background-color: var(--color-grey-500) !important;
+    border-color: var(--color-grey-500) !important;
+  }
+  .v-btn.pp-btn.button-variant-fill.button-color-muted:focus-visible:not(
+      :disabled
+    ) {
+    @apply border-grey-500 bg-grey-500;
+    background-color: var(--color-grey-500) !important;
+    border-color: var(--color-grey-500) !important;
+  }
+  .v-btn.pp-btn.button-variant-fill.button-color-muted:active:not(:disabled) {
+    @apply border-grey-600 bg-grey-600;
+    background-color: var(--color-grey-600) !important;
+    border-color: var(--color-grey-600) !important;
+  }
+
+  .v-btn.pp-btn.button-variant-fill.button-color-inverse {
+    @apply text-grey-900 border-white bg-white;
+    background-color: var(--color-static-white) !important;
+    border-color: var(--color-static-white) !important;
+    color: var(--color-grey-900) !important;
+  }
+  .v-btn.pp-btn.button-variant-fill.button-color-inverse:hover:not(:disabled) {
+    @apply border-grey-300 bg-grey-300;
+    background-color: var(--color-grey-300) !important;
+    border-color: var(--color-grey-300) !important;
+  }
+  .v-btn.pp-btn.button-variant-fill.button-color-inverse:focus-visible:not(
+      :disabled
+    ) {
+    @apply border-grey-300 bg-grey-300;
+    background-color: var(--color-grey-300) !important;
+    border-color: var(--color-grey-300) !important;
+  }
+  .v-btn.pp-btn.button-variant-fill.button-color-inverse:active:not(:disabled) {
+    @apply border-grey-400 bg-grey-400;
+    background-color: var(--color-grey-400) !important;
+    border-color: var(--color-grey-400) !important;
+  }
+
+  /* ===== Outlined Variant ===== */
+  .v-btn.pp-btn.button-variant-outlined.button-color-primary {
+    border-color: var(--color-primary-900) !important;
+    border-width: 1px !important;
+    color: var(--color-primary-900) !important;
+  }
+  .v-btn.pp-btn.button-variant-outlined.button-color-primary:hover:not(
+      :disabled
+    ) {
+    background-color: var(--color-grey-50) !important;
+    border-color: var(--color-grey-900) !important;
+    border-width: 1px !important;
+    color: var(--color-primary-900) !important;
+  }
+  .v-btn.pp-btn.button-variant-outlined.button-color-primary:focus-visible:not(
+      :disabled
+    ) {
+    background-color: var(--color-grey-50) !important;
+    border-color: var(--color-grey-900) !important;
+    border-width: 1px !important;
+    color: var(--color-primary-900) !important;
+  }
+  .v-btn.pp-btn.button-variant-outlined.button-color-primary:active:not(
+      :disabled
+    ) {
+    background-color: var(--color-grey-100) !important;
+    border-color: var(--color-grey-900) !important;
+    border-width: 1px !important;
+    color: var(--color-primary-900) !important;
+  }
+
+  .v-btn.pp-btn.button-variant-outlined.button-color-secondary {
+    background: transparent !important;
+    border-color: color-mix(
+      in srgb,
+      var(--color-grey-900) 40%,
+      var(--color-grey-600)
+    ) !important;
+    color: color-mix(
+      in srgb,
+      var(--color-grey-900) 40%,
+      var(--color-grey-600)
+    ) !important;
+  }
+  .v-btn.pp-btn.button-variant-outlined.button-color-secondary:hover:not(
+      :disabled
+    ) {
+    background-color: var(--color-grey-50) !important;
+    border-color: var(--color-grey-900) !important;
+    color: color-mix(
+      in srgb,
+      var(--color-grey-900) 40%,
+      var(--color-grey-600)
+    ) !important;
+  }
+  .v-btn.pp-btn.button-variant-outlined.button-color-secondary:focus-visible:not(
+      :disabled
+    ) {
+    background-color: var(--color-grey-50) !important;
+    border-color: var(--color-grey-900) !important;
+    color: color-mix(
+      in srgb,
+      var(--color-grey-900) 40%,
+      var(--color-grey-600)
+    ) !important;
+  }
+  .v-btn.pp-btn.button-variant-outlined.button-color-secondary:active:not(
+      :disabled
+    ) {
+    background-color: var(--color-grey-100) !important;
+    border-color: var(--color-grey-900) !important;
+    color: color-mix(
+      in srgb,
+      var(--color-grey-900) 40%,
+      var(--color-grey-600)
+    ) !important;
+  }
+
+  .v-btn.pp-btn.button-variant-outlined.button-color-tertiary {
+    background: transparent !important;
+    border-color: color-mix(
+      in srgb,
+      var(--color-grey-900) 5%,
+      var(--color-primary-200)
+    ) !important;
+    border-width: 1px !important;
+    color: var(--color-primary-700) !important;
+  }
+  .v-btn.pp-btn.button-variant-outlined.button-color-tertiary:hover:not(
+      :disabled
+    ) {
+    background-color: var(--color-grey-50) !important;
+    border-color: var(--color-grey-900) !important;
+    border-width: 1px !important;
+    color: var(--color-primary-700) !important;
+  }
+  .v-btn.pp-btn.button-variant-outlined.button-color-tertiary:focus-visible:not(
+      :disabled
+    ) {
+    background-color: var(--color-grey-50) !important;
+    border-color: var(--color-grey-900) !important;
+    border-width: 1px !important;
+    color: var(--color-primary-700) !important;
+  }
+  .v-btn.pp-btn.button-variant-outlined.button-color-tertiary:active:not(
+      :disabled
+    ) {
+    background-color: var(--color-grey-100) !important;
+    border-color: var(--color-grey-900) !important;
+    border-width: 1px !important;
+    color: var(--color-primary-700) !important;
+  }
+
+  .v-btn.pp-btn.button-variant-outlined.button-color-warning {
+    @apply border-orange-500 bg-transparent text-orange-500;
+    background-color: transparent !important;
+    border-color: var(--color-orange-500) !important;
+    border-width: 1px !important;
+    color: var(--color-orange-500) !important;
+  }
+  .v-btn.pp-btn.button-variant-outlined.button-color-warning:hover:not(
+      :disabled
+    ) {
+    background-color: var(--color-grey-50) !important;
+    border-color: var(--color-grey-900) !important;
+    border-width: 1px !important;
+    color: var(--color-orange-500) !important;
+  }
+  .v-btn.pp-btn.button-variant-outlined.button-color-warning:focus-visible:not(
+      :disabled
+    ) {
+    background-color: var(--color-grey-50) !important;
+    border-color: var(--color-grey-900) !important;
+    border-width: 1px !important;
+    color: var(--color-orange-500) !important;
+  }
+  .v-btn.pp-btn.button-variant-outlined.button-color-warning:active:not(
+      :disabled
+    ) {
+    background-color: var(--color-grey-100) !important;
+    border-color: var(--color-grey-900) !important;
+    border-width: 1px !important;
+    color: var(--color-orange-500) !important;
+  }
+  .v-btn.pp-btn.button-variant-outlined.button-color-surface-strong {
+    @apply border-black bg-transparent text-black;
+    background-color: transparent !important;
+    border-color: var(--color-static-black) !important;
+    border-width: 1px !important;
+    color: var(--color-static-black) !important;
+  }
+  .v-btn.pp-btn.button-variant-outlined.button-color-surface-strong:hover:not(
+      :disabled
+    ) {
+    @apply border-grey-900 bg-grey-50 text-grey-900;
+    background-color: var(--color-grey-50) !important;
+    border-color: var(--color-grey-900) !important;
+    border-width: 1px !important;
+    color: var(--color-grey-900) !important;
+  }
+  .v-btn.pp-btn.button-variant-outlined.button-color-surface-strong:focus-visible:not(
+      :disabled
+    ) {
+    @apply border-grey-900 bg-grey-50 text-grey-900;
+    background-color: var(--color-grey-50) !important;
+    border-color: var(--color-grey-900) !important;
+    border-width: 1px !important;
+    color: var(--color-grey-900) !important;
+  }
+  .v-btn.pp-btn.button-variant-outlined.button-color-surface-strong:active:not(
+      :disabled
+    ) {
+    @apply border-grey-900 bg-grey-100 text-grey-900;
+    background-color: var(--color-grey-100) !important;
+    border-color: var(--color-grey-900) !important;
+    border-width: 1px !important;
+    color: var(--color-grey-900) !important;
+  }
+
+  .v-btn.pp-btn.button-variant-outlined.button-color-surface {
+    @apply border-grey-800 text-grey-800 bg-transparent;
+    background-color: transparent !important;
+    border-color: var(--color-grey-800) !important;
+    border-width: 1px !important;
+    color: var(--color-grey-800) !important;
+  }
+  .v-btn.pp-btn.button-variant-outlined.button-color-surface:hover:not(
+      :disabled
+    ) {
+    background-color: var(--color-grey-50) !important;
+    border-color: var(--color-grey-900) !important;
+    border-width: 1px !important;
+    color: var(--color-grey-800) !important;
+  }
+  .v-btn.pp-btn.button-variant-outlined.button-color-surface:focus-visible:not(
+      :disabled
+    ) {
+    background-color: var(--color-grey-50) !important;
+    border-color: var(--color-grey-900) !important;
+    border-width: 1px !important;
+    color: var(--color-grey-800) !important;
+  }
+  .v-btn.pp-btn.button-variant-outlined.button-color-surface:active:not(
+      :disabled
+    ) {
+    background-color: var(--color-grey-100) !important;
+    border-color: var(--color-grey-900) !important;
+    color: var(--color-grey-800) !important;
+  }
+  .v-btn.pp-btn.button-variant-outlined.button-color-success {
+    @apply border-green-500 bg-transparent text-green-500;
+    background-color: transparent !important;
+    border-color: var(--color-green-500) !important;
+    border-width: 1px !important;
+    color: var(--color-green-500) !important;
+  }
+  .v-btn.pp-btn.button-variant-outlined.button-color-success:hover:not(
+      :disabled
+    ) {
+    background-color: var(--color-grey-50) !important;
+    border-color: var(--color-grey-900) !important;
+    border-width: 1px !important;
+    color: var(--color-green-500) !important;
+  }
+  .v-btn.pp-btn.button-variant-outlined.button-color-success:focus-visible:not(
+      :disabled
+    ) {
+    background-color: var(--color-grey-50) !important;
+    border-color: var(--color-grey-900) !important;
+    border-width: 1px !important;
+    color: var(--color-green-500) !important;
+  }
+  .v-btn.pp-btn.button-variant-outlined.button-color-success:active:not(
+      :disabled
+    ) {
+    background-color: var(--color-grey-100) !important;
+    border-color: var(--color-grey-900) !important;
+    color: var(--color-green-500) !important;
+  }
+  .v-btn.pp-btn.button-variant-outlined.button-color-muted {
+    @apply border-grey-400 text-grey-400 bg-transparent;
+    background-color: transparent !important;
+    border-color: var(--color-grey-400) !important;
+    border-width: 1px !important;
+    color: var(--color-grey-400) !important;
+  }
+  .v-btn.pp-btn.button-variant-outlined.button-color-muted:hover:not(
+      :disabled
+    ) {
+    background-color: var(--color-grey-50) !important;
+    border-color: var(--color-grey-900) !important;
+    border-width: 1px !important;
+    color: var(--color-grey-400) !important;
+  }
+  .v-btn.pp-btn.button-variant-outlined.button-color-muted:focus-visible:not(
+      :disabled
+    ) {
+    background-color: var(--color-grey-50) !important;
+    border-color: var(--color-grey-900) !important;
+    border-width: 1px !important;
+    color: var(--color-grey-400) !important;
+  }
+  .v-btn.pp-btn.button-variant-outlined.button-color-muted:active:not(
+      :disabled
+    ) {
+    background-color: var(--color-grey-100) !important;
+    border-color: var(--color-grey-900) !important;
+    color: var(--color-grey-400) !important;
+  }
+
+  /* ------ */
+  .v-btn.pp-btn.button-variant-outlined.button-color-inverse {
+    @apply text-grey-900 border-white bg-white;
+    background-color: var(--color-static-white) !important;
+    border-color: var(--color-static-white) !important;
+    border-width: 1px !important;
+    color: var(--color-grey-900) !important;
+  }
+  .v-btn.pp-btn.button-variant-outlined.button-color-inverse:hover:not(
+      :disabled
+    ) {
+    background-color: var(--color-grey-50) !important;
+    border-color: var(--color-grey-900) !important;
+    border-width: 1px !important;
+    color: var(--color-grey-900) !important;
+  }
+  .v-btn.pp-btn.button-variant-outlined.button-color-inverse:focus-visible:not(
+      :disabled
+    ) {
+    background-color: var(--color-grey-50) !important;
+    border-color: var(--color-grey-900) !important;
+    border-width: 1px !important;
+    color: var(--color-grey-900) !important;
+  }
+  .v-btn.pp-btn.button-variant-outlined.button-color-inverse:active:not(
+      :disabled
+    ) {
+    background-color: var(--color-grey-100) !important;
+    border-color: var(--color-grey-900) !important;
+    border-width: 1px !important;
+    color: var(--color-grey-900) !important;
+  }
+}
