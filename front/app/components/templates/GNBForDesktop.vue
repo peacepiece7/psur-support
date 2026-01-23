@@ -66,7 +66,7 @@
   const userName = computed(() => authStore.user?.name || '')
 
   const goToMyPage = () => {
-    navigateTo('/mypage')
+    navigateTo('/me')
   }
 
   // 로그인 다이얼로그 상태
@@ -114,9 +114,6 @@
             class="flex cursor-pointer items-center no-underline transition-opacity duration-200 ease-in hover:opacity-80"
           >
             <v-icon class="shrink-0 text-white" size="40">mdi-trophy</v-icon>
-            <span class="hidden text-xl font-bold text-white md:flex">
-              스포츠클럽포털
-            </span>
           </NuxtLink>
 
           <!-- 메뉴 버튼들 -->

@@ -2,6 +2,7 @@ package com.service.demo.domain.commoncode.controller;
 
 import com.service.demo.common.api.ApiResponse;
 import com.service.demo.domain.commoncode.dto.CommonCodeGroupResponse;
+import com.service.demo.domain.commoncode.dto.CommonCodeGroupSummaryResponse;
 import com.service.demo.domain.commoncode.service.CommonCodeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -11,6 +12,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @Tag(name = "Common Codes", description = "Common code group and code lookup")
 @SecurityRequirement(name = "sessionAuth")
@@ -29,5 +32,11 @@ public class CommonCodeController {
     public ApiResponse<CommonCodeGroupResponse> getTree(
             @Parameter(description = "Root group code", example = "REGION") @PathVariable String groupCode) {
         return ApiResponse.ok(commonCodeService.getGroupTree(groupCode));
+    }
+
+    @Operation(summary = "List common code groups", description = "Returns all active common code groups for lookup.")
+    @GetMapping("/groups")
+    public ApiResponse<List<CommonCodeGroupSummaryResponse>> listGroups() {
+        return ApiResponse.ok(commonCodeService.listGroups());
     }
 }

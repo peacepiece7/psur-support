@@ -35,44 +35,55 @@
         { title: 'organisms', to: '/pub/organisms' },
       ],
     },
-    {
-      title: '스포츠클럽 정보',
-      to: '/info',
-      children: [
-        { title: '등록 스포츠클럽', to: '/info/registered-sports-club' },
-      ],
-    },
+    // {
+    //   title: '스포츠클럽 정보',
+    //   to: '/info',
+    //   children: [
+    //     { title: '등록 스포츠클럽', to: '/info/registered-sports-club' },
+    //   ],
+    // },
 
-    {
-      title: '스포츠클럽 커뮤니티',
-      to: '/community',
-      children: [{ title: '게시판', to: '/community/board' }],
-    },
+    // {
+    //   title: '스포츠클럽 커뮤니티',
+    //   to: '/community',
+    //   children: [{ title: '게시판', to: '/community/board' }],
+    // },
   ]
+
+  // 로그인 시 마이페이지 메뉴 추가
+  const myPageMenuItem: MenuItem = {
+    title: '마이페이지',
+    to: '/me',
+  }
 
   const menuItems = computed<MenuItem[]>(() => {
     const items: MenuItem[] = [...baseMenuItems]
 
+    // 로그인 시 마이페이지 메뉴 추가
     if (isLoggedIn.value) {
-      // "스포츠클럽 정보" 뒤에 "신청" 메뉴 삽입
-      const insertIndex = items.findIndex((i) => i.to === '/info')
-      const applyMenu: MenuItem = {
-        title: '스포츠클럽 신청',
-        to: '/apply',
-        children: [
-          {
-            title: '등록 스포츠클럽 신청',
-            to: '/apply/registered-sports-club',
-          },
-        ],
-      }
-
-      if (insertIndex >= 0) {
-        items.splice(insertIndex + 1, 0, applyMenu)
-      } else {
-        items.push(applyMenu)
-      }
+      items.push(myPageMenuItem)
     }
+
+    // if (isLoggedIn.value) {
+    //   // "스포츠클럽 정보" 뒤에 "신청" 메뉴 삽입
+    //   const insertIndex = items.findIndex((i) => i.to === '/info')
+    //   const applyMenu: MenuItem = {
+    //     title: '스포츠클럽 신청',
+    //     to: '/apply',
+    //     children: [
+    //       {
+    //         title: '등록 스포츠클럽 신청',
+    //         to: '/apply/registered-sports-club',
+    //       },
+    //     ],
+    //   }
+
+    //   if (insertIndex >= 0) {
+    //     items.splice(insertIndex + 1, 0, applyMenu)
+    //   } else {
+    //     items.push(applyMenu)
+    //   }
+    // }
 
     return items
   })

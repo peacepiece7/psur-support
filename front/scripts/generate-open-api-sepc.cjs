@@ -24,6 +24,9 @@ async function main() {
     await generate(group)
   }
 
+  // models를 app/types/models로 복사
+  await copyModelsToAppTypes()
+
   console.log('✅ OpenAPI generation completed')
 }
 

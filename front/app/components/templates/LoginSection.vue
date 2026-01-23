@@ -167,6 +167,7 @@
   }
 
   const handleSignup = () => {
+    emit('login-success')
     navigateTo('/sign-up')
   }
 

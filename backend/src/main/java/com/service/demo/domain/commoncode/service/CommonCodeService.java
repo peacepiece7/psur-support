@@ -3,6 +3,7 @@ package com.service.demo.domain.commoncode.service;
 import com.service.demo.common.error.ErrorCode;
 import com.service.demo.common.exception.ApiException;
 import com.service.demo.domain.commoncode.dto.CommonCodeGroupResponse;
+import com.service.demo.domain.commoncode.dto.CommonCodeGroupSummaryResponse;
 import com.service.demo.domain.commoncode.dto.CommonCodeResponse;
 import com.service.demo.domain.commoncode.entity.CommonCodeEntity;
 import com.service.demo.domain.commoncode.entity.CommonCodeGroupEntity;
@@ -85,5 +86,22 @@ public class CommonCodeService {
         }
 
         return nodeMap.get(root.getId());
+    }
+
+    public List<CommonCodeGroupSummaryResponse> listGroups() {
+        List<CommonCodeGroupEntity> groups = commonCodeMapper.findAllGroups();
+        List<CommonCodeGroupSummaryResponse> result = new ArrayList<>();
+        for (CommonCodeGroupEntity g : groups) {
+            result.add(new CommonCodeGroupSummaryResponse(
+                    g.getId(),
+                    g.getGroupCode(),
+                    g.getGroupName(),
+                    g.getParentGroupId(),
+                    g.getLevel(),
+                    g.getSortOrder(),
+                    g.getDescription()
+            ));
+        }
+        return result;
     }
 }

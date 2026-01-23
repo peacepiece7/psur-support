@@ -30,6 +30,13 @@
       AND deleted_at IS NULL
   </select>
 
+  <select id="findAllGroups" resultMap="CommonCodeGroupMap">
+    SELECT * FROM common_code_group
+    WHERE is_active = 1
+      AND deleted_at IS NULL
+    ORDER BY level, sort_order, id
+  </select>
+
   <select id="findGroupsByParentId" resultMap="CommonCodeGroupMap">
     SELECT * FROM common_code_group
     WHERE parent_group_id = #{parentId}

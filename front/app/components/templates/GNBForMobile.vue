@@ -62,7 +62,7 @@
   const userName = computed(() => authStore.user?.name || '')
 
   const goToMyPage = () => {
-    navigateTo('/mypage')
+    navigateTo('/me')
     closeDrawer()
   }
 
