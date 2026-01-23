@@ -101,6 +101,52 @@ async function postProcess(dir) {
   }
 }
 
+/** 4️⃣ models를 app/types/models로 복사 */
+async function copyModelsToAppTypes() {
+  const sourceDir = path.join(OUTPUT_ROOT, 'default', 'models')
+  const targetDir = path.resolve(ROOT_DIR, 'app', 'types', 'models')
+
+  console.log('\n📋 copy models to app/types/models')
+
+  // 소스 디렉토리 확인
+  try {
+    await fs.access(sourceDir)
+  } catch {
+    console.warn('⚠️ models directory not found, skipping copy')
+    return
+  }
+
+  // 타겟 디렉토리 생성
+  await fs.mkdir(targetDir, { recursive: true })
+
+  // 기존 파일 목록 읽기
+  const existingFiles = await fs.readdir(targetDir)
+  const sourceFiles = await fs.readdir(sourceDir)
+
+  // 기존 파일 중 소스에 없는 파일 삭제
+  for (const file of existingFiles) {
+    if (!sourceFiles.includes(file)) {
+      const filePath = path.join(targetDir, file)
+      await fs.unlink(filePath)
+      console.log(`  🗑️  deleted: ${file}`)
+    }
+  }
+
+  // 소스 파일들을 타겟으로 복사
+  for (const file of sourceFiles) {
+    if (!file.endsWith('.ts')) continue
+
+    const sourcePath = path.join(sourceDir, file)
+    const targetPath = path.join(targetDir, file)
+
+    const content = await fs.readFile(sourcePath, 'utf-8')
+    await fs.writeFile(targetPath, content, 'utf-8')
+    console.log(`  ✅ copied: ${file}`)
+  }
+
+  console.log('✅ models copy completed')
+}
+
 main().catch((err) => {
   console.error(err)
   process.exit(1)
