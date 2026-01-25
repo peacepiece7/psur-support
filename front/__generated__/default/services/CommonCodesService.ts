@@ -4,6 +4,7 @@
 /* eslint-disable */
 import type { ApiResponseCommonCodeGroupListResponse } from '../models/ApiResponseCommonCodeGroupListResponse';
 import type { ApiResponseCommonCodeGroupResponse } from '../models/ApiResponseCommonCodeGroupResponse';
+import type { ApiResponseListCommonCodeGroupSummaryResponse } from '../models/ApiResponseListCommonCodeGroupSummaryResponse';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
@@ -94,6 +95,18 @@ export class CommonCodesService {
                 'offset': offset,
                 'limit': limit,
             },
+        });
+    }
+    /**
+     * List root common code groups
+     * Returns top-level common code groups.
+     * @returns ApiResponseListCommonCodeGroupSummaryResponse OK
+     * @throws ApiError
+     */
+    public static listRootGroups(): CancelablePromise<ApiResponseListCommonCodeGroupSummaryResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/common-codes/groups/root',
         });
     }
 }

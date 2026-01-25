@@ -9,6 +9,7 @@ export type { OpenAPIConfig } from './core/OpenAPI';
 
 export type { ApiResponseCommonCodeGroupListResponse } from './models/ApiResponseCommonCodeGroupListResponse';
 export type { ApiResponseCommonCodeGroupResponse } from './models/ApiResponseCommonCodeGroupResponse';
+export type { ApiResponseListCommonCodeGroupSummaryResponse } from './models/ApiResponseListCommonCodeGroupSummaryResponse';
 export type { ApiResponseListSportsClubListResponse } from './models/ApiResponseListSportsClubListResponse';
 export type { ApiResponseLoginResponse } from './models/ApiResponseLoginResponse';
 export type { ApiResponseSportsClubResponse } from './models/ApiResponseSportsClubResponse';
@@ -31,6 +32,7 @@ export type { UserResponse } from './models/UserResponse';
 
 export { $ApiResponseCommonCodeGroupListResponse } from './schemas/$ApiResponseCommonCodeGroupListResponse';
 export { $ApiResponseCommonCodeGroupResponse } from './schemas/$ApiResponseCommonCodeGroupResponse';
+export { $ApiResponseListCommonCodeGroupSummaryResponse } from './schemas/$ApiResponseListCommonCodeGroupSummaryResponse';
 export { $ApiResponseListSportsClubListResponse } from './schemas/$ApiResponseListSportsClubListResponse';
 export { $ApiResponseLoginResponse } from './schemas/$ApiResponseLoginResponse';
 export { $ApiResponseSportsClubResponse } from './schemas/$ApiResponseSportsClubResponse';

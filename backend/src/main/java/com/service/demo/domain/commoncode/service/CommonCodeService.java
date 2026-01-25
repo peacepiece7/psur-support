@@ -2,6 +2,7 @@ package com.service.demo.domain.commoncode.service;
 
 import com.service.demo.common.error.ErrorCode;
 import com.service.demo.common.exception.ApiException;
+import com.service.demo.domain.commoncode.dto.CommonCodeCreateRequest;
 import com.service.demo.domain.commoncode.dto.CommonCodeGroupListResponse;
 import com.service.demo.domain.commoncode.dto.CommonCodeGroupResponse;
 import com.service.demo.domain.commoncode.dto.CommonCodeGroupSummaryResponse;
@@ -24,8 +25,11 @@ public class CommonCodeService {
         this.commonCodeMapper = commonCodeMapper;
     }
 
-    public CommonCodeGroupResponse getGroupTree(String groupCode, Integer depth, boolean includeCodes) {
-        CommonCodeGroupEntity root = commonCodeMapper.findGroupByCode(groupCode);
+    public CommonCodeGroupResponse getGroupTree(String groupCode,
+                                                Integer depth,
+                                                boolean includeCodes,
+                                                boolean includeInactive) {
+        CommonCodeGroupEntity root = commonCodeMapper.findGroupByCode(groupCode, includeInactive);
         if (root == null) {
             throw new ApiException(ErrorCode.BAD_REQUEST, "Group not found");
         }
@@ -44,7 +48,7 @@ public class CommonCodeService {
                 break;
             }
 
-            List<CommonCodeGroupEntity> children = commonCodeMapper.findGroupsByParentIds(parentIds);
+            List<CommonCodeGroupEntity> children = commonCodeMapper.findGroupsByParentIds(parentIds, includeInactive);
             if (children.isEmpty()) {
                 break;
             }
@@ -66,7 +70,7 @@ public class CommonCodeService {
         }
 
         if (includeCodes && !groupIds.isEmpty()) {
-            List<CommonCodeEntity> codes = commonCodeMapper.findCodesByGroupIds(groupIds);
+            List<CommonCodeEntity> codes = commonCodeMapper.findCodesByGroupIds(groupIds, includeInactive);
             for (CommonCodeEntity code : codes) {
                 CommonCodeGroupResponse parent = nodeMap.get(code.getGroupId());
                 if (parent != null) {
@@ -97,6 +101,23 @@ public class CommonCodeService {
 
     public List<CommonCodeGroupSummaryResponse> listGroups() {
         List<CommonCodeGroupEntity> groups = commonCodeMapper.findAllGroups();
+        List<CommonCodeGroupSummaryResponse> result = new ArrayList<>();
+        for (CommonCodeGroupEntity g : groups) {
+            result.add(new CommonCodeGroupSummaryResponse(
+                    g.getId(),
+                    g.getGroupCode(),
+                    g.getGroupName(),
+                    g.getParentGroupId(),
+                    g.getLevel(),
+                    g.getSortOrder(),
+                    g.getDescription()
+            ));
+        }
+        return result;
+    }
+
+    public List<CommonCodeGroupSummaryResponse> listRootGroups() {
+        List<CommonCodeGroupEntity> groups = commonCodeMapper.findRootGroups();
         List<CommonCodeGroupSummaryResponse> result = new ArrayList<>();
         for (CommonCodeGroupEntity g : groups) {
             result.add(new CommonCodeGroupSummaryResponse(
@@ -148,6 +169,39 @@ public class CommonCodeService {
 
         Integer nextOffset = hasNext ? safeOffset + safeLimit : null;
         return new CommonCodeGroupListResponse(items, nextOffset, hasNext, safeLimit);
+    }
+
+    public CommonCodeResponse createCode(CommonCodeCreateRequest request) {
+        CommonCodeGroupEntity group = commonCodeMapper.findGroupByCode(request.getGroupCode(), false);
+        if (group == null) {
+            throw new ApiException(ErrorCode.BAD_REQUEST, "Group not found");
+        }
+
+        CommonCodeEntity entity = new CommonCodeEntity();
+        entity.setGroupId(group.getId());
+        entity.setCode(request.getCode());
+        entity.setCodeName(request.getCodeName());
+        entity.setChildGroupCode(request.getChildGroupCode());
+        entity.setDescription(request.getDescription());
+        entity.setSortOrder(request.getSortOrder() == null ? 0 : request.getSortOrder());
+        entity.setIsActive(request.getIsActive() == null || request.getIsActive());
+
+        commonCodeMapper.insertCode(entity);
+
+        return new CommonCodeResponse(
+                entity.getCode(),
+                entity.getCodeName(),
+                entity.getDescription(),
+                entity.getSortOrder(),
+                entity.getChildGroupCode()
+        );
+    }
+
+    public void deleteCode(String groupCode, String code) {
+        int updated = commonCodeMapper.softDeleteCode(groupCode, code);
+        if (updated == 0) {
+            throw new ApiException(ErrorCode.BAD_REQUEST, "Code not found");
+        }
     }
 
     private String resolveSortColumn(String sortBy) {

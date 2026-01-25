@@ -21,14 +21,17 @@
     <result property="codeName" column="code_name"/>
     <result property="childGroupCode" column="child_group_code"/>
     <result property="sortOrder" column="sort_order"/>
+    <result property="isActive" column="is_active"/>
     <result property="description" column="description"/>
   </resultMap>
 
   <select id="findGroupByCode" resultMap="CommonCodeGroupMap">
     SELECT * FROM common_code_group
     WHERE group_code = #{groupCode}
-      AND is_active = 1
       AND deleted_at IS NULL
+    <if test="includeInactive == false">
+      AND is_active = 1
+    </if>
   </select>
 
   <select id="findAllGroups" resultMap="CommonCodeGroupMap">
@@ -54,6 +57,14 @@
     LIMIT #{limit} OFFSET #{offset}
   </select>
 
+  <select id="findRootGroups" resultMap="CommonCodeGroupMap">
+    SELECT * FROM common_code_group
+    WHERE parent_group_id IS NULL
+      AND is_active = 1
+      AND deleted_at IS NULL
+    ORDER BY sort_order, id
+  </select>
+
   <select id="findGroupsByParentId" resultMap="CommonCodeGroupMap">
     SELECT * FROM common_code_group
     WHERE parent_group_id = #{parentId}
@@ -68,8 +79,10 @@
     <foreach collection="parentIds" item="id" open="(" close=")" separator=",">
       #{id}
     </foreach>
-      AND is_active = 1
       AND deleted_at IS NULL
+    <if test="includeInactive == false">
+      AND is_active = 1
+    </if>
     ORDER BY sort_order, id
   </select>
 
@@ -79,9 +92,42 @@
     <foreach collection="groupIds" item="id" open="(" close=")" separator=",">
       #{id}
     </foreach>
-      AND is_active = 1
       AND deleted_at IS NULL
+    <if test="includeInactive == false">
+      AND is_active = 1
+    </if>
     ORDER BY sort_order, id
   </select>
+
+  <insert id="insertCode">
+    INSERT INTO common_code (
+      group_id,
+      code,
+      code_name,
+      child_group_code,
+      sort_order,
+      is_active,
+      description
+    )
+    VALUES (
+      #{groupId},
+      #{code},
+      #{codeName},
+      #{childGroupCode},
+      #{sortOrder},
+      #{isActive},
+      #{description}
+    )
+  </insert>
+
+  <update id="softDeleteCode">
+    UPDATE common_code c
+    JOIN common_code_group g ON c.group_id = g.id
+    SET c.deleted_at = NOW(),
+        c.is_active = 0
+    WHERE g.group_code = #{groupCode}
+      AND c.code = #{code}
+      AND c.deleted_at IS NULL
+  </update>
 
 </mapper>

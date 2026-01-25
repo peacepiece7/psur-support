@@ -163,7 +163,7 @@
           :placeholder="props.placeholder"
           :disabled="props.disabled"
           :reverse="props.reverse"
-          variant="outlined"
+          variant="solo"
           density="compact"
           control-variant="hidden"
           :inset="props.inset"

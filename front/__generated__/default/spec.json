@@ -540,6 +540,33 @@
           }
         ]
       }
+    },
+    "/common-codes/groups/root": {
+      "get": {
+        "tags": [
+          "Common Codes"
+        ],
+        "summary": "List root common code groups",
+        "description": "Returns top-level common code groups.",
+        "operationId": "listRootGroups",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseListCommonCodeGroupSummaryResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "sessionAuth": []
+          }
+        ]
+      }
     }
   },
   "components": {
@@ -1249,6 +1276,30 @@
           }
         },
         "description": "Common code group summary"
+      },
+      "ApiResponseListCommonCodeGroupSummaryResponse": {
+        "type": "object",
+        "properties": {
+          "resultCode": {
+            "type": "integer",
+            "description": "Application-level result code",
+            "format": "int32",
+            "example": 200
+          },
+          "resultMessage": {
+            "type": "string",
+            "description": "Application-level result message",
+            "example": "OK"
+          },
+          "data": {
+            "type": "array",
+            "description": "Response payload",
+            "items": {
+              "$ref": "#/components/schemas/CommonCodeGroupSummaryResponse"
+            }
+          }
+        },
+        "description": "Standard API wrapper"
       }
     },
     "securitySchemes": {

@@ -50,12 +50,13 @@ ON DUPLICATE KEY UPDATE
   is_active = VALUES(is_active);
 
 -- Level 1 codes (used as next group_code)
-INSERT INTO common_code (group_id, code, code_name, sort_order, is_active)
+INSERT INTO common_code (group_id, code, code_name, child_group_code, sort_order, is_active)
 VALUES
-  ((SELECT id FROM common_code_group WHERE group_code = 'REGION'), 'SEOUL', 'Seoul', 1, 1),
-  ((SELECT id FROM common_code_group WHERE group_code = 'REGION'), 'BUSAN', 'Busan', 2, 1)
+  ((SELECT id FROM common_code_group WHERE group_code = 'REGION'), 'SEOUL', 'Seoul', 'SEOUL', 1, 1),
+  ((SELECT id FROM common_code_group WHERE group_code = 'REGION'), 'BUSAN', 'Busan', 'BUSAN', 2, 1)
 ON DUPLICATE KEY UPDATE
   code_name = VALUES(code_name),
+  child_group_code = VALUES(child_group_code),
   sort_order = VALUES(sort_order),
   is_active = VALUES(is_active);
 

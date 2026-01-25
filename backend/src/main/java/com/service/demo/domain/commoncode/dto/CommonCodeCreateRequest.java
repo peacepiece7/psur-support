@@ -1,29 +1,29 @@
-package com.service.demo.domain.commoncode.entity;
+package com.service.demo.domain.commoncode.dto;
 
-public class CommonCodeEntity {
-    private Long id;
-    private Long groupId;
+import io.swagger.v3.oas.annotations.media.Schema;
+
+public class CommonCodeCreateRequest {
+    @Schema(description = "Group code", example = "REGION")
+    private String groupCode;
+    @Schema(description = "Code value", example = "SEOUL")
     private String code;
+    @Schema(description = "Code display name", example = "Seoul")
     private String codeName;
+    @Schema(description = "Child group code mapped to this code", example = "SEOUL")
     private String childGroupCode;
+    @Schema(description = "Sort order", example = "1")
     private Integer sortOrder;
+    @Schema(description = "Code description")
     private String description;
+    @Schema(description = "Is active", example = "true")
     private Boolean isActive;
 
-    public Long getId() {
-        return id;
+    public String getGroupCode() {
+        return groupCode;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getGroupId() {
-        return groupId;
-    }
-
-    public void setGroupId(Long groupId) {
-        this.groupId = groupId;
+    public void setGroupCode(String groupCode) {
+        this.groupCode = groupCode;
     }
 
     public String getCode() {
