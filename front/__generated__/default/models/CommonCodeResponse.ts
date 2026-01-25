@@ -22,5 +22,9 @@ export type CommonCodeResponse = {
      * Sort order
      */
     sortOrder?: number;
+    /**
+     * Child group code mapped to this code
+     */
+    groupCode?: string;
 };
 

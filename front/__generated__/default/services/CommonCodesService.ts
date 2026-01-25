@@ -16,17 +16,31 @@ export class CommonCodesService {
      */
     public static getTree({
         groupCode,
+        depth,
+        includeCodes,
     }: {
         /**
          * Root group code
          */
         groupCode: string,
+        /**
+         * Depth (1-3)
+         */
+        depth: number,
+        /**
+         * Include codes in response
+         */
+        includeCodes: boolean,
     }): CancelablePromise<ApiResponseCommonCodeGroupResponse> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/common-codes/{groupCode}/tree',
             path: {
                 'groupCode': groupCode,
+            },
+            query: {
+                'depth': depth,
+                'includeCodes': includeCodes,
             },
         });
     }

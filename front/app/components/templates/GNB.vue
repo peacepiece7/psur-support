@@ -93,6 +93,10 @@
             title: '공통코드 관리',
             to: '/management/common-code',
           },
+          {
+            title: '공통코드리스트 관리',
+            to: '/management/common-code-list',
+          },
         ],
       }
       items.push(managementMenu)

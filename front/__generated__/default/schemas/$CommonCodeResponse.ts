@@ -22,5 +22,9 @@ export const $CommonCodeResponse = {
             description: `Sort order`,
             format: 'int32',
         },
+        groupCode: {
+            type: 'string',
+            description: `Child group code mapped to this code`,
+        },
     },
 } as const;

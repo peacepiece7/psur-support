@@ -416,6 +416,25 @@
               "type": "string"
             },
             "example": "REGION"
+          },
+          {
+            "name": "depth",
+            "in": "query",
+            "description": "Depth (1-3)",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "includeCodes",
+            "in": "query",
+            "description": "Include codes in response",
+            "required": true,
+            "schema": {
+              "type": "boolean"
+            }
           }
         ],
         "responses": {
@@ -1128,6 +1147,11 @@
             "description": "Sort order",
             "format": "int32",
             "example": 1
+          },
+          "groupCode": {
+            "type": "string",
+            "description": "Child group code mapped to this code",
+            "example": "OPERATING_SPORT_LEISURE_EXTREME"
           }
         },
         "description": "Codes under this group"

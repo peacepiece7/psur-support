@@ -16,29 +16,31 @@ CREATE TABLE IF NOT EXISTS users (
   KEY idx_users_email (email)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE IF NOT EXISTS roles (
+CREATE TABLE IF NOT EXISTS role (
   id BIGINT AUTO_INCREMENT PRIMARY KEY,
-  code VARCHAR(50) NOT NULL,
-  name VARCHAR(100) NOT NULL,
+  role_code VARCHAR(50) NOT NULL,
+  role_name VARCHAR(100) NOT NULL,
+  role_type VARCHAR(20) NOT NULL,
   description VARCHAR(255) NULL,
   is_active TINYINT(1) NOT NULL DEFAULT 1,
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  deleted_at DATETIME NULL,
-  UNIQUE KEY uk_roles_code (code)
+  UNIQUE KEY uk_role_role_code (role_code),
+  CONSTRAINT chk_role_role_type CHECK (role_type IN ('ACTION', 'ACCESS'))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE IF NOT EXISTS user_roles (
+CREATE TABLE IF NOT EXISTS user_role (
   id BIGINT AUTO_INCREMENT PRIMARY KEY,
   user_id BIGINT NOT NULL,
   role_id BIGINT NOT NULL,
   is_active TINYINT(1) NOT NULL DEFAULT 1,
   assigned_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   deleted_at DATETIME NULL,
-  UNIQUE KEY uk_user_roles_user_role (user_id, role_id),
-  KEY idx_user_roles_role_id (role_id),
+  UNIQUE KEY uk_user_role_user_role (user_id, role_id),
+  KEY idx_user_role_role_id (role_id),
   CONSTRAINT fk_user_roles_user_id FOREIGN KEY (user_id) REFERENCES users(id),
-  CONSTRAINT fk_user_roles_role_id FOREIGN KEY (role_id) REFERENCES roles(id)
+  CONSTRAINT fk_user_roles_role_id FOREIGN KEY (role_id) REFERENCES role(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS common_code_group (
@@ -64,6 +66,7 @@ CREATE TABLE IF NOT EXISTS common_code (
   group_id BIGINT NOT NULL,
   code VARCHAR(50) NOT NULL,
   code_name VARCHAR(100) NOT NULL,
+  child_group_code VARCHAR(50) NULL,
   sort_order INT NOT NULL DEFAULT 0,
   is_active TINYINT(1) NOT NULL DEFAULT 1,
   description VARCHAR(255) NULL,

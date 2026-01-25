@@ -29,8 +29,14 @@ public class CommonCodeController {
     @Operation(summary = "Get common code tree", description = "Returns a group tree (up to 3 levels) with codes.")
     @GetMapping("/{groupCode}/tree")
     public ApiResponse<CommonCodeGroupResponse> getTree(
-            @Parameter(description = "Root group code", example = "REGION") @PathVariable String groupCode) {
-        return ApiResponse.ok(commonCodeService.getGroupTree(groupCode));
+            @Parameter(description = "Root group code", example = "REGION") @PathVariable String groupCode,
+            @Parameter(description = "Depth (1-3)") Integer depth,
+            @Parameter(description = "Include codes in response") Boolean includeCodes) {
+        return ApiResponse.ok(commonCodeService.getGroupTree(
+                groupCode,
+                depth,
+                includeCodes == null || includeCodes
+        ));
     }
 
     @Operation(summary = "List common code groups", description = "Returns all active common code groups for lookup.")

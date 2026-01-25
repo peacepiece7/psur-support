@@ -50,8 +50,8 @@
       aria-hidden="true"
     >
       <h1 class="home-banner-section__headline">
-        <span class="" style="display: block">SPORTS CLUB</span>
-        <span class="" style="display: block">PORTAL</span>
+        <span class="" style="display: block">PUSR </span>
+        <span class="" style="display: block">Business Management System Demo</span>
       </h1>
     </div>
   </div>

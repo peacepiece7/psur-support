@@ -5,6 +5,7 @@ public class CommonCodeEntity {
     private Long groupId;
     private String code;
     private String codeName;
+    private String childGroupCode;
     private Integer sortOrder;
     private String description;
 
@@ -38,6 +39,14 @@ public class CommonCodeEntity {
 
     public void setCodeName(String codeName) {
         this.codeName = codeName;
+    }
+
+    public String getChildGroupCode() {
+        return childGroupCode;
+    }
+
+    public void setChildGroupCode(String childGroupCode) {
+        this.childGroupCode = childGroupCode;
     }
 
     public Integer getSortOrder() {

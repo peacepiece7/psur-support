@@ -45,6 +45,7 @@
         `${API_BASE_URL}/users/me`,
         {
           method: 'GET',
+          credentials: 'include',
         },
       )
 
@@ -109,6 +110,7 @@
         {
           method: 'PUT',
           body: requestBody,
+          credentials: 'include',
         },
       )
 
@@ -140,7 +142,14 @@
 </script>
 
 <template>
-  <div class="me-page bg-grey-50 min-h-screen p-8">
+   <div class="relative min-h-screen w-full">
+ <PageHeaderSection
+      title="마이페이지"
+      image-src="/main_banner.png"
+      image-alt="마이페이지 헤더 이미지"
+      type="infoPage"
+    />
+ <div class="me-page bg-grey-50 min-h-screen p-8">
     <div class="mx-auto max-w-2xl">
       <h1 class="text-grey-900 mb-8 text-3xl font-bold">마이페이지</h1>
 
@@ -227,6 +236,7 @@
       </v-card>
     </div>
   </div>
+</div>
 </template>
 
 <style scoped>

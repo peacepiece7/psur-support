@@ -24,26 +24,33 @@ public class CommonCodeService {
         this.commonCodeMapper = commonCodeMapper;
     }
 
-    public CommonCodeGroupResponse getGroupTree(String groupCode) {
+    public CommonCodeGroupResponse getGroupTree(String groupCode, Integer depth, boolean includeCodes) {
         CommonCodeGroupEntity root = commonCodeMapper.findGroupByCode(groupCode);
         if (root == null) {
             throw new ApiException(ErrorCode.BAD_REQUEST, "Group not found");
         }
 
-        List<CommonCodeGroupEntity> level2 = commonCodeMapper.findGroupsByParentId(root.getId());
-        List<CommonCodeGroupEntity> level3 = new ArrayList<>();
-        if (!level2.isEmpty()) {
-            List<Long> parentIds = new ArrayList<>();
-            for (CommonCodeGroupEntity g : level2) {
-                parentIds.add(g.getId());
-            }
-            level3 = commonCodeMapper.findGroupsByParentIds(parentIds);
-        }
-
+        int maxDepth = depth == null ? 3 : Math.min(3, Math.max(1, depth));
         List<CommonCodeGroupEntity> allGroups = new ArrayList<>();
         allGroups.add(root);
-        allGroups.addAll(level2);
-        allGroups.addAll(level3);
+
+        List<CommonCodeGroupEntity> currentLevel = List.of(root);
+        for (int level = 2; level <= maxDepth; level++) {
+            List<Long> parentIds = new ArrayList<>();
+            for (CommonCodeGroupEntity g : currentLevel) {
+                parentIds.add(g.getId());
+            }
+            if (parentIds.isEmpty()) {
+                break;
+            }
+
+            List<CommonCodeGroupEntity> children = commonCodeMapper.findGroupsByParentIds(parentIds);
+            if (children.isEmpty()) {
+                break;
+            }
+            allGroups.addAll(children);
+            currentLevel = children;
+        }
 
         List<Long> groupIds = new ArrayList<>();
         for (CommonCodeGroupEntity g : allGroups) {
@@ -58,27 +65,26 @@ public class CommonCodeService {
             nodeMap.put(g.getId(), node);
         }
 
-        if (!groupIds.isEmpty()) {
+        if (includeCodes && !groupIds.isEmpty()) {
             List<CommonCodeEntity> codes = commonCodeMapper.findCodesByGroupIds(groupIds);
             for (CommonCodeEntity code : codes) {
                 CommonCodeGroupResponse parent = nodeMap.get(code.getGroupId());
                 if (parent != null) {
                     parent.getCodes().add(new CommonCodeResponse(
-                            code.getCode(), code.getCodeName(), code.getDescription(), code.getSortOrder()
+                            code.getCode(),
+                            code.getCodeName(),
+                            code.getDescription(),
+                            code.getSortOrder(),
+                            code.getChildGroupCode()
                     ));
                 }
             }
         }
 
-        for (CommonCodeGroupEntity g : level2) {
-            CommonCodeGroupResponse parent = nodeMap.get(root.getId());
-            CommonCodeGroupResponse child = nodeMap.get(g.getId());
-            if (parent != null && child != null) {
-                parent.getChildren().add(child);
+        for (CommonCodeGroupEntity g : allGroups) {
+            if (g.getParentGroupId() == null) {
+                continue;
             }
-        }
-
-        for (CommonCodeGroupEntity g : level3) {
             CommonCodeGroupResponse parent = nodeMap.get(g.getParentGroupId());
             CommonCodeGroupResponse child = nodeMap.get(g.getId());
             if (parent != null && child != null) {
