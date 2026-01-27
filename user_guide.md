@@ -10,7 +10,7 @@ This document explains how to run and explore the project locally.
 
 ## Project Structure (High Level)
 
-- `src/main/java/com/service/demo/domain`: domain features (user, common code, sports club)
+- `src/main/java/com/service/demo/domain`: domain features (user, common code, sports club, reg sports club)
 - `src/main/java/com/service/demo/common`: shared API wrapper, errors, filters, exceptions
 - `src/main/java/com/service/demo/config`: web and OpenAPI configuration
 - `src/main/resources/db/schema.sql`: database schema
@@ -21,7 +21,7 @@ This document explains how to run and explore the project locally.
 
 1) Start MySQL (example docker compose):
 ```
-docker compose -f docker/mysql/docker-compose.yml up -d
+docker compose -f backend/docker/mysql/docker-compose.yml up -d
 ```
 
 2) Run the application:
@@ -29,12 +29,12 @@ docker compose -f docker/mysql/docker-compose.yml up -d
 ./gradlew bootRun
 ```
 
-Default URL: `http://localhost:8080`
+Default URL: `http://localhost:9090`
 
 ## Swagger UI
 
-- URL: `http://localhost:8080/swagger-ui/index.html`
-- OpenAPI JSON: `http://localhost:8080/v3/api-docs`
+- URL: `http://localhost:9090/swagger-ui/index.html`
+- OpenAPI JSON: `http://localhost:9090/v3/api-docs`
 
 ## Authentication
 
@@ -64,8 +64,27 @@ Sports Clubs:
 - `PUT /sports-clubs/{id}`
 - `DELETE /sports-clubs/{id}`
 
+Operating Sports (Common Code):
+- Sports clubs accept `categoryIds` (list of `common_code.id`) and store them in `sports_club_category`.
+- Registered sports club applications accept `operatingSportCodeIds` (list of `common_code.id`) and store them in
+  `reg_sports_club_application_category`.
+- If `operatingSportCodeIds` is omitted, the service falls back to
+  `operatingSportParentCodeId`/`operatingSportChildCodeId`.
+
+Registered Sports Club Applications:
+- `POST /reg-sports-club-applications`
+- `PATCH /reg-sports-club-applications/{applyId}/status`
+- `GET /reg-sports-club-applications/{applyId}`
+- `GET /reg-sports-club-applications`
+
 ## Notes
 
 - `schema.sql` is auto-applied on startup via `spring.sql.init.*` settings.
 - `data.sql` is also auto-applied and is large; if you prefer to disable it, set:
   - `spring.sql.init.mode=never`
+- Database reset (Docker MySQL example):
+```
+docker exec -i mysql mysql -uroot -proot1234! --default-character-set=utf8mb4 -e "DROP DATABASE IF EXISTS mydb; CREATE DATABASE mydb CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+cmd /c "docker exec -i mysql mysql -uroot -proot1234! --default-character-set=utf8mb4 mydb < backend\\src\\main\\resources\\db\\schema.sql"
+cmd /c "docker exec -i mysql mysql -uroot -proot1234! --default-character-set=utf8mb4 mydb < backend\\src\\main\\resources\\data.sql"
+```

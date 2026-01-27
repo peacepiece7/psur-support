@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.service.demo.domain.regsportsclub.mapper.RegSportsClubApplicationMapper">
+
+  <resultMap id="RegSportsClubApplyMap" type="com.service.demo.domain.regsportsclub.entity.RegSportsClubApplyEntity">
+    <id property="id" column="id"/>
+    <result property="statusCodeId" column="status_code_id"/>
+    <result property="appliedAt" column="applied_at"/>
+    <result property="applicantName" column="applicant_name"/>
+    <result property="applicantTelno" column="applicant_telno"/>
+    <result property="applicantEmail" column="applicant_email"/>
+    <result property="createdAt" column="created_at"/>
+    <result property="updatedAt" column="updated_at"/>
+    <result property="deletedAt" column="deleted_at"/>
+  </resultMap>
+
+  <resultMap id="RegSportsClubApplicationMap" type="com.service.demo.domain.regsportsclub.entity.RegSportsClubApplicationEntity">
+    <id property="id" column="id"/>
+    <result property="applyId" column="apply_id"/>
+    <result property="name" column="name"/>
+    <result property="location" column="location"/>
+    <result property="representativeName" column="representative_name"/>
+    <result property="representativeTelno" column="representative_telno"/>
+    <result property="businessNo" column="business_no"/>
+    <result property="clubRoleCodeId" column="club_role_code_id"/>
+    <result property="operatingSportParentCodeId" column="operating_sport_parent_code_id"/>
+    <result property="operatingSportChildCodeId" column="operating_sport_child_code_id"/>
+    <result property="approvedClubId" column="approved_club_id"/>
+    <result property="createdAt" column="created_at"/>
+    <result property="updatedAt" column="updated_at"/>
+    <result property="deletedAt" column="deleted_at"/>
+  </resultMap>
+
+  <resultMap id="RegSportsClubApplicationCategoryMap" type="com.service.demo.domain.regsportsclub.entity.RegSportsClubApplicationCategoryEntity">
+    <result property="applicationId" column="application_id"/>
+    <result property="categoryId" column="category_id"/>
+  </resultMap>
+
+  <resultMap id="RegSportsClubApplicationResponseMap" type="com.service.demo.domain.regsportsclub.dto.RegSportsClubApplicationResponse">
+    <result property="applyId" column="apply_id"/>
+    <result property="applicationId" column="application_id"/>
+    <result property="statusCodeId" column="status_code_id"/>
+    <result property="appliedAt" column="applied_at"/>
+    <result property="applicantName" column="applicant_name"/>
+    <result property="applicantTelno" column="applicant_telno"/>
+    <result property="applicantEmail" column="applicant_email"/>
+    <result property="clubName" column="club_name"/>
+    <result property="location" column="location"/>
+    <result property="representativeName" column="representative_name"/>
+    <result property="representativeTelno" column="representative_telno"/>
+    <result property="businessNo" column="business_no"/>
+    <result property="clubRoleCodeId" column="club_role_code_id"/>
+    <result property="operatingSportParentCodeId" column="operating_sport_parent_code_id"/>
+    <result property="operatingSportChildCodeId" column="operating_sport_child_code_id"/>
+    <result property="approvedClubId" column="approved_club_id"/>
+  </resultMap>
+
+  <insert id="insertApply" parameterType="com.service.demo.domain.regsportsclub.entity.RegSportsClubApplyEntity" useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO reg_sports_club_apply (
+      status_code_id,
+      applied_at,
+      applicant_name,
+      applicant_telno,
+      applicant_email
+    )
+    VALUES (
+      #{statusCodeId},
+      #{appliedAt},
+      #{applicantName},
+      #{applicantTelno},
+      #{applicantEmail}
+    )
+  </insert>
+
+  <insert id="insertApplication" parameterType="com.service.demo.domain.regsportsclub.entity.RegSportsClubApplicationEntity" useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO reg_sports_club_application (
+      apply_id,
+      name,
+      location,
+      representative_name,
+      representative_telno,
+      business_no,
+      club_role_code_id,
+      operating_sport_parent_code_id,
+      operating_sport_child_code_id,
+      approved_club_id
+    )
+    VALUES (
+      #{applyId},
+      #{name},
+      #{location},
+      #{representativeName},
+      #{representativeTelno},
+      #{businessNo},
+      #{clubRoleCodeId},
+      #{operatingSportParentCodeId},
+      #{operatingSportChildCodeId},
+      #{approvedClubId}
+    )
+  </insert>
+
+  <select id="findApplyById" resultMap="RegSportsClubApplyMap">
+    SELECT * FROM reg_sports_club_apply
+    WHERE id = #{id} AND deleted_at IS NULL
+  </select>
+
+  <select id="findApplicationByApplyId" resultMap="RegSportsClubApplicationMap">
+    SELECT * FROM reg_sports_club_application
+    WHERE apply_id = #{applyId} AND deleted_at IS NULL
+  </select>
+
+  <select id="findApplicationDetail" resultMap="RegSportsClubApplicationResponseMap">
+    SELECT
+      a.id AS apply_id,
+      app.id AS application_id,
+      a.status_code_id,
+      a.applied_at,
+      a.applicant_name,
+      a.applicant_telno,
+      a.applicant_email,
+      app.name AS club_name,
+      app.location,
+      app.representative_name,
+      app.representative_telno,
+      app.business_no,
+      app.club_role_code_id,
+      app.operating_sport_parent_code_id,
+      app.operating_sport_child_code_id,
+      app.approved_club_id
+    FROM reg_sports_club_apply a
+    JOIN reg_sports_club_application app ON app.apply_id = a.id
+    WHERE a.id = #{applyId}
+      AND a.deleted_at IS NULL
+      AND app.deleted_at IS NULL
+  </select>
+
+  <select id="findAllApplications" resultMap="RegSportsClubApplicationResponseMap">
+    SELECT
+      a.id AS apply_id,
+      app.id AS application_id,
+      a.status_code_id,
+      a.applied_at,
+      a.applicant_name,
+      a.applicant_telno,
+      a.applicant_email,
+      app.name AS club_name,
+      app.location,
+      app.representative_name,
+      app.representative_telno,
+      app.business_no,
+      app.club_role_code_id,
+      app.operating_sport_parent_code_id,
+      app.operating_sport_child_code_id,
+      app.approved_club_id
+    FROM reg_sports_club_apply a
+    JOIN reg_sports_club_application app ON app.apply_id = a.id
+    WHERE a.deleted_at IS NULL
+      AND app.deleted_at IS NULL
+    ORDER BY a.id DESC
+  </select>
+
+  <update id="updateApplyStatus">
+    UPDATE reg_sports_club_apply
+    SET status_code_id = #{statusCodeId}
+    WHERE id = #{id} AND deleted_at IS NULL
+  </update>
+
+  <insert id="insertHistory" parameterType="com.service.demo.domain.regsportsclub.entity.RegSportsClubApplyHistoryEntity" useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO reg_sports_club_apply_history (
+      apply_id,
+      status_code_id,
+      handler_name,
+      handler_telno,
+      handler_email,
+      memo,
+      processed_at
+    )
+    VALUES (
+      #{applyId},
+      #{statusCodeId},
+      #{handlerName},
+      #{handlerTelno},
+      #{handlerEmail},
+      #{memo},
+      #{processedAt}
+    )
+  </insert>
+
+  <update id="updateApprovedClubId">
+    UPDATE reg_sports_club_application
+    SET approved_club_id = #{approvedClubId}
+    WHERE apply_id = #{applyId} AND deleted_at IS NULL
+  </update>
+
+  <delete id="deleteApplicationCategoriesByApplicationId">
+    DELETE FROM reg_sports_club_application_category WHERE application_id = #{applicationId}
+  </delete>
+
+  <insert id="insertApplicationCategories">
+    INSERT INTO reg_sports_club_application_category (application_id, category_id)
+    VALUES
+    <foreach collection="categoryIds" item="id" separator=",">
+      (#{applicationId}, #{id})
+    </foreach>
+  </insert>
+
+  <select id="findCategoryIdsByApplicationId" resultType="long">
+    SELECT category_id FROM reg_sports_club_application_category
+    WHERE application_id = #{applicationId} AND deleted_at IS NULL
+  </select>
+
+  <select id="findCategoryPairsByApplicationIds" resultMap="RegSportsClubApplicationCategoryMap">
+    SELECT application_id, category_id FROM reg_sports_club_application_category
+    WHERE application_id IN
+    <foreach collection="applicationIds" item="id" open="(" close=")" separator=",">
+      #{id}
+    </foreach>
+      AND deleted_at IS NULL
+  </select>
+
+</mapper>

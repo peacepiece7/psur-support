@@ -22,7 +22,7 @@ public class SportsClubCreateRequest {
     private String businessNo;
     @Schema(description = "Common code ID for club role", example = "10")
     private Long clubRoleCodeId;
-    @Schema(description = "Sports category IDs", example = "[1,2]")
+    @Schema(description = "Operating sport common code IDs", example = "[1,2]")
     private List<Long> categoryIds;
 
     public String getName() {
@@ -88,4 +88,5 @@ public class SportsClubCreateRequest {
     public void setCategoryIds(List<Long> categoryIds) {
         this.categoryIds = categoryIds;
     }
+
 }

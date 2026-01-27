@@ -3,7 +3,6 @@ package com.service.demo.domain.sportsclub.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.List;
-
 public class SportsClubResponse {
     @Schema(description = "Club ID", example = "1")
     private final Long id;
@@ -23,7 +22,7 @@ public class SportsClubResponse {
     private final Long clubRoleCodeId;
     @Schema(description = "Club active flag", example = "true")
     private final Boolean isActive;
-    @Schema(description = "Sports category IDs", example = "[1,2]")
+    @Schema(description = "Operating sport common code IDs", example = "[1,2]")
     private final List<Long> categoryIds;
 
     public SportsClubResponse(Long id, String name, String location, String representativeName,

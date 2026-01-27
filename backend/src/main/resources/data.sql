@@ -4,7 +4,6 @@ TRUNCATE TABLE user_role;
 TRUNCATE TABLE role;
 TRUNCATE TABLE common_code;
 TRUNCATE TABLE common_code_group;
-TRUNCATE TABLE sports_category;
 SET FOREIGN_KEY_CHECKS = 1;
 
 -- Roles (user_role concept)
@@ -113,6 +112,7 @@ ON DUPLICATE KEY UPDATE
 
 INSERT INTO common_code (group_id, code, code_name, sort_order, is_active)
 VALUES
+  ((SELECT id FROM common_code_group WHERE group_code = 'REG_SPORTS_CLUB_APPLY_STATUS'), 'SAVED', '저장', 0, 1),
   ((SELECT id FROM common_code_group WHERE group_code = 'REG_SPORTS_CLUB_APPLY_STATUS'), 'APPLY', '신청', 1, 1),
   ((SELECT id FROM common_code_group WHERE group_code = 'REG_SPORTS_CLUB_APPLY_STATUS'), 'RECEIVED', '접수', 2, 1),
   ((SELECT id FROM common_code_group WHERE group_code = 'REG_SPORTS_CLUB_APPLY_STATUS'), 'RECEIVED_REJECTED', '접수반려', 3, 1),
@@ -120,6 +120,27 @@ VALUES
   ((SELECT id FROM common_code_group WHERE group_code = 'REG_SPORTS_CLUB_APPLY_STATUS'), 'REVIEW_REJECTED', '검토반려', 5, 1),
   ((SELECT id FROM common_code_group WHERE group_code = 'REG_SPORTS_CLUB_APPLY_STATUS'), 'APPROVED', '승인', 6, 1),
   ((SELECT id FROM common_code_group WHERE group_code = 'REG_SPORTS_CLUB_APPLY_STATUS'), 'APPROVED_REJECTED', '승인반려', 7, 1)
+ON DUPLICATE KEY UPDATE
+  code_name = VALUES(code_name),
+  sort_order = VALUES(sort_order),
+  is_active = VALUES(is_active);
+
+-- Sports club roles
+INSERT INTO common_code_group (group_code, group_name, parent_group_id, level, sort_order, is_active)
+VALUES ('CLUB_ROLE', '스포츠클럽 권한', NULL, 1, 5, 1)
+ON DUPLICATE KEY UPDATE
+  group_name = VALUES(group_name),
+  parent_group_id = VALUES(parent_group_id),
+  level = VALUES(level),
+  sort_order = VALUES(sort_order),
+  is_active = VALUES(is_active);
+
+INSERT INTO common_code (group_id, code, code_name, sort_order, is_active)
+VALUES
+  ((SELECT id FROM common_code_group WHERE group_code = 'CLUB_ROLE'), 'REG_CLUB', '등록스포츠클럽', 1, 1),
+  ((SELECT id FROM common_code_group WHERE group_code = 'CLUB_ROLE'), 'DESIGNATED_CLUB', '지정스포츠클럽', 2, 1),
+  ((SELECT id FROM common_code_group WHERE group_code = 'CLUB_ROLE'), 'PRE_DESIGNATED_CLUB', '예비지정스포츠클럽', 3, 1),
+  ((SELECT id FROM common_code_group WHERE group_code = 'CLUB_ROLE'), 'PUBLIC_CLUB', '공공스포츠클럽', 4, 1)
 ON DUPLICATE KEY UPDATE
   code_name = VALUES(code_name),
   sort_order = VALUES(sort_order),
@@ -224,51 +245,5 @@ VALUES
   ((SELECT id FROM common_code_group WHERE group_code = 'OPERATING_SPORT_LEISURE_EXTREME'), 'BUNGEE_JUMPING', '번지점프', 5, 1)
 ON DUPLICATE KEY UPDATE
   code_name = VALUES(code_name),
-  sort_order = VALUES(sort_order),
-  is_active = VALUES(is_active);
-
--- Sports categories (level 1-2 examples)
-INSERT INTO sports_category (name, parent_id, level, sort_order, is_active)
-VALUES
-  ('축구', NULL, 1, 1, 1),
-  ('농구', NULL, 1, 2, 1),
-  ('배구', NULL, 1, 3, 1)
-ON DUPLICATE KEY UPDATE
-  name = VALUES(name),
-  level = VALUES(level),
-  sort_order = VALUES(sort_order),
-  is_active = VALUES(is_active);
-
-SET @category_soccer_id := (
-  SELECT id
-  FROM sports_category
-  WHERE name = '축구' AND level = 1
-  ORDER BY id DESC
-  LIMIT 1
-);
-SET @category_basketball_id := (
-  SELECT id
-  FROM sports_category
-  WHERE name = '농구' AND level = 1
-  ORDER BY id DESC
-  LIMIT 1
-);
-SET @category_volleyball_id := (
-  SELECT id
-  FROM sports_category
-  WHERE name = '배구' AND level = 1
-  ORDER BY id DESC
-  LIMIT 1
-);
-
-INSERT INTO sports_category (name, parent_id, level, sort_order, is_active)
-VALUES
-  ('풋살', @category_soccer_id, 2, 1, 1),
-  ('족구', @category_soccer_id, 2, 2, 1),
-  ('3x3 농구', @category_basketball_id, 2, 1, 1),
-  ('비치발리볼', @category_volleyball_id, 2, 1, 1)
-ON DUPLICATE KEY UPDATE
-  name = VALUES(name),
-  level = VALUES(level),
   sort_order = VALUES(sort_order),
   is_active = VALUES(is_active);

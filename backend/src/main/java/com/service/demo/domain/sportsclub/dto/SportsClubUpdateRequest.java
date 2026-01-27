@@ -24,7 +24,7 @@ public class SportsClubUpdateRequest {
     private Long clubRoleCodeId;
     @Schema(description = "Club active flag", example = "true")
     private Boolean isActive;
-    @Schema(description = "Sports category IDs", example = "[1,2]")
+    @Schema(description = "Operating sport common code IDs", example = "[1,2]")
     private List<Long> categoryIds;
 
     public String getName() {
@@ -98,4 +98,5 @@ public class SportsClubUpdateRequest {
     public void setCategoryIds(List<Long> categoryIds) {
         this.categoryIds = categoryIds;
     }
+
 }

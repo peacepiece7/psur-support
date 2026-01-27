@@ -99,6 +99,21 @@
     ORDER BY sort_order, id
   </select>
 
+  <select id="findCodeById" resultMap="CommonCodeMap">
+    SELECT * FROM common_code
+    WHERE id = #{id}
+      AND deleted_at IS NULL
+  </select>
+
+  <select id="findCodeIdByGroupCodeAndCode" resultType="long">
+    SELECT c.id
+    FROM common_code c
+    JOIN common_code_group g ON c.group_id = g.id
+    WHERE g.group_code = #{groupCode}
+      AND c.code = #{code}
+      AND c.deleted_at IS NULL
+  </select>
+
   <insert id="insertCode">
     INSERT INTO common_code (
       group_id,

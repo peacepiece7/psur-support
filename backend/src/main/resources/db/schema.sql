@@ -78,21 +78,6 @@ CREATE TABLE IF NOT EXISTS common_code (
   CONSTRAINT fk_common_code_group_id FOREIGN KEY (group_id) REFERENCES common_code_group(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE IF NOT EXISTS sports_category (
-  id BIGINT AUTO_INCREMENT PRIMARY KEY,
-  name VARCHAR(100) NOT NULL,
-  parent_id BIGINT NULL,
-  level INT NOT NULL,
-  sort_order INT NOT NULL DEFAULT 0,
-  is_active TINYINT(1) NOT NULL DEFAULT 1,
-  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  deleted_at DATETIME NULL,
-  KEY idx_sports_category_parent_id (parent_id),
-  CONSTRAINT fk_sports_category_parent_id FOREIGN KEY (parent_id) REFERENCES sports_category(id),
-  CONSTRAINT chk_sports_category_level CHECK (level BETWEEN 1 AND 3)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
 CREATE TABLE IF NOT EXISTS sports_club (
   id BIGINT AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(200) NOT NULL,
@@ -123,5 +108,78 @@ CREATE TABLE IF NOT EXISTS sports_club_category (
   UNIQUE KEY uk_sports_club_category (club_id, category_id),
   KEY idx_scc_category_id (category_id),
   CONSTRAINT fk_scc_club_id FOREIGN KEY (club_id) REFERENCES sports_club(id),
-  CONSTRAINT fk_scc_category_id FOREIGN KEY (category_id) REFERENCES sports_category(id)
+  CONSTRAINT fk_scc_category_id FOREIGN KEY (category_id) REFERENCES common_code(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS reg_sports_club_apply (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  status_code_id BIGINT NOT NULL,
+  applied_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  applicant_name VARCHAR(100) NOT NULL,
+  applicant_telno VARCHAR(30) NOT NULL,
+  applicant_email VARCHAR(255) NOT NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  deleted_at DATETIME NULL,
+  KEY idx_rsca_status_code_id (status_code_id),
+  CONSTRAINT fk_rsca_status_code_id FOREIGN KEY (status_code_id) REFERENCES common_code(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS reg_sports_club_application (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  apply_id BIGINT NOT NULL,
+  name VARCHAR(200) NOT NULL,
+  location VARCHAR(255) NULL,
+  representative_name VARCHAR(100) NULL,
+  representative_telno VARCHAR(30) NULL,
+  business_no VARCHAR(50) NULL,
+  club_role_code_id BIGINT NOT NULL,
+  operating_sport_parent_code_id BIGINT NULL,
+  operating_sport_child_code_id BIGINT NULL,
+  approved_club_id BIGINT NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  deleted_at DATETIME NULL,
+  UNIQUE KEY uk_rsca_apply_id (apply_id),
+  KEY idx_rsca_club_role_code_id (club_role_code_id),
+  KEY idx_rsca_operating_sport_parent_code_id (operating_sport_parent_code_id),
+  KEY idx_rsca_operating_sport_child_code_id (operating_sport_child_code_id),
+  KEY idx_rsca_approved_club_id (approved_club_id),
+  CONSTRAINT fk_rsca_apply_id FOREIGN KEY (apply_id) REFERENCES reg_sports_club_apply(id),
+  CONSTRAINT fk_rsca_club_role_code_id FOREIGN KEY (club_role_code_id) REFERENCES common_code(id),
+  CONSTRAINT fk_rsca_operating_sport_parent_code_id FOREIGN KEY (operating_sport_parent_code_id) REFERENCES common_code(id),
+  CONSTRAINT fk_rsca_operating_sport_child_code_id FOREIGN KEY (operating_sport_child_code_id) REFERENCES common_code(id),
+  CONSTRAINT fk_rsca_approved_club_id FOREIGN KEY (approved_club_id) REFERENCES sports_club(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS reg_sports_club_application_category (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  application_id BIGINT NOT NULL,
+  category_id BIGINT NOT NULL,
+  is_active TINYINT(1) NOT NULL DEFAULT 1,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  deleted_at DATETIME NULL,
+  UNIQUE KEY uk_rscac_application_category (application_id, category_id),
+  KEY idx_rscac_category_id (category_id),
+  CONSTRAINT fk_rscac_application_id FOREIGN KEY (application_id) REFERENCES reg_sports_club_application(id),
+  CONSTRAINT fk_rscac_category_id FOREIGN KEY (category_id) REFERENCES common_code(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS reg_sports_club_apply_history (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  apply_id BIGINT NOT NULL,
+  status_code_id BIGINT NOT NULL,
+  handler_name VARCHAR(100) NULL,
+  handler_telno VARCHAR(30) NULL,
+  handler_email VARCHAR(255) NULL,
+  memo VARCHAR(1000) NULL,
+  processed_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  deleted_at DATETIME NULL,
+  KEY idx_rscah_apply_id (apply_id),
+  KEY idx_rscah_status_code_id (status_code_id),
+  CONSTRAINT fk_rscah_apply_id FOREIGN KEY (apply_id) REFERENCES reg_sports_club_apply(id),
+  CONSTRAINT fk_rscah_status_code_id FOREIGN KEY (status_code_id) REFERENCES common_code(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
