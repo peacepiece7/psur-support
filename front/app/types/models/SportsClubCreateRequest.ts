@@ -32,7 +32,7 @@ export type SportsClubCreateRequest = {
      */
     clubRoleCodeId?: number;
     /**
-     * Sports category IDs
+     * Operating sport common code IDs
      */
     categoryIds?: Array<number>;
 };

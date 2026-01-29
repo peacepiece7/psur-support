@@ -2,13 +2,11 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export const $CommonCodeResponse = {
-    description: `Response payload`,
+export const $CommonCodeCreateRequest = {
     properties: {
-        id: {
-            type: 'number',
-            description: `Code ID`,
-            format: 'int64',
+        groupCode: {
+            type: 'string',
+            description: `Group code`,
         },
         code: {
             type: 'string',
@@ -18,18 +16,22 @@ export const $CommonCodeResponse = {
             type: 'string',
             description: `Code display name`,
         },
-        description: {
+        childGroupCode: {
             type: 'string',
-            description: `Code description`,
+            description: `Child group code mapped to this code`,
         },
         sortOrder: {
             type: 'number',
             description: `Sort order`,
             format: 'int32',
         },
-        groupCode: {
+        description: {
             type: 'string',
-            description: `Child group code mapped to this code`,
+            description: `Code description`,
+        },
+        isActive: {
+            type: 'boolean',
+            description: `Is active`,
         },
     },
 } as const;

@@ -5,11 +5,13 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
-
+import lombok.Getter;
 public class RegSportsClubApplicationCreateRequest {
     @Schema(description = "Application status code ID", example = "1")
-    @NotNull
     private Long statusCodeId;
+
+    @Schema(description = "Application status code", example = "APPLY")
+    private String statusCode;
 
     @Schema(description = "Applicant name", example = "Kim Applicant")
     @NotBlank
@@ -56,6 +58,14 @@ public class RegSportsClubApplicationCreateRequest {
 
     public void setStatusCodeId(Long statusCodeId) {
         this.statusCodeId = statusCodeId;
+    }
+
+    public String getStatusCode() {
+        return statusCode;
+    }
+
+    public void setStatusCode(String statusCode) {
+        this.statusCode = statusCode;
     }
 
     public String getApplicantName() {

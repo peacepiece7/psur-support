@@ -41,7 +41,8 @@
   <resultMap id="RegSportsClubApplicationResponseMap" type="com.service.demo.domain.regsportsclub.dto.RegSportsClubApplicationResponse">
     <result property="applyId" column="apply_id"/>
     <result property="applicationId" column="application_id"/>
-    <result property="statusCodeId" column="status_code_id"/>
+    <result property="code" column="status_code"/>
+    <result property="codeName" column="status_code_name"/>
     <result property="appliedAt" column="applied_at"/>
     <result property="applicantName" column="applicant_name"/>
     <result property="applicantTelno" column="applicant_telno"/>
@@ -115,7 +116,8 @@
     SELECT
       a.id AS apply_id,
       app.id AS application_id,
-      a.status_code_id,
+      sc.code AS status_code,
+      sc.code_name AS status_code_name,
       a.applied_at,
       a.applicant_name,
       a.applicant_telno,
@@ -131,6 +133,7 @@
       app.approved_club_id
     FROM reg_sports_club_apply a
     JOIN reg_sports_club_application app ON app.apply_id = a.id
+    LEFT JOIN common_code sc ON sc.id = a.status_code_id
     WHERE a.id = #{applyId}
       AND a.deleted_at IS NULL
       AND app.deleted_at IS NULL
@@ -140,7 +143,8 @@
     SELECT
       a.id AS apply_id,
       app.id AS application_id,
-      a.status_code_id,
+      sc.code AS status_code,
+      sc.code_name AS status_code_name,
       a.applied_at,
       a.applicant_name,
       a.applicant_telno,
@@ -156,6 +160,7 @@
       app.approved_club_id
     FROM reg_sports_club_apply a
     JOIN reg_sports_club_application app ON app.apply_id = a.id
+    LEFT JOIN common_code sc ON sc.id = a.status_code_id
     WHERE a.deleted_at IS NULL
       AND app.deleted_at IS NULL
     ORDER BY a.id DESC

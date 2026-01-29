@@ -114,7 +114,7 @@
       AND c.deleted_at IS NULL
   </select>
 
-  <insert id="insertCode">
+  <insert id="insertCode" useGeneratedKeys="true" keyProperty="id">
     INSERT INTO common_code (
       group_id,
       code,

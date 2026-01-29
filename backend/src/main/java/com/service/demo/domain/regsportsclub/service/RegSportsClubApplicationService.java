@@ -4,6 +4,8 @@ import com.service.demo.common.error.ErrorCode;
 import com.service.demo.common.exception.ApiException;
 import com.service.demo.domain.commoncode.entity.CommonCodeEntity;
 import com.service.demo.domain.commoncode.mapper.CommonCodeMapper;
+import com.service.demo.domain.commoncode.service.CommonCodeLookupService;
+import com.service.demo.domain.regsportsclub.constant.RegSportsClubApplyStatus;
 import com.service.demo.domain.regsportsclub.dto.RegSportsClubApplicationCreateRequest;
 import com.service.demo.domain.regsportsclub.dto.RegSportsClubApplicationResponse;
 import com.service.demo.domain.regsportsclub.dto.RegSportsClubApplicationStatusUpdateRequest;
@@ -29,19 +31,41 @@ public class RegSportsClubApplicationService {
     private final RegSportsClubApplicationMapper regSportsClubApplicationMapper;
     private final SportsClubMapper sportsClubMapper;
     private final CommonCodeMapper commonCodeMapper;
+    private final CommonCodeLookupService commonCodeLookupService;
 
     public RegSportsClubApplicationService(RegSportsClubApplicationMapper regSportsClubApplicationMapper,
                                            SportsClubMapper sportsClubMapper,
-                                           CommonCodeMapper commonCodeMapper) {
+                                           CommonCodeMapper commonCodeMapper,
+                                           CommonCodeLookupService commonCodeLookupService) {
         this.regSportsClubApplicationMapper = regSportsClubApplicationMapper;
         this.sportsClubMapper = sportsClubMapper;
         this.commonCodeMapper = commonCodeMapper;
+        this.commonCodeLookupService = commonCodeLookupService;
     }
 
     @Transactional
     public RegSportsClubApplicationResponse create(RegSportsClubApplicationCreateRequest req) {
         RegSportsClubApplyEntity applyEntity = new RegSportsClubApplyEntity();
-        applyEntity.setStatusCodeId(req.getStatusCodeId());
+        Long statusCodeId = req.getStatusCodeId();
+        if (statusCodeId == null) {
+            String statusCode = req.getStatusCode();
+            if (statusCode != null && !statusCode.isBlank()) {
+                statusCodeId = commonCodeLookupService.getCodeId(
+                        RegSportsClubApplyStatus.GROUP_CODE,
+                        statusCode
+                );
+            }
+            if (statusCodeId == null) {
+                statusCodeId = commonCodeLookupService.getCodeId(
+                        RegSportsClubApplyStatus.GROUP_CODE,
+                        RegSportsClubApplyStatus.APPLY.getCode()
+                );
+            }
+            if (statusCodeId == null) {
+                throw new ApiException(ErrorCode.BAD_REQUEST, "Apply status code not found");
+            }
+        }
+        applyEntity.setStatusCodeId(statusCodeId);
         applyEntity.setAppliedAt(LocalDateTime.now());
         applyEntity.setApplicantName(req.getApplicantName());
         applyEntity.setApplicantTelno(req.getApplicantTelno());
@@ -49,7 +73,7 @@ public class RegSportsClubApplicationService {
         regSportsClubApplicationMapper.insertApply(applyEntity);
 
         Long clubRoleCodeId = req.getClubRoleCodeId();
-        if (clubRoleCodeId == null) {
+        if (clubRoleCodeId == null) { // 19
             clubRoleCodeId = commonCodeMapper.findCodeIdByGroupCodeAndCode("CLUB_ROLE", "REG_CLUB");
             if (clubRoleCodeId == null) {
                 throw new ApiException(ErrorCode.BAD_REQUEST, "Club role code not found");

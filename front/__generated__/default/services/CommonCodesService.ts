@@ -4,11 +4,32 @@
 /* eslint-disable */
 import type { ApiResponseCommonCodeGroupListResponse } from '../models/ApiResponseCommonCodeGroupListResponse';
 import type { ApiResponseCommonCodeGroupResponse } from '../models/ApiResponseCommonCodeGroupResponse';
+import type { ApiResponseCommonCodeResponse } from '../models/ApiResponseCommonCodeResponse';
 import type { ApiResponseListCommonCodeGroupSummaryResponse } from '../models/ApiResponseListCommonCodeGroupSummaryResponse';
+import type { ApiResponseVoid } from '../models/ApiResponseVoid';
+import type { CommonCodeCreateRequest } from '../models/CommonCodeCreateRequest';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
 export class CommonCodesService {
+    /**
+     * Create common code
+     * Creates a common code under a group.
+     * @returns ApiResponseCommonCodeResponse OK
+     * @throws ApiError
+     */
+    public static createCode({
+        requestBody,
+    }: {
+        requestBody: CommonCodeCreateRequest,
+    }): CancelablePromise<ApiResponseCommonCodeResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/common-codes',
+            body: requestBody,
+            mediaType: 'application/json',
+        });
+    }
     /**
      * Get common code tree
      * Returns a group tree (up to 3 levels) with codes.
@@ -19,6 +40,7 @@ export class CommonCodesService {
         groupCode,
         depth,
         includeCodes,
+        includeInactive,
     }: {
         /**
          * Root group code
@@ -32,6 +54,10 @@ export class CommonCodesService {
          * Include codes in response
          */
         includeCodes: boolean,
+        /**
+         * Include inactive codes and groups
+         */
+        includeInactive: boolean,
     }): CancelablePromise<ApiResponseCommonCodeGroupResponse> {
         return __request(OpenAPI, {
             method: 'GET',
@@ -42,6 +68,7 @@ export class CommonCodesService {
             query: {
                 'depth': depth,
                 'includeCodes': includeCodes,
+                'includeInactive': includeInactive,
             },
         });
     }
@@ -107,6 +134,28 @@ export class CommonCodesService {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/common-codes/groups/root',
+        });
+    }
+    /**
+     * Delete common code
+     * Soft deletes a common code.
+     * @returns ApiResponseVoid OK
+     * @throws ApiError
+     */
+    public static deleteCode({
+        groupCode,
+        code,
+    }: {
+        groupCode: string,
+        code: string,
+    }): CancelablePromise<ApiResponseVoid> {
+        return __request(OpenAPI, {
+            method: 'DELETE',
+            url: '/common-codes/{groupCode}/codes/{code}',
+            path: {
+                'groupCode': groupCode,
+                'code': code,
+            },
         });
     }
 }

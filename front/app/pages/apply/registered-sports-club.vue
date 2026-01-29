@@ -1,17 +1,44 @@
 <script setup lang="ts">
+  import { useForm, useFormContext } from 'vee-validate'
   import { useNewRegSprtClubStore } from '~/stores/newRegSprtClubStore'
   import type { RequestStep as StepperStep } from '~/components/molecules/RequestStepper.vue'
   import type { WindowStep } from '~/components/molecules/Window.vue'
   import ApplyRegSprtClubNewStep1 from '~/components/views/apply/reg-sprt-club/new/ApplyRegSprtClubNewStep1.vue'
   import ApplyRegSprtClubNewStep2 from '~/components/views/apply/reg-sprt-club/new/ApplyRegSprtClubNewStep2.vue'
   import ApplyRegSprtClubNewStep3 from '~/components/views/apply/reg-sprt-club/new/ApplyRegSprtClubNewStep3.vue'
-  import ApplyRegSprtClubNewStep4 from '~/components/views/apply/reg-sprt-club/new/ApplyRegSprtClubNewStep4.vue'
-  import ApplyRegSprtClubNewStep5 from '~/components/views/apply/reg-sprt-club/new/ApplyRegSprtClubNewStep5.vue'
-  import ApplyRegSprtClubNewStep6 from '~/components/views/apply/reg-sprt-club/new/ApplyRegSprtClubNewStep6.vue'
-  import ApplyRegSprtClubNewStep7 from '~/components/views/apply/reg-sprt-club/new/ApplyRegSprtClubNewStep7.vue'
 
   const newRegSprtClubStore = useNewRegSprtClubStore()
   const applyContainerRef = ref<HTMLElement | null>(null)
+
+  // 폼 타입 정의
+  type FormValues = {
+    applicantName: string
+    applicantTelno: string
+    applicantEmail: string
+    name: string
+    location: string
+    representativeName: string
+    representativeTelno: string
+    businessNo: string
+    operatingSportParentCodeId: { title: string; value: string; id?: number } | null
+    operatingSportChildCodeId: { title: string; value: string; id?: number } | null
+  }
+
+  // useForm 설정 (validation 없이)
+  const { values } = useForm<FormValues>({
+    initialValues: {
+      applicantName: '',
+      applicantTelno: '',
+      applicantEmail: '',
+      name: '',
+      location: '',
+      representativeName: '',
+      representativeTelno: '',
+      businessNo: '',
+      operatingSportParentCodeId: null,
+      operatingSportChildCodeId: null,
+    },
+  })
 
   const scrollApplyContainerToTop = async () => {
     await nextTick()
@@ -23,12 +50,8 @@
 
   const STEPS: StepperStep[] = [
     { step: 1, title: '유의사항 확인' },
-    { step: 2, title: '필수 서류 준비' },
-    { step: 3, title: '클럽 정보 입력' },
-    { step: 4, title: '클럽 회원 정보 입력' },
-    { step: 5, title: '서류 제출' },
-    { step: 6, title: '등록증 확인' },
-    { step: 7, title: '신청 완료' },
+    { step: 2, title: '클럽 정보 입력' },
+    { step: 3, title: '신청 완료' },
   ]
 
   const WINDOW_STEPS: WindowStep[] = STEPS.map((s) => ({
@@ -40,10 +63,6 @@
     ApplyRegSprtClubNewStep1,
     ApplyRegSprtClubNewStep2,
     ApplyRegSprtClubNewStep3,
-    ApplyRegSprtClubNewStep4,
-    ApplyRegSprtClubNewStep5,
-    ApplyRegSprtClubNewStep6,
-    ApplyRegSprtClubNewStep7,
   ] as const
 
   const currentStep = computed(() => STEPS[newRegSprtClubStore.currentIndex])
@@ -66,11 +85,35 @@
   }
 
   const noticeAgreed = ref(false)
-  const canProceedNotice = computed(() => noticeAgreed.value && canNext.value)
 
   const saveDraft = () => {
     // TODO: 임시저장 API 연결
     console.log('임시저장')
+  }
+
+  // step2에서 신청하기
+  const handleSubmit = async () => {
+    try {
+      await newRegSprtClubStore.actions.createApplicationFromStep2({
+        ...values,
+        applicantName: values.applicantName,
+        applicantTelno: values.applicantTelno,
+        applicantEmail: values.applicantEmail,
+        name: values.name,
+        location: values.location,
+        representativeName: values.representativeName,
+        representativeTelno: values.representativeTelno,
+        businessNo: values.businessNo,
+        operatingSportParentCodeId: values.operatingSportParentCodeId,
+        operatingSportChildCodeId: values.operatingSportChildCodeId,
+      })
+      // 성공 시 step3로 이동
+      newRegSprtClubStore.actions.step.setIndex(2)
+      scrollApplyContainerToTop()
+    } catch (error) {
+      console.error('신청 실패:', error)
+      alert('신청에 실패했습니다. 다시 시도해주세요.')
+    }
   }
 </script>
 
@@ -93,7 +136,7 @@
           v-model="newRegSprtClubStore.currentIndex"
           :steps="STEPS"
           :disabled-indices="[0, 6]"
-          :readonly="false"
+          :readonly="true"
           @click="(i) => newRegSprtClubStore.actions.step.setIndex(i)"
         />
       </section>
@@ -133,24 +176,61 @@
       </div>
     </div>
 
-    <!-- ! @TODO: 유의사항 컨텐츠가 출력될 경우 하단 위젯 비노출 -->
-    <!-- <template v-if="newRegSprtClubStore.currentIndex !== 0"> -->
     <!-- 공중에 떠있는 하단 위젯 (컨텐츠 변경에도 위치 고정) -->
     <RequestActionWidget
-      v-show="newRegSprtClubStore.currentIndex !== 0"
-      :disconnect="newRegSprtClubStore.currentIndex === 6"
+      v-show="
+        newRegSprtClubStore.currentIndex !== 0 &&
+        newRegSprtClubStore.currentIndex !== 2
+      "
+      :disconnect="newRegSprtClubStore.currentIndex === 2"
     >
       <template #default>
-        <RequestActionWidgetDefaultButtonGroupExample
-          :can-prev="canPrev"
-          :can-next="canNext"
-          @prev="goPrev"
-          @next="goNext"
-          @save="saveDraft"
-        />
+        <div class="flex w-full items-center gap-3">
+          <!-- 왼쪽: 이전 버튼 -->
+          <Button
+            color="secondary"
+            size="md"
+            :disabled="!canPrev"
+            @click="goPrev"
+          >
+            이전
+          </Button>
+
+          <!-- 왼쪽 spacer -->
+          <div class="relative z-[1] flex-1" />
+
+          <!-- 가운데: 임시저장, 신청 버튼 -->
+          <div class="flex items-center gap-3">
+            <Button
+              color="tertiary"
+              size="md"
+              variant="outlined"
+              @click="saveDraft"
+            >
+              임시저장
+            </Button>
+            <Button
+              v-if="newRegSprtClubStore.currentIndex === 1"
+              color="primary"
+              size="md"
+              @click="handleSubmit"
+            >
+              <span class="tracking-[0.1rem]">신청</span>
+            </Button>
+          </div>
+
+          <!-- 오른쪽: 다음 버튼 -->
+          <Button
+            color="primary"
+            size="md"
+            :disabled="!canNext"
+            @click="goNext"
+          >
+            다음
+          </Button>
+        </div>
       </template>
     </RequestActionWidget>
-    <!-- </template> -->
   </div>
 </template>
 

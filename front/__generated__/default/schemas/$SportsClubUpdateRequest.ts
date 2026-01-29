@@ -42,7 +42,7 @@ export const $SportsClubUpdateRequest = {
             type: 'array',
             contains: {
                 type: 'number',
-                description: `Sports category IDs`,
+                description: `Operating sport common code IDs`,
                 format: 'int64',
             },
         },

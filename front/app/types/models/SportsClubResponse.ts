@@ -43,7 +43,7 @@ export type SportsClubResponse = {
      */
     isActive?: boolean;
     /**
-     * Sports category IDs
+     * Operating sport common code IDs
      */
     categoryIds?: Array<number>;
 };

@@ -53,6 +53,11 @@
     /** multiple */
     multiple?: boolean
 
+    /**
+     * 전체 객체 반환 여부 (true일 경우 선택된 전체 객체를 반환, false일 경우 itemValue 필드만 반환)
+     */
+    returnObject?: boolean
+
     /** 에러 상태 */
     error?: ComputedRef<boolean> | boolean
     /** 에러 메시지 ID (aria-describedby용) */
@@ -68,6 +73,7 @@
     readonly: false,
     clearable: false,
     multiple: false,
+    returnObject: true,
     placeholder: '선택',
     error: undefined,
     errorMessageId: undefined,
@@ -132,7 +138,8 @@
       v-model="value"
       :items="props.items"
       :item-title="props.itemText"
-      :item-value="props.itemValue"
+      :item-value="props.returnObject ? undefined : props.itemValue"
+      :return-object="props.returnObject"
       :class="inputClass"
       :style="inputStyle"
       :label="undefined"

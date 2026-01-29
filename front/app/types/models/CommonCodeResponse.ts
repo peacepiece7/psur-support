@@ -3,9 +3,13 @@
 /* tslint:disable */
 /* eslint-disable */
 /**
- * Codes under this group
+ * Response payload
  */
 export type CommonCodeResponse = {
+    /**
+     * Code ID
+     */
+    id?: number;
     /**
      * Code value
      */

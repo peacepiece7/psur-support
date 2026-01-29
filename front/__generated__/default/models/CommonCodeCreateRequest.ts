@@ -2,14 +2,11 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-/**
- * Response payload
- */
-export type CommonCodeResponse = {
+export type CommonCodeCreateRequest = {
     /**
-     * Code ID
+     * Group code
      */
-    id?: number;
+    groupCode?: string;
     /**
      * Code value
      */
@@ -19,16 +16,20 @@ export type CommonCodeResponse = {
      */
     codeName?: string;
     /**
-     * Code description
+     * Child group code mapped to this code
      */
-    description?: string;
+    childGroupCode?: string;
     /**
      * Sort order
      */
     sortOrder?: number;
     /**
-     * Child group code mapped to this code
+     * Code description
      */
-    groupCode?: string;
+    description?: string;
+    /**
+     * Is active
+     */
+    isActive?: boolean;
 };
 

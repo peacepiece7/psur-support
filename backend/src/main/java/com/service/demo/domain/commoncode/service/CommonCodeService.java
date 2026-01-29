@@ -20,9 +20,12 @@ import java.util.Map;
 @Service
 public class CommonCodeService {
     private final CommonCodeMapper commonCodeMapper;
+    private final CommonCodeLookupService commonCodeLookupService;
 
-    public CommonCodeService(CommonCodeMapper commonCodeMapper) {
+    public CommonCodeService(CommonCodeMapper commonCodeMapper,
+                             CommonCodeLookupService commonCodeLookupService) {
         this.commonCodeMapper = commonCodeMapper;
+        this.commonCodeLookupService = commonCodeLookupService;
     }
 
     public CommonCodeGroupResponse getGroupTree(String groupCode,
@@ -75,6 +78,7 @@ public class CommonCodeService {
                 CommonCodeGroupResponse parent = nodeMap.get(code.getGroupId());
                 if (parent != null) {
                     parent.getCodes().add(new CommonCodeResponse(
+                            code.getId(),
                             code.getCode(),
                             code.getCodeName(),
                             code.getDescription(),
@@ -187,10 +191,12 @@ public class CommonCodeService {
         entity.setIsActive(request.getIsActive() == null || request.getIsActive());
 
         commonCodeMapper.insertCode(entity);
+        commonCodeLookupService.evictCodeId(request.getGroupCode(), request.getCode());
 
         return new CommonCodeResponse(
-                entity.getCode(),
-                entity.getCodeName(),
+            entity.getId(),
+            entity.getCode(),
+            entity.getCodeName(),
                 entity.getDescription(),
                 entity.getSortOrder(),
                 entity.getChildGroupCode()
@@ -202,6 +208,7 @@ public class CommonCodeService {
         if (updated == 0) {
             throw new ApiException(ErrorCode.BAD_REQUEST, "Code not found");
         }
+        commonCodeLookupService.evictCodeId(groupCode, code);
     }
 
     private String resolveSortColumn(String sortBy) {

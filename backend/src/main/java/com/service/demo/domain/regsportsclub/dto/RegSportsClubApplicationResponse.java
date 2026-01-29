@@ -12,8 +12,11 @@ public class RegSportsClubApplicationResponse {
     @Schema(description = "Application detail ID", example = "10")
     private Long applicationId;
 
-    @Schema(description = "Application status code ID", example = "2")
-    private Long statusCodeId;
+    @Schema(description = "Application status code", example = "APPLY")
+    private String code;
+
+    @Schema(description = "Application status code name", example = "신청")
+    private String codeName;
 
     @Schema(description = "Applied at", example = "2025-01-01T10:00:00")
     private LocalDateTime appliedAt;
@@ -59,7 +62,7 @@ public class RegSportsClubApplicationResponse {
     public RegSportsClubApplicationResponse() {
     }
 
-    public RegSportsClubApplicationResponse(Long applyId, Long applicationId, Long statusCodeId,
+    public RegSportsClubApplicationResponse(Long applyId, Long applicationId, String code, String codeName,
                                             LocalDateTime appliedAt, String applicantName, String applicantTelno,
                                             String applicantEmail, String clubName, String location,
                                             String representativeName, String representativeTelno, String businessNo,
@@ -67,7 +70,8 @@ public class RegSportsClubApplicationResponse {
                                             Long operatingSportChildCodeId, Long approvedClubId) {
         this.applyId = applyId;
         this.applicationId = applicationId;
-        this.statusCodeId = statusCodeId;
+        this.code = code;
+        this.codeName = codeName;
         this.appliedAt = appliedAt;
         this.applicantName = applicantName;
         this.applicantTelno = applicantTelno;
@@ -99,12 +103,20 @@ public class RegSportsClubApplicationResponse {
         this.applicationId = applicationId;
     }
 
-    public Long getStatusCodeId() {
-        return statusCodeId;
+    public String getCode() {
+        return code;
     }
 
-    public void setStatusCodeId(Long statusCodeId) {
-        this.statusCodeId = statusCodeId;
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getCodeName() {
+        return codeName;
+    }
+
+    public void setCodeName(String codeName) {
+        this.codeName = codeName;
     }
 
     public LocalDateTime getAppliedAt() {

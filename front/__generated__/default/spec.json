@@ -17,6 +17,10 @@
       "description": "Authentication and session management"
     },
     {
+      "name": "Registered Sports Club Applications",
+      "description": "Registered sports club application flow"
+    },
+    {
       "name": "Common Codes",
       "description": "Common code group and code lookup"
     },
@@ -280,6 +284,105 @@
         ]
       }
     },
+    "/reg-sports-club-applications": {
+      "get": {
+        "tags": [
+          "Registered Sports Club Applications"
+        ],
+        "summary": "List applications",
+        "description": "Returns all registered sports club applications.",
+        "operationId": "list_1",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseListRegSportsClubApplicationResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "sessionAuth": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Registered Sports Club Applications"
+        ],
+        "summary": "Create application",
+        "description": "Creates a registered sports club application.",
+        "operationId": "create_1",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegSportsClubApplicationCreateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseRegSportsClubApplicationResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "sessionAuth": []
+          }
+        ]
+      }
+    },
+    "/common-codes": {
+      "post": {
+        "tags": [
+          "Common Codes"
+        ],
+        "summary": "Create common code",
+        "description": "Creates a common code under a group.",
+        "operationId": "createCode",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CommonCodeCreateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseCommonCodeResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "sessionAuth": []
+          }
+        ]
+      }
+    },
     "/auth/register": {
       "post": {
         "tags": [
@@ -398,6 +501,96 @@
         }
       }
     },
+    "/reg-sports-club-applications/{applyId}/status": {
+      "patch": {
+        "tags": [
+          "Registered Sports Club Applications"
+        ],
+        "summary": "Update application status",
+        "description": "Updates the status of an application.",
+        "operationId": "updateStatus",
+        "parameters": [
+          {
+            "name": "applyId",
+            "in": "path",
+            "description": "Application info ID",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegSportsClubApplicationStatusUpdateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseRegSportsClubApplicationResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "sessionAuth": []
+          }
+        ]
+      }
+    },
+    "/reg-sports-club-applications/{applyId}": {
+      "get": {
+        "tags": [
+          "Registered Sports Club Applications"
+        ],
+        "summary": "Get application",
+        "description": "Returns a registered sports club application by ID.",
+        "operationId": "get_1",
+        "parameters": [
+          {
+            "name": "applyId",
+            "in": "path",
+            "description": "Application info ID",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseRegSportsClubApplicationResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "sessionAuth": []
+          }
+        ]
+      }
+    },
     "/common-codes/{groupCode}/tree": {
       "get": {
         "tags": [
@@ -431,6 +624,15 @@
             "name": "includeCodes",
             "in": "query",
             "description": "Include codes in response",
+            "required": true,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "includeInactive",
+            "in": "query",
+            "description": "Include inactive codes and groups",
             "required": true,
             "schema": {
               "type": "boolean"
@@ -556,6 +758,51 @@
               "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiResponseListCommonCodeGroupSummaryResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "sessionAuth": []
+          }
+        ]
+      }
+    },
+    "/common-codes/{groupCode}/codes/{code}": {
+      "delete": {
+        "tags": [
+          "Common Codes"
+        ],
+        "summary": "Delete common code",
+        "description": "Soft deletes a common code.",
+        "operationId": "deleteCode",
+        "parameters": [
+          {
+            "name": "groupCode",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "code",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseVoid"
                 }
               }
             }
@@ -697,14 +944,14 @@
           },
           "categoryIds": {
             "type": "array",
-            "description": "Sports category IDs",
+            "description": "Operating sport common code IDs",
             "example": [
               1,
               2
             ],
             "items": {
               "type": "integer",
-              "description": "Sports category IDs",
+              "description": "Operating sport common code IDs",
               "format": "int64"
             }
           }
@@ -782,14 +1029,14 @@
           },
           "categoryIds": {
             "type": "array",
-            "description": "Sports category IDs",
+            "description": "Operating sport common code IDs",
             "example": [
               1,
               2
             ],
             "items": {
               "type": "integer",
-              "description": "Sports category IDs",
+              "description": "Operating sport common code IDs",
               "format": "int64"
             }
           }
@@ -840,18 +1087,339 @@
           },
           "categoryIds": {
             "type": "array",
-            "description": "Sports category IDs",
+            "description": "Operating sport common code IDs",
             "example": [
               1,
               2
             ],
             "items": {
               "type": "integer",
-              "description": "Sports category IDs",
+              "description": "Operating sport common code IDs",
               "format": "int64"
             }
           }
         }
+      },
+      "RegSportsClubApplicationCreateRequest": {
+        "required": [
+          "applicantEmail",
+          "applicantName",
+          "applicantTelno",
+          "clubName"
+        ],
+        "type": "object",
+        "properties": {
+          "statusCodeId": {
+            "type": "integer",
+            "description": "Application status code ID",
+            "format": "int64",
+            "example": 1
+          },
+          "statusCode": {
+            "type": "string",
+            "description": "Application status code",
+            "example": "APPLY"
+          },
+          "applicantName": {
+            "type": "string",
+            "description": "Applicant name",
+            "example": "Kim Applicant"
+          },
+          "applicantTelno": {
+            "type": "string",
+            "description": "Applicant phone number",
+            "example": "010-1111-2222"
+          },
+          "applicantEmail": {
+            "type": "string",
+            "description": "Applicant email",
+            "example": "applicant@example.com"
+          },
+          "clubName": {
+            "type": "string",
+            "description": "Club name",
+            "example": "Seoul Sports Club"
+          },
+          "location": {
+            "type": "string",
+            "description": "Club location",
+            "example": "Seoul, Korea"
+          },
+          "representativeName": {
+            "type": "string",
+            "description": "Representative name",
+            "example": "Kim Coach"
+          },
+          "representativeTelno": {
+            "type": "string",
+            "description": "Representative phone number",
+            "example": "010-3333-4444"
+          },
+          "businessNo": {
+            "type": "string",
+            "description": "Business registration number",
+            "example": "123-45-67890"
+          },
+          "clubRoleCodeId": {
+            "type": "integer",
+            "description": "Club role code ID",
+            "format": "int64",
+            "example": 10
+          },
+          "operatingSportParentCodeId": {
+            "type": "integer",
+            "description": "Operating sport parent code ID",
+            "format": "int64",
+            "example": 100
+          },
+          "operatingSportChildCodeId": {
+            "type": "integer",
+            "description": "Operating sport child code ID",
+            "format": "int64",
+            "example": 200
+          },
+          "operatingSportCodeIds": {
+            "type": "array",
+            "description": "Operating sport common code IDs",
+            "example": [
+              100,
+              200
+            ],
+            "items": {
+              "type": "integer",
+              "description": "Operating sport common code IDs",
+              "format": "int64"
+            }
+          }
+        }
+      },
+      "ApiResponseRegSportsClubApplicationResponse": {
+        "type": "object",
+        "properties": {
+          "resultCode": {
+            "type": "integer",
+            "description": "Application-level result code",
+            "format": "int32",
+            "example": 200
+          },
+          "resultMessage": {
+            "type": "string",
+            "description": "Application-level result message",
+            "example": "OK"
+          },
+          "data": {
+            "$ref": "#/components/schemas/RegSportsClubApplicationResponse"
+          }
+        },
+        "description": "Standard API wrapper"
+      },
+      "RegSportsClubApplicationResponse": {
+        "type": "object",
+        "properties": {
+          "applyId": {
+            "type": "integer",
+            "description": "Application info ID",
+            "format": "int64",
+            "example": 1
+          },
+          "applicationId": {
+            "type": "integer",
+            "description": "Application detail ID",
+            "format": "int64",
+            "example": 10
+          },
+          "code": {
+            "type": "string",
+            "description": "Application status code",
+            "example": "APPLY"
+          },
+          "codeName": {
+            "type": "string",
+            "description": "Application status code name",
+            "example": "신청"
+          },
+          "appliedAt": {
+            "type": "string",
+            "description": "Applied at",
+            "format": "date-time"
+          },
+          "applicantName": {
+            "type": "string",
+            "description": "Applicant name",
+            "example": "Kim Applicant"
+          },
+          "applicantTelno": {
+            "type": "string",
+            "description": "Applicant phone number",
+            "example": "010-1111-2222"
+          },
+          "applicantEmail": {
+            "type": "string",
+            "description": "Applicant email",
+            "example": "applicant@example.com"
+          },
+          "clubName": {
+            "type": "string",
+            "description": "Club name",
+            "example": "Seoul Sports Club"
+          },
+          "location": {
+            "type": "string",
+            "description": "Club location",
+            "example": "Seoul, Korea"
+          },
+          "representativeName": {
+            "type": "string",
+            "description": "Representative name",
+            "example": "Kim Coach"
+          },
+          "representativeTelno": {
+            "type": "string",
+            "description": "Representative phone number",
+            "example": "010-3333-4444"
+          },
+          "businessNo": {
+            "type": "string",
+            "description": "Business registration number",
+            "example": "123-45-67890"
+          },
+          "clubRoleCodeId": {
+            "type": "integer",
+            "description": "Club role code ID",
+            "format": "int64",
+            "example": 10
+          },
+          "operatingSportParentCodeId": {
+            "type": "integer",
+            "description": "Operating sport parent code ID",
+            "format": "int64",
+            "example": 100
+          },
+          "operatingSportChildCodeId": {
+            "type": "integer",
+            "description": "Operating sport child code ID",
+            "format": "int64",
+            "example": 200
+          },
+          "operatingSportCodeIds": {
+            "type": "array",
+            "description": "Operating sport common code IDs",
+            "example": [
+              100,
+              200
+            ],
+            "items": {
+              "type": "integer",
+              "description": "Operating sport common code IDs",
+              "format": "int64"
+            }
+          },
+          "approvedClubId": {
+            "type": "integer",
+            "description": "Approved sports club ID",
+            "format": "int64",
+            "example": 99
+          }
+        },
+        "description": "Response payload"
+      },
+      "CommonCodeCreateRequest": {
+        "type": "object",
+        "properties": {
+          "groupCode": {
+            "type": "string",
+            "description": "Group code",
+            "example": "REGION"
+          },
+          "code": {
+            "type": "string",
+            "description": "Code value",
+            "example": "SEOUL"
+          },
+          "codeName": {
+            "type": "string",
+            "description": "Code display name",
+            "example": "Seoul"
+          },
+          "childGroupCode": {
+            "type": "string",
+            "description": "Child group code mapped to this code",
+            "example": "SEOUL"
+          },
+          "sortOrder": {
+            "type": "integer",
+            "description": "Sort order",
+            "format": "int32",
+            "example": 1
+          },
+          "description": {
+            "type": "string",
+            "description": "Code description"
+          },
+          "isActive": {
+            "type": "boolean",
+            "description": "Is active",
+            "example": true
+          }
+        }
+      },
+      "ApiResponseCommonCodeResponse": {
+        "type": "object",
+        "properties": {
+          "resultCode": {
+            "type": "integer",
+            "description": "Application-level result code",
+            "format": "int32",
+            "example": 200
+          },
+          "resultMessage": {
+            "type": "string",
+            "description": "Application-level result message",
+            "example": "OK"
+          },
+          "data": {
+            "$ref": "#/components/schemas/CommonCodeResponse"
+          }
+        },
+        "description": "Standard API wrapper"
+      },
+      "CommonCodeResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Code ID",
+            "format": "int64",
+            "example": 123
+          },
+          "code": {
+            "type": "string",
+            "description": "Code value",
+            "example": "REGISTERED"
+          },
+          "codeName": {
+            "type": "string",
+            "description": "Code display name",
+            "example": "Registered Club"
+          },
+          "description": {
+            "type": "string",
+            "description": "Code description",
+            "example": "Club role for registered clubs"
+          },
+          "sortOrder": {
+            "type": "integer",
+            "description": "Sort order",
+            "format": "int32",
+            "example": 1
+          },
+          "groupCode": {
+            "type": "string",
+            "description": "Child group code mapped to this code",
+            "example": "OPERATING_SPORT_LEISURE_EXTREME"
+          }
+        },
+        "description": "Response payload"
       },
       "RegisterRequest": {
         "required": [
@@ -1007,6 +1575,40 @@
           }
         }
       },
+      "RegSportsClubApplicationStatusUpdateRequest": {
+        "required": [
+          "statusCodeId"
+        ],
+        "type": "object",
+        "properties": {
+          "statusCodeId": {
+            "type": "integer",
+            "description": "Application status code ID",
+            "format": "int64",
+            "example": 2
+          },
+          "handlerName": {
+            "type": "string",
+            "description": "Handler name",
+            "example": "Lee Manager"
+          },
+          "handlerTelno": {
+            "type": "string",
+            "description": "Handler phone number",
+            "example": "010-5555-6666"
+          },
+          "handlerEmail": {
+            "type": "string",
+            "description": "Handler email",
+            "example": "manager@example.com"
+          },
+          "memo": {
+            "type": "string",
+            "description": "Handling memo",
+            "example": "Checked documents."
+          }
+        }
+      },
       "ApiResponseListSportsClubListResponse": {
         "type": "object",
         "properties": {
@@ -1084,6 +1686,30 @@
         },
         "description": "Response payload"
       },
+      "ApiResponseListRegSportsClubApplicationResponse": {
+        "type": "object",
+        "properties": {
+          "resultCode": {
+            "type": "integer",
+            "description": "Application-level result code",
+            "format": "int32",
+            "example": 200
+          },
+          "resultMessage": {
+            "type": "string",
+            "description": "Application-level result message",
+            "example": "OK"
+          },
+          "data": {
+            "type": "array",
+            "description": "Response payload",
+            "items": {
+              "$ref": "#/components/schemas/RegSportsClubApplicationResponse"
+            }
+          }
+        },
+        "description": "Standard API wrapper"
+      },
       "ApiResponseCommonCodeGroupResponse": {
         "type": "object",
         "properties": {
@@ -1150,38 +1776,6 @@
           }
         },
         "description": "Response payload"
-      },
-      "CommonCodeResponse": {
-        "type": "object",
-        "properties": {
-          "code": {
-            "type": "string",
-            "description": "Code value",
-            "example": "REGISTERED"
-          },
-          "codeName": {
-            "type": "string",
-            "description": "Code display name",
-            "example": "Registered Club"
-          },
-          "description": {
-            "type": "string",
-            "description": "Code description",
-            "example": "Club role for registered clubs"
-          },
-          "sortOrder": {
-            "type": "integer",
-            "description": "Sort order",
-            "format": "int32",
-            "example": 1
-          },
-          "groupCode": {
-            "type": "string",
-            "description": "Child group code mapped to this code",
-            "example": "OPERATING_SPORT_LEISURE_EXTREME"
-          }
-        },
-        "description": "Codes under this group"
       },
       "ApiResponseCommonCodeGroupListResponse": {
         "type": "object",

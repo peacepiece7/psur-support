@@ -75,6 +75,10 @@
             title: '등록 스포츠클럽 신청',
             to: '/apply/registered-sports-club',
           },
+          {
+            title: '등록스포츠클럽 신청 현황',
+            to: '/apply/registered-sports-club-status',
+          },
         ],
       }
 

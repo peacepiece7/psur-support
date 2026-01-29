@@ -1,237 +1,217 @@
 <script setup lang="ts">
-  import dayjs from 'dayjs'
-  import RegionSelect from '~/components/molecules/RegionSelect.vue'
-  import TextField from '~/components/atoms/TextField.vue'
-  import DatePicker from '~/components/atoms/DatePicker.vue'
+  import { useFormContext } from 'vee-validate'
   import { useNewRegSprtClubStore } from '~/stores/newRegSprtClubStore'
-  import FacilitiesDialog from '~/components/templates/FacilitiesDialog.vue'
-  import EvfxDialog from '~/components/templates/EvfxDialog.vue'
-  import type {
-    NewRegSprtClubFacility,
-    NewRegSprtClubSport,
-  } from '~/types/apis/registered-sports-club'
+  import type { StatusStep } from '~/components/molecules/StatusStepper.vue'
+  import StatusStepper from '~/components/molecules/StatusStepper.vue'
 
   const newRegSprtClubStore = useNewRegSprtClubStore()
-  const isOpenClubEstablishedAtPicker = ref(false)
 
-  const clubEstablishedAtPickerValue = computed({
-    get: () => newRegSprtClubStore.clubEstablishedAt,
-    set: (val: unknown) => {
-      if (!val) {
-        newRegSprtClubStore.clubEstablishedAt = null
-        return
-      }
+  // Step2 폼 데이터 가져오기
+  type FormValues = {
+    applicantName: string
+    applicantTelno: string
+    applicantEmail: string
+    name: string
+    location: string
+    representativeName: string
+    representativeTelno: string
+    businessNo: string
+    operatingSportParentCodeId: string | null
+    operatingSportChildCodeId: string | null
+  }
 
-      const d = dayjs(val as any)
-      newRegSprtClubStore.clubEstablishedAt = d.isValid()
-        ? d.format('YYYY-MM-DD')
-        : null
+  const { values } = useFormContext<FormValues>()
+
+  // 프로세스 단계 정의
+  const processSteps: StatusStep[] = [
+    {
+      step: 1,
+      title: '신청',
     },
+    {
+      step: 2,
+      title: '접수',
+    },
+    {
+      step: 3,
+      title: '검토',
+    },
+    {
+      step: 4,
+      title: '승인',
+    },
+  ]
+
+  // 현재 단계는 신청 완료 상태 (0-based index)
+  const currentProcessStep = computed(() => 0)
+
+  // 신청 ID
+  const applicationId = computed(() => {
+    return newRegSprtClubStore.applicationResponse?.applicationId || null
   })
 
-  const clubEstablishedAtText = computed(() => {
-    return newRegSprtClubStore.clubEstablishedAt ?? ''
+  // 신청일시
+  const appliedAt = computed(() => {
+    if (!newRegSprtClubStore.applicationResponse?.appliedAt) {
+      return new Date().toLocaleString('ko-KR', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+      })
+    }
+    return new Date(
+      newRegSprtClubStore.applicationResponse.appliedAt,
+    ).toLocaleString('ko-KR', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    })
   })
-
-  // TODO: API 연동 시 교체
-  const facilityOptions = ref<NewRegSprtClubFacility[]>([
-    {
-      id: 'fac-1',
-      name: '마포구민체육센터',
-      address: '서울특별시 마포구 월드컵로 240',
-      note: '실내체육관/다목적',
-    },
-    {
-      id: 'fac-2',
-      name: '잠실종합운동장',
-      address: '서울특별시 송파구 올림픽로 25',
-      note: '주경기장/보조경기장',
-    },
-    {
-      id: 'fac-3',
-      name: '올림픽공원 체조경기장',
-      address: '서울특별시 송파구 올림픽로 424',
-      note: '대관 가능(일정 협의)',
-    },
-  ])
-
-  // TODO: API 연동 시 교체
-  const sportOptions = ref<NewRegSprtClubSport[]>([
-    { id: 'sprt-1', name: '축구', category: '구기', note: '11인/풋살 포함' },
-    { id: 'sprt-2', name: '농구', category: '구기' },
-    { id: 'sprt-3', name: '배드민턴', category: '라켓' },
-    { id: 'sprt-4', name: '수영', category: '수상' },
-  ])
-
-  // Dialog에는 id 목록만 전달(중복 state를 별도로 들지 않고 store에서 파생)
-  const selectedFacilityIds = computed(() =>
-    (newRegSprtClubStore.facilities ?? []).map((v) => v.id),
-  )
-  const selectedSportIds = computed(() =>
-    (newRegSprtClubStore.sports ?? []).map((v) => v.id),
-  )
-
-  const isOpenFacilityDialog = ref(false)
-  const isOpenEvfxDialog = ref(false)
-
-  const openFacilityDialog = () => {
-    isOpenFacilityDialog.value = true
-  }
-
-  const openSportDialog = () => {
-    isOpenEvfxDialog.value = true
-  }
-
-  // dialog submit 시 store(res)로 반영
-  const onFacilitiesSubmit = (selected: NewRegSprtClubFacility[]) => {
-    newRegSprtClubStore.actions.setRes({ facilities: selected })
-  }
-
-  const onSportsSubmit = (selected: NewRegSprtClubSport[]) => {
-    newRegSprtClubStore.actions.setRes({ sports: selected })
-  }
 </script>
 
 <template>
   <section
     class="border-grey-300 bg-grey-50 min-h-[420px] rounded-3xl border p-10"
   >
-    <h3 class="m-0 mb-4 text-2xl font-bold">3단계. 클럽 정보 입력</h3>
-
-    <div class="grid max-w-[720px] gap-4">
-      <TextField
-        v-model="newRegSprtClubStore.corpOrgName"
-        label="법인 단체명"
-        placeholder="법인(단체)명을 입력하세요"
-        variant="outlined"
-        density="compact"
-        size="md"
-      />
-
-      <DatePicker
-        v-model="newRegSprtClubStore.representativeBirthDate"
-        label="대표자 생년월일"
-        quarter-picker
-      />
-
-      <TextField
-        v-model="newRegSprtClubStore.representativeName"
-        label="대표자명"
-        placeholder="대표자명을 입력하세요"
-      />
-
-      <RegionSelect v-model="newRegSprtClubStore.region" />
-
-      <TextField
-        v-model="newRegSprtClubStore.mainPhone"
-        label="대표전화번호"
-        placeholder="예) 02-1234-5678"
-        type="tel"
-      />
-
-      <NumberInput
-        v-model="newRegSprtClubStore.members.femaleMembers"
-        label="여성 회원 수"
-      />
-
-      <TextField
-        v-model="newRegSprtClubStore.clubName"
-        label="클럽명"
-        placeholder="클럽명을 입력하세요"
-        aria-label="클럽명"
-      />
-
-      <!-- <v-menu
-        v-model="isOpenClubEstablishedAtPicker"
-        :close-on-content-click="false"
-        location="bottom"
+    <!-- 성공 메시지 -->
+    <div class="mb-8 text-center">
+      <div
+        class="mb-4 inline-flex size-16 items-center justify-center rounded-full bg-[var(--color-primary-700)]"
       >
-        <template #activator="{ props }">
-          <TextField
-            v-model="clubEstablishedAtText"
-            v-bind="props"
-            label="클럽 설립일"
-            aria-label="클럽 설립일"
-            readonly
-            clearable
-            variant="outlined"
-            density="compact"
-            @click:clear="newRegSprtClubStore.clubEstablishedAt = null"
-          />
-        </template>
-
-        <v-date-picker
-          v-model="clubEstablishedAtPickerValue"
-          @update:model-value="isOpenClubEstablishedAtPicker = false"
-        />
-      </v-menu> -->
-
-      <!-- 사용시설명: 직접 입력 불가(검색 다이얼로그 오픈) -->
-      <!-- <v-select
-        v-model="newRegSprtClubStore.facilities"
-        :items="facilityOptions"
-        item-title="name"
-        item-value="id"
-        :return-object="true"
-        class="apply-reg-step__search-input"
-        label="사용시설명"
-        placeholder="검색해서 선택하세요"
-        aria-label="사용시설명"
-        :multiple="true"
-        :chips="true"
-        :clearable="false"
-        readonly
-        :menu="false"
-        append-inner-icon="local:search"
-        @click="openFacilityDialog"
-        @click:append-inner="openFacilityDialog"
-      /> -->
-
-      <!-- 운영종목: 직접 입력 불가(검색 다이얼로그 오픈) -->
-      <!-- <v-select
-        v-model="newRegSprtClubStore.sports"
-        :items="sportOptions"
-        item-title="name"
-        item-value="id"
-        :return-object="true"
-        class="apply-reg-step__search-input"
-        label="운영종목"
-        placeholder="검색해서 선택하세요"
-        aria-label="운영종목"
-        :multiple="true"
-        :chips="true"
-        :clearable="false"
-        readonly
-        :menu="false"
-        append-inner-icon="local:search"
-        @click="openSportDialog"
-        @click:append-inner="openSportDialog"
-      /> -->
+        <v-icon size="32" color="white">mdi-check</v-icon>
+      </div>
+      <h3 class="text-grey-900 m-0 mb-2 text-3xl font-bold">
+        신청에 성공했습니다!
+      </h3>
+      <p class="text-grey-600 m-0 mb-2">신청일시: {{ appliedAt }}</p>
+      <p v-if="applicationId" class="text-grey-500 m-0 text-sm">
+        신청번호: {{ applicationId }}
+      </p>
     </div>
 
-    <FacilitiesDialog
-      v-model:is-open="isOpenFacilityDialog"
-      :options="facilityOptions"
-      :selected="selectedFacilityIds"
-      @close="isOpenFacilityDialog = false"
-      @submit="onFacilitiesSubmit"
-    />
+    <!-- 프로세스 단계 표시 -->
+    <div class="mb-8">
+      <h4 class="text-grey-900 mb-4 text-xl font-bold">신청 진행 단계</h4>
+      <StatusStepper
+        :steps="processSteps"
+        :model-value="currentProcessStep"
+        :readonly="true"
+      />
+      <div class="mt-6 grid gap-4 rounded-lg bg-white p-6">
+        <div class="flex items-start gap-3">
+          <div
+            class="flex size-8 shrink-0 items-center justify-center rounded-full bg-[var(--color-primary-700)] text-sm font-bold text-white"
+          >
+            1
+          </div>
+          <div class="flex-1">
+            <div class="text-grey-900 mb-1 font-bold">신청</div>
+            <div class="text-grey-600 text-sm">완료</div>
+          </div>
+        </div>
+        <div class="flex items-start gap-3">
+          <div
+            class="text-grey-600 flex size-8 shrink-0 items-center justify-center rounded-full bg-[var(--color-grey-200)] text-sm font-bold"
+          >
+            2
+          </div>
+          <div class="flex-1">
+            <div class="text-grey-900 mb-1 font-bold">접수</div>
+            <div class="text-grey-600 text-sm">
+              영업일 15일 이내, 시군구체육회 접수
+            </div>
+          </div>
+        </div>
+        <div class="flex items-start gap-3">
+          <div
+            class="text-grey-600 flex size-8 shrink-0 items-center justify-center rounded-full bg-[var(--color-grey-200)] text-sm font-bold"
+          >
+            3
+          </div>
+          <div class="flex-1">
+            <div class="text-grey-900 mb-1 font-bold">검토</div>
+            <div class="text-grey-600 text-sm">
+              영업일 15일 이내, 시군구체육회 검토
+            </div>
+          </div>
+        </div>
+        <div class="flex items-start gap-3">
+          <div
+            class="text-grey-600 flex size-8 shrink-0 items-center justify-center rounded-full bg-[var(--color-grey-200)] text-sm font-bold"
+          >
+            4
+          </div>
+          <div class="flex-1">
+            <div class="text-grey-900 mb-1 font-bold">승인</div>
+            <div class="text-grey-600 text-sm">
+              시도체육회, 영업일 15일 이내
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-    <EvfxDialog
-      v-model:is-open="isOpenEvfxDialog"
-      :options="sportOptions"
-      :selected="selectedSportIds"
-      @close="isOpenEvfxDialog = false"
-      @submit="onSportsSubmit"
-    />
+    <!-- 신청 정보 요약 -->
+    <div>
+      <h4 class="text-grey-900 mb-4 text-xl font-bold">신청 정보</h4>
+      <div class="grid gap-4 rounded-lg bg-white p-6">
+        <div
+          class="border-grey-200 grid grid-cols-[140px_1fr] gap-4 border-b pb-4"
+        >
+          <div class="text-grey-700 font-semibold">신청자명</div>
+          <div class="text-grey-900">{{ values.applicantName || '-' }}</div>
+        </div>
+        <div
+          class="border-grey-200 grid grid-cols-[140px_1fr] gap-4 border-b pb-4"
+        >
+          <div class="text-grey-700 font-semibold">신청자 전화번호</div>
+          <div class="text-grey-900">{{ values.applicantTelno || '-' }}</div>
+        </div>
+        <div
+          class="border-grey-200 grid grid-cols-[140px_1fr] gap-4 border-b pb-4"
+        >
+          <div class="text-grey-700 font-semibold">신청자 이메일</div>
+          <div class="text-grey-900">{{ values.applicantEmail || '-' }}</div>
+        </div>
+        <div
+          class="border-grey-200 grid grid-cols-[140px_1fr] gap-4 border-b pb-4"
+        >
+          <div class="text-grey-700 font-semibold">클럽명</div>
+          <div class="text-grey-900">{{ values.name || '-' }}</div>
+        </div>
+        <div
+          class="border-grey-200 grid grid-cols-[140px_1fr] gap-4 border-b pb-4"
+        >
+          <div class="text-grey-700 font-semibold">위치</div>
+          <div class="text-grey-900">{{ values.location || '-' }}</div>
+        </div>
+        <div
+          class="border-grey-200 grid grid-cols-[140px_1fr] gap-4 border-b pb-4"
+        >
+          <div class="text-grey-700 font-semibold">대표자명</div>
+          <div class="text-grey-900">
+            {{ values.representativeName || '-' }}
+          </div>
+        </div>
+        <div
+          class="border-grey-200 grid grid-cols-[140px_1fr] gap-4 border-b pb-4"
+        >
+          <div class="text-grey-700 font-semibold">대표자 전화번호</div>
+          <div class="text-grey-900">
+            {{ values.representativeTelno || '-' }}
+          </div>
+        </div>
+        <div class="grid grid-cols-[140px_1fr] gap-4">
+          <div class="text-grey-700 font-semibold">사업자등록번호</div>
+          <div class="text-grey-900">{{ values.businessNo || '-' }}</div>
+        </div>
+      </div>
+    </div>
   </section>
 </template>
 
-<style scoped>
-  /* Step3 전용 스타일 */
-  .apply-reg-step__search-input {
-    :deep(.v-field__input) {
-      cursor: pointer;
-    }
-  }
-</style>
+<style scoped></style>

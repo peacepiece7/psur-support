@@ -1,3 +1,4 @@
+import { request } from './../../__generated__/default/core/request'
 import { defineStore } from 'pinia'
 import { computed, reactive, ref, toRefs } from 'vue'
 import type {
@@ -6,6 +7,10 @@ import type {
   NewRegSprtClubRes,
   NewRegSprtClubSport,
 } from '~/types/apis/registered-sports-club/newRegSprtClub.types'
+import type { RegSportsClubApplicationCreateRequest } from '~/types/models/RegSportsClubApplicationCreateRequest'
+import type { ApiResponseRegSportsClubApplicationResponse } from '~/types/models/ApiResponseRegSportsClubApplicationResponse'
+import type { RegSportsClubApplicationResponse } from '~/types/models/RegSportsClubApplicationResponse'
+import { API_BASE_URL } from '~/constants/url'
 
 export const useNewRegSprtClubStore = defineStore('newRegSprtClub', () => {
   /* =========================
@@ -13,6 +18,9 @@ export const useNewRegSprtClubStore = defineStore('newRegSprtClub', () => {
    * ========================= */
   // state는 응답(res)만 유지한다.
   const newRegSportClubRes = reactive(_createInitialRes())
+
+  // 신청 응답 데이터 (Step3에서 사용)
+  const applicationResponse = ref<RegSportsClubApplicationResponse | null>(null)
 
   // UI state (0-based step index)
   const currentIndex = ref(0)
@@ -68,6 +76,71 @@ export const useNewRegSprtClubStore = defineStore('newRegSprtClub', () => {
       },
     },
 
+    /**
+     * Step2 폼 데이터를 받아서 API 요청 형식으로 변환하고 서버로 전송
+     */
+    async createApplicationFromStep2(formValues: {
+      applicantName: string
+      applicantTelno: string
+      applicantEmail: string
+      name: string
+      location: string
+      representativeName: string
+      representativeTelno: string
+      businessNo: string
+      operatingSportParentCodeId: { id?: number } | null
+      operatingSportChildCodeId: { id?: number } | null
+    }) {
+      // 폼 데이터를 API 요청 형식으로 변환
+      // 운영종목 코드 ID는 선택된 객체의 id 필드에서 추출
+      const request: RegSportsClubApplicationCreateRequest = {
+        statusCode: 'APPLY',
+        applicantName: formValues.applicantName || undefined,
+        applicantTelno: formValues.applicantTelno || undefined,
+        applicantEmail: formValues.applicantEmail || undefined,
+        clubName: formValues.name,
+        location: formValues.location || undefined,
+        representativeName: formValues.representativeName || undefined,
+        representativeTelno: formValues.representativeTelno || undefined,
+        businessNo: formValues.businessNo || undefined,
+        operatingSportParentCodeId:
+          formValues.operatingSportParentCodeId?.id || undefined,
+        operatingSportChildCodeId:
+          formValues.operatingSportChildCodeId?.id || undefined,
+      }
+
+      return await actions.createApplication(request)
+    },
+
+    async createApplication(request: RegSportsClubApplicationCreateRequest) {
+      try {
+        const response =
+          await $fetch<ApiResponseRegSportsClubApplicationResponse>(
+            `${API_BASE_URL}/reg-sports-club-applications`,
+            {
+              method: 'POST',
+              credentials: 'include',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: request,
+            },
+          )
+
+        if (response.resultCode === 200) {
+          // 응답 데이터 저장
+          applicationResponse.value = response.data
+          return response.data
+        } else {
+          throw new Error(response.resultMessage || '신청 등록에 실패했습니다.')
+        }
+      } catch (error) {
+        console.error('Create application error:', error)
+        console.error(error)
+        throw error
+      }
+    },
+
     setRes(next: Partial<NewRegSprtClubRes>) {
       _applyResPatch(next)
     },
@@ -80,6 +153,8 @@ export const useNewRegSprtClubStore = defineStore('newRegSprtClub', () => {
       _resetState()
       // reset할 때 step index도 초기화
       currentIndex.value = 0
+      // 응답 데이터도 초기화
+      applicationResponse.value = null
     },
   }
 
@@ -239,6 +314,7 @@ export const useNewRegSprtClubStore = defineStore('newRegSprtClub', () => {
   return {
     ...toRefs(newRegSportClubRes),
     newRegSportClubRes,
+    applicationResponse,
     currentIndex,
     getters,
     actions,
