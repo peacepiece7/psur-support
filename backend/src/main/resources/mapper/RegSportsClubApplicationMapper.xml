@@ -15,6 +15,7 @@
 
   <resultMap id="RegSportsClubApplyMap" type="com.service.demo.domain.regsportsclub.entity.RegSportsClubApplyEntity">
     <id property="id" column="id"/>
+    <result property="processTaskId" column="process_task_id"/>
     <result property="statusCodeId" column="status_code_id"/>
     <result property="appliedAt" column="applied_at"/>
     <result property="applicantName" column="applicant_name"/>
@@ -69,6 +70,7 @@
 
   <insert id="insertApply" parameterType="com.service.demo.domain.regsportsclub.entity.RegSportsClubApplyEntity" useGeneratedKeys="true" keyProperty="id">
     INSERT INTO reg_sports_club_apply (
+      process_task_id,
       status_code_id,
       applied_at,
       applicant_name,
@@ -76,6 +78,7 @@
       applicant_email
     )
     VALUES (
+      #{processTaskId},
       #{statusCodeId},
       #{appliedAt},
       #{applicantName},
@@ -175,32 +178,11 @@
     ORDER BY a.id DESC
   </select>
 
-  <update id="updateApplyStatus">
+  <update id="updateApplyProcessTaskId">
     UPDATE reg_sports_club_apply
-    SET status_code_id = #{statusCodeId}
+    SET process_task_id = #{processTaskId}
     WHERE id = #{id} AND deleted_at IS NULL
   </update>
-
-  <insert id="insertHistory" parameterType="com.service.demo.domain.regsportsclub.entity.RegSportsClubApplyHistoryEntity" useGeneratedKeys="true" keyProperty="id">
-    INSERT INTO reg_sports_club_apply_history (
-      apply_id,
-      status_code_id,
-      handler_name,
-      handler_telno,
-      handler_email,
-      memo,
-      processed_at
-    )
-    VALUES (
-      #{applyId},
-      #{statusCodeId},
-      #{handlerName},
-      #{handlerTelno},
-      #{handlerEmail},
-      #{memo},
-      #{processedAt}
-    )
-  </insert>
 
   <update id="updateApprovedClubId">
     UPDATE reg_sports_club_application

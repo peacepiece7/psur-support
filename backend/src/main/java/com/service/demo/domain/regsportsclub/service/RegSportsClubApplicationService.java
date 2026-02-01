@@ -2,15 +2,12 @@ package com.service.demo.domain.regsportsclub.service;
 
 import com.service.demo.common.error.ErrorCode;
 import com.service.demo.common.exception.ApiException;
-import com.service.demo.domain.commoncode.entity.CommonCodeEntity;
 import com.service.demo.domain.commoncode.mapper.CommonCodeMapper;
 import com.service.demo.domain.commoncode.service.CommonCodeLookupService;
 import com.service.demo.domain.regsportsclub.constant.RegSportsClubApplyStatus;
 import com.service.demo.domain.regsportsclub.dto.RegSportsClubApplicationCreateRequest;
 import com.service.demo.domain.regsportsclub.dto.RegSportsClubApplicationResponse;
-import com.service.demo.domain.regsportsclub.dto.RegSportsClubApplicationStatusUpdateRequest;
 import com.service.demo.domain.regsportsclub.entity.RegSportsClubApplyEntity;
-import com.service.demo.domain.regsportsclub.entity.RegSportsClubApplyHistoryEntity;
 import com.service.demo.domain.regsportsclub.entity.RegSportsClubApplicationCategoryEntity;
 import com.service.demo.domain.regsportsclub.entity.RegSportsClubApplicationEntity;
 import com.service.demo.domain.regsportsclub.mapper.RegSportsClubApplicationMapper;
@@ -34,6 +31,7 @@ public class RegSportsClubApplicationService {
     private final SportsClubMapper sportsClubMapper;
     private final CommonCodeMapper commonCodeMapper;
     private final CommonCodeLookupService commonCodeLookupService;
+    private final ActionService actionService;
 
     /**
      * @apiNote 등록스포츠크럽 신청
@@ -42,6 +40,7 @@ public class RegSportsClubApplicationService {
     public RegSportsClubApplicationResponse create(RegSportsClubApplicationCreateRequest req) {
         RegSportsClubApplyEntity applyEntity = new RegSportsClubApplyEntity();
         Long statusCodeId = req.getStatusCodeId();
+
         if (statusCodeId == null) {
             String statusCode = req.getStatusCode();
             if (statusCode != null && !statusCode.isBlank()) {
@@ -50,10 +49,11 @@ public class RegSportsClubApplicationService {
                         statusCode
                 );
             }
+
             if (statusCodeId == null) {
                 statusCodeId = commonCodeLookupService.getCodeId(
                         RegSportsClubApplyStatus.GROUP_CODE,
-                        RegSportsClubApplyStatus.APPLY.getCode()
+                        RegSportsClubApplyStatus.SAVED.getCode()
                 );
             }
             if (statusCodeId == null) {
@@ -89,6 +89,8 @@ public class RegSportsClubApplicationService {
         saveApplicationCategories(applicationEntity.getId(), req.getOperatingSportCodeIds(),
                 req.getOperatingSportParentCodeId(), req.getOperatingSportChildCodeId());
 
+        // 요기 bmpService.start() 이후 exception 이 발생하면 외부 서비스는 롤백이 안되서 무한이 "bpm task"가 쌓임
+        // 프로젝트가 성숙해질수록 로그-알람, 롤백 처리(보상 시스템, 삭제 , 메시지-큐) 또는 배치 스케줄러가 들어가면 좋을 것 같음
         return getByApplyId(applyEntity.getId());
     }
 
@@ -130,30 +132,13 @@ public class RegSportsClubApplicationService {
     }
 
     @Transactional
-    public RegSportsClubApplicationResponse updateStatus(Long applyId, RegSportsClubApplicationStatusUpdateRequest req) {
-        RegSportsClubApplyEntity applyEntity = regSportsClubApplicationMapper.findApplyById(applyId);
-        if (applyEntity == null) {
-            throw new ApiException(ErrorCode.BAD_REQUEST, "Application not found");
-        }
+    public void save(Long applyId) {
+        actionService.handleAction(applyId, com.service.demo.domain.regsportsclub.constant.Action.SAVE);
+    }
 
-        regSportsClubApplicationMapper.updateApplyStatus(applyId, req.getStatusCodeId());
-
-        RegSportsClubApplyHistoryEntity historyEntity = new RegSportsClubApplyHistoryEntity();
-        historyEntity.setApplyId(applyId);
-        historyEntity.setStatusCodeId(req.getStatusCodeId());
-        historyEntity.setHandlerName(req.getHandlerName());
-        historyEntity.setHandlerTelno(req.getHandlerTelno());
-        historyEntity.setHandlerEmail(req.getHandlerEmail());
-        historyEntity.setMemo(req.getMemo());
-        historyEntity.setProcessedAt(LocalDateTime.now());
-        regSportsClubApplicationMapper.insertHistory(historyEntity);
-
-        CommonCodeEntity statusCode = commonCodeMapper.findCodeById(req.getStatusCodeId());
-        if (statusCode != null && "APPROVED".equals(statusCode.getCode())) {
-            approveToSportsClub(applyId);
-        }
-
-        return getByApplyId(applyId);
+    @Transactional
+    public void apply(Long applyId) {
+        actionService.handleAction(applyId, com.service.demo.domain.regsportsclub.constant.Action.APPLY);
     }
 
     private void approveToSportsClub(Long applyId) {

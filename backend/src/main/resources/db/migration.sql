@@ -97,3 +97,9 @@ UPDATE common_code
 SET child_group_code = 'OPERATING_SPORT_LEISURE_EXTREME'
 WHERE code = 'LEISURE_EXTREME'
   AND group_id = (SELECT id FROM common_code_group WHERE group_code = 'OPERATING_SPORT');
+
+-- Add process_task_id to reg_sports_club_apply
+ALTER TABLE reg_sports_club_apply
+  ADD COLUMN process_task_id BIGINT NULL AFTER id;
+
+CREATE INDEX idx_rsca_process_task_id ON reg_sports_club_apply (process_task_id);

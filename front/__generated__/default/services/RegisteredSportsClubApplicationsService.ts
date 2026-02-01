@@ -4,8 +4,8 @@
 /* eslint-disable */
 import type { ApiResponseListRegSportsClubApplicationResponse } from '../models/ApiResponseListRegSportsClubApplicationResponse';
 import type { ApiResponseRegSportsClubApplicationResponse } from '../models/ApiResponseRegSportsClubApplicationResponse';
+import type { ApiResponseVoid } from '../models/ApiResponseVoid';
 import type { RegSportsClubApplicationCreateRequest } from '../models/RegSportsClubApplicationCreateRequest';
-import type { RegSportsClubApplicationStatusUpdateRequest } from '../models/RegSportsClubApplicationStatusUpdateRequest';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
@@ -41,29 +41,47 @@ export class RegisteredSportsClubApplicationsService {
         });
     }
     /**
-     * Update application status
-     * Updates the status of an application.
-     * @returns ApiResponseRegSportsClubApplicationResponse OK
+     * Save application
+     * Saves application data without state transition.
+     * @returns ApiResponseVoid OK
      * @throws ApiError
      */
-    public static updateStatus({
+    public static save({
         applyId,
-        requestBody,
     }: {
         /**
          * Application info ID
          */
         applyId: number,
-        requestBody: RegSportsClubApplicationStatusUpdateRequest,
-    }): CancelablePromise<ApiResponseRegSportsClubApplicationResponse> {
+    }): CancelablePromise<ApiResponseVoid> {
         return __request(OpenAPI, {
-            method: 'PATCH',
-            url: '/reg-sports-club-applications/{applyId}/status',
+            method: 'POST',
+            url: '/reg-sports-club-applications/{applyId}/save',
             path: {
                 'applyId': applyId,
             },
-            body: requestBody,
-            mediaType: 'application/json',
+        });
+    }
+    /**
+     * Apply application
+     * Applies application data and triggers BPM transition.
+     * @returns ApiResponseVoid OK
+     * @throws ApiError
+     */
+    public static apply({
+        applyId,
+    }: {
+        /**
+         * Application info ID
+         */
+        applyId: number,
+    }): CancelablePromise<ApiResponseVoid> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/reg-sports-club-applications/{applyId}/apply',
+            path: {
+                'applyId': applyId,
+            },
         });
     }
     /**

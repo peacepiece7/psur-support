@@ -2,7 +2,6 @@ package com.service.demo.domain.regsportsclub.mapper;
 
 import com.service.demo.domain.regsportsclub.dto.RegSportsClubApplicationResponse;
 import com.service.demo.domain.regsportsclub.entity.RegSportsClubApplyEntity;
-import com.service.demo.domain.regsportsclub.entity.RegSportsClubApplyHistoryEntity;
 import com.service.demo.domain.regsportsclub.entity.RegSportsClubApplicationCategoryEntity;
 import com.service.demo.domain.regsportsclub.entity.RegSportsClubApplicationEntity;
 import org.apache.ibatis.annotations.Mapper;
@@ -18,8 +17,7 @@ public interface RegSportsClubApplicationMapper {
     RegSportsClubApplicationEntity findApplicationByApplyId(@Param("applyId") Long applyId);
     RegSportsClubApplicationResponse findApplicationDetail(@Param("applyId") Long applyId);
     List<RegSportsClubApplicationResponse> findAllApplications();
-    int updateApplyStatus(@Param("id") Long id, @Param("statusCodeId") Long statusCodeId);
-    int insertHistory(RegSportsClubApplyHistoryEntity entity);
+    int updateApplyProcessTaskId(@Param("id") Long id, @Param("processTaskId") Long processTaskId);
     int updateApprovedClubId(@Param("applyId") Long applyId, @Param("approvedClubId") Long approvedClubId);
     int deleteApplicationCategoriesByApplicationId(@Param("applicationId") Long applicationId);
     int insertApplicationCategories(@Param("applicationId") Long applicationId, @Param("categoryIds") List<Long> categoryIds);

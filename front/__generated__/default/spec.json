@@ -346,6 +346,86 @@
         ]
       }
     },
+    "/reg-sports-club-applications/{applyId}/save": {
+      "post": {
+        "tags": [
+          "Registered Sports Club Applications"
+        ],
+        "summary": "Save application",
+        "description": "Saves application data without state transition.",
+        "operationId": "save",
+        "parameters": [
+          {
+            "name": "applyId",
+            "in": "path",
+            "description": "Application info ID",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseVoid"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "sessionAuth": []
+          }
+        ]
+      }
+    },
+    "/reg-sports-club-applications/{applyId}/apply": {
+      "post": {
+        "tags": [
+          "Registered Sports Club Applications"
+        ],
+        "summary": "Apply application",
+        "description": "Applies application data and triggers BPM transition.",
+        "operationId": "apply",
+        "parameters": [
+          {
+            "name": "applyId",
+            "in": "path",
+            "description": "Application info ID",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseVoid"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "sessionAuth": []
+          }
+        ]
+      }
+    },
     "/common-codes": {
       "post": {
         "tags": [
@@ -499,56 +579,6 @@
             }
           }
         }
-      }
-    },
-    "/reg-sports-club-applications/{applyId}/status": {
-      "patch": {
-        "tags": [
-          "Registered Sports Club Applications"
-        ],
-        "summary": "Update application status",
-        "description": "Updates the status of an application.",
-        "operationId": "updateStatus",
-        "parameters": [
-          {
-            "name": "applyId",
-            "in": "path",
-            "description": "Application info ID",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            },
-            "example": 1
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RegSportsClubApplicationStatusUpdateRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiResponseRegSportsClubApplicationResponse"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "sessionAuth": []
-          }
-        ]
       }
     },
     "/reg-sports-club-applications/{applyId}": {
@@ -1323,6 +1353,27 @@
         },
         "description": "Response payload"
       },
+      "ApiResponseVoid": {
+        "type": "object",
+        "properties": {
+          "resultCode": {
+            "type": "integer",
+            "description": "Application-level result code",
+            "format": "int32",
+            "example": 200
+          },
+          "resultMessage": {
+            "type": "string",
+            "description": "Application-level result message",
+            "example": "OK"
+          },
+          "data": {
+            "type": "object",
+            "description": "Response payload"
+          }
+        },
+        "description": "Standard API wrapper"
+      },
       "CommonCodeCreateRequest": {
         "type": "object",
         "properties": {
@@ -1535,27 +1586,6 @@
           }
         }
       },
-      "ApiResponseVoid": {
-        "type": "object",
-        "properties": {
-          "resultCode": {
-            "type": "integer",
-            "description": "Application-level result code",
-            "format": "int32",
-            "example": 200
-          },
-          "resultMessage": {
-            "type": "string",
-            "description": "Application-level result message",
-            "example": "OK"
-          },
-          "data": {
-            "type": "object",
-            "description": "Response payload"
-          }
-        },
-        "description": "Standard API wrapper"
-      },
       "LoginRequest": {
         "required": [
           "loginId",
@@ -1572,40 +1602,6 @@
             "type": "string",
             "description": "User password",
             "example": "P@ssw0rd123"
-          }
-        }
-      },
-      "RegSportsClubApplicationStatusUpdateRequest": {
-        "required": [
-          "statusCodeId"
-        ],
-        "type": "object",
-        "properties": {
-          "statusCodeId": {
-            "type": "integer",
-            "description": "Application status code ID",
-            "format": "int64",
-            "example": 2
-          },
-          "handlerName": {
-            "type": "string",
-            "description": "Handler name",
-            "example": "Lee Manager"
-          },
-          "handlerTelno": {
-            "type": "string",
-            "description": "Handler phone number",
-            "example": "010-5555-6666"
-          },
-          "handlerEmail": {
-            "type": "string",
-            "description": "Handler email",
-            "example": "manager@example.com"
-          },
-          "memo": {
-            "type": "string",
-            "description": "Handling memo",
-            "example": "Checked documents."
           }
         }
       },
@@ -1832,41 +1828,28 @@
         "properties": {
           "id": {
             "type": "integer",
-            "description": "Group ID",
-            "format": "int64",
-            "example": 1
+            "format": "int64"
           },
           "groupCode": {
-            "type": "string",
-            "description": "Group code",
-            "example": "CLUB_ROLE"
+            "type": "string"
           },
           "groupName": {
-            "type": "string",
-            "description": "Group name",
-            "example": "Sports Club Role"
+            "type": "string"
           },
           "parentGroupId": {
             "type": "integer",
-            "description": "Parent group ID",
             "format": "int64"
           },
           "level": {
             "type": "integer",
-            "description": "Group level (1-3)",
-            "format": "int32",
-            "example": 1
+            "format": "int32"
           },
           "sortOrder": {
             "type": "integer",
-            "description": "Sort order",
-            "format": "int32",
-            "example": 1
+            "format": "int32"
           },
           "description": {
-            "type": "string",
-            "description": "Group description",
-            "example": "Roles available for sports clubs"
+            "type": "string"
           }
         },
         "description": "Common code group summary"

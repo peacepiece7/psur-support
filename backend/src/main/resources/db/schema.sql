@@ -113,6 +113,7 @@ CREATE TABLE IF NOT EXISTS sports_club_category (
 
 CREATE TABLE IF NOT EXISTS reg_sports_club_apply (
   id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  process_task_id BIGINT NULL,
   status_code_id BIGINT NOT NULL,
   applied_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   applicant_name VARCHAR(100) NOT NULL,
@@ -121,6 +122,7 @@ CREATE TABLE IF NOT EXISTS reg_sports_club_apply (
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   deleted_at DATETIME NULL,
+  KEY idx_rsca_process_task_id (process_task_id),
   KEY idx_rsca_status_code_id (status_code_id),
   CONSTRAINT fk_rsca_status_code_id FOREIGN KEY (status_code_id) REFERENCES common_code(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

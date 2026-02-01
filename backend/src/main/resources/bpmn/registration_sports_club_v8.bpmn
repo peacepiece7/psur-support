@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1kuet71" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.43.1" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.8.0">
+  <bpmn:process id="registration_sports_club_process" name="Registraion Sports Club Process" isExecutable="true">
+    <bpmn:extensionElements />
+    <bpmn:startEvent id="start_application" name="start">
+      <bpmn:outgoing>Flow_144scvg</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:exclusiveGateway id="review_gw" name="review_gw">
+      <bpmn:incoming>Flow_1m4nxj1</bpmn:incoming>
+      <bpmn:outgoing>review_sequance_flow</bpmn:outgoing>
+      <bpmn:outgoing>review_rejected_sequance_flow</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:exclusiveGateway id="receipt_gw" name="receipt_gw">
+      <bpmn:incoming>Flow_1g9k42i</bpmn:incoming>
+      <bpmn:outgoing>receipt_sequance_flow</bpmn:outgoing>
+      <bpmn:outgoing>receipt_rejected_sequnce_flow</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:exclusiveGateway id="approval_gw" name="approval_gw">
+      <bpmn:incoming>Flow_0o459pp</bpmn:incoming>
+      <bpmn:outgoing>approve_sequance_flow</bpmn:outgoing>
+      <bpmn:outgoing>approval_rejected_sequance_flow</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="application_user_task" name="Applicaion">
+      <bpmn:extensionElements>
+        <zeebe:userTask />
+      </bpmn:extensionElements>
+      <bpmn:incoming>receipt_rejected_sequnce_flow</bpmn:incoming>
+      <bpmn:incoming>review_rejected_sequance_flow</bpmn:incoming>
+      <bpmn:incoming>approval_rejected_sequance_flow</bpmn:incoming>
+      <bpmn:incoming>Flow_144scvg</bpmn:incoming>
+      <bpmn:outgoing>Flow_0lj3mt7</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="receipt_user_task" name="Receipt">
+      <bpmn:extensionElements>
+        <zeebe:userTask />
+      </bpmn:extensionElements>
+      <bpmn:incoming>apply_sequance_flow</bpmn:incoming>
+      <bpmn:outgoing>Flow_1g9k42i</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_1g9k42i" sourceRef="receipt_user_task" targetRef="receipt_gw" />
+    <bpmn:sequenceFlow id="receipt_sequance_flow" name="receipt" sourceRef="receipt_gw" targetRef="review_user_task">
+      <bpmn:extensionElements>
+        <zeebe:properties>
+          <zeebe:property name="recipet" value="recipet" />
+        </zeebe:properties>
+      </bpmn:extensionElements>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=action = "receipt"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:userTask id="review_user_task" name="Review">
+      <bpmn:extensionElements>
+        <zeebe:userTask />
+      </bpmn:extensionElements>
+      <bpmn:incoming>receipt_sequance_flow</bpmn:incoming>
+      <bpmn:outgoing>Flow_1m4nxj1</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_1m4nxj1" sourceRef="review_user_task" targetRef="review_gw" />
+    <bpmn:sequenceFlow id="review_sequance_flow" name="Review" sourceRef="review_gw" targetRef="approval_user_task">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=action = "review"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:userTask id="approval_user_task" name="Approval">
+      <bpmn:extensionElements>
+        <zeebe:userTask />
+      </bpmn:extensionElements>
+      <bpmn:incoming>review_sequance_flow</bpmn:incoming>
+      <bpmn:outgoing>Flow_0o459pp</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_0o459pp" sourceRef="approval_user_task" targetRef="approval_gw" />
+    <bpmn:endEvent id="end_event" name="end">
+      <bpmn:incoming>approve_sequance_flow</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="approve_sequance_flow" name="Approve" sourceRef="approval_gw" targetRef="end_event">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=action = "approve"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="receipt_rejected_sequnce_flow" name="Rejected" sourceRef="receipt_gw" targetRef="application_user_task">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=action = "reject"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="review_rejected_sequance_flow" name="Rejected" sourceRef="review_gw" targetRef="application_user_task">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=action = "reject"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="approval_rejected_sequance_flow" name="Rejected" sourceRef="approval_gw" targetRef="application_user_task">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=action = "reject"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_144scvg" sourceRef="start_application" targetRef="application_user_task" />
+    <bpmn:exclusiveGateway id="apply_gw" name="apply_gw">
+      <bpmn:incoming>Flow_0lj3mt7</bpmn:incoming>
+      <bpmn:outgoing>apply_sequance_flow</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0lj3mt7" sourceRef="application_user_task" targetRef="apply_gw" />
+    <bpmn:sequenceFlow id="apply_sequance_flow" name="appy" sourceRef="apply_gw" targetRef="receipt_user_task">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=action = "apply"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="registration_sports_club_process">
+      <bpmndi:BPMNShape id="Gateway_18e08qs_di" bpmnElement="review_gw" isMarkerVisible="true">
+        <dc:Bounds x="1235" y="95" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1233" y="65" width="54" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0a5x46h_di" bpmnElement="receipt_gw" isMarkerVisible="true">
+        <dc:Bounds x="925" y="95" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="923" y="65" width="55" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0qzhl17_di" bpmnElement="approval_gw" isMarkerVisible="true">
+        <dc:Bounds x="1575" y="95" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1568" y="65" width="64" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1f7isu4_di" bpmnElement="receipt_user_task">
+        <dc:Bounds x="740" y="80" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_05qcuyl_di" bpmnElement="review_user_task">
+        <dc:Bounds x="1070" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_03wot8s_di" bpmnElement="approval_user_task">
+        <dc:Bounds x="1390" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1blqg8g_di" bpmnElement="end_event">
+        <dc:Bounds x="1742" y="102" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1751" y="145" width="19" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="StartEvent_1_di" bpmnElement="start_application">
+        <dc:Bounds x="152" y="102" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="159" y="145" width="23" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0xhhd06_di" bpmnElement="application_user_task">
+        <dc:Bounds x="310" y="80" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_09ybpvo_di" bpmnElement="apply_gw" isMarkerVisible="true">
+        <dc:Bounds x="545" y="95" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="548" y="152" width="48" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1m4nxj1_di" bpmnElement="Flow_1m4nxj1">
+        <di:waypoint x="1170" y="120" />
+        <di:waypoint x="1235" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1teh2fe_di" bpmnElement="review_sequance_flow">
+        <di:waypoint x="1285" y="120" />
+        <di:waypoint x="1390" y="120" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1319" y="102" width="38" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0x4irk5_di" bpmnElement="review_rejected_sequance_flow">
+        <di:waypoint x="1260" y="145" />
+        <di:waypoint x="1260" y="290" />
+        <di:waypoint x="360" y="290" />
+        <di:waypoint x="360" y="160" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="788" y="272" width="44" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1g9k42i_di" bpmnElement="Flow_1g9k42i">
+        <di:waypoint x="840" y="120" />
+        <di:waypoint x="925" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1fziqbp_di" bpmnElement="receipt_sequance_flow">
+        <di:waypoint x="975" y="120" />
+        <di:waypoint x="1070" y="120" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1006" y="102" width="34" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0oczihj_di" bpmnElement="receipt_rejected_sequnce_flow">
+        <di:waypoint x="950" y="145" />
+        <di:waypoint x="950" y="230" />
+        <di:waypoint x="360" y="230" />
+        <di:waypoint x="360" y="160" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="633" y="212" width="44" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0o459pp_di" bpmnElement="Flow_0o459pp">
+        <di:waypoint x="1490" y="120" />
+        <di:waypoint x="1575" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0bfhqwt_di" bpmnElement="approve_sequance_flow">
+        <di:waypoint x="1625" y="120" />
+        <di:waypoint x="1742" y="120" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1664" y="102" width="40" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1tf9c3m_di" bpmnElement="approval_rejected_sequance_flow">
+        <di:waypoint x="1600" y="145" />
+        <di:waypoint x="1600" y="350" />
+        <di:waypoint x="360" y="350" />
+        <di:waypoint x="360" y="160" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="959" y="332" width="44" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0524p9z_di" bpmnElement="apply_sequance_flow">
+        <di:waypoint x="595" y="120" />
+        <di:waypoint x="740" y="120" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="655" y="102" width="25" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_144scvg_di" bpmnElement="Flow_144scvg">
+        <di:waypoint x="188" y="120" />
+        <di:waypoint x="310" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0lj3mt7_di" bpmnElement="Flow_0lj3mt7">
+        <di:waypoint x="410" y="120" />
+        <di:waypoint x="545" y="120" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
