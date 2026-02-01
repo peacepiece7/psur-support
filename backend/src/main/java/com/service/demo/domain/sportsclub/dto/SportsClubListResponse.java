@@ -1,7 +1,9 @@
 package com.service.demo.domain.sportsclub.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Getter;
 
+@Getter
 public class SportsClubListResponse {
     @Schema(description = "Club ID", example = "1")
     private final Long id;
@@ -36,39 +38,4 @@ public class SportsClubListResponse {
         this.isActive = isActive;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public String getRepresentativeName() {
-        return representativeName;
-    }
-
-    public String getRepresentativeTelno() {
-        return representativeTelno;
-    }
-
-    public String getClubNo() {
-        return clubNo;
-    }
-
-    public String getBusinessNo() {
-        return businessNo;
-    }
-
-    public Long getClubRoleCodeId() {
-        return clubRoleCodeId;
-    }
-
-    public Boolean getIsActive() {
-        return isActive;
-    }
 }

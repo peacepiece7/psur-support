@@ -3,7 +3,9 @@ package com.service.demo.domain.commoncode.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.List;
+import lombok.Getter;
 
+@Getter
 @Schema(description = "Paged common code group response")
 public class CommonCodeGroupListResponse {
     @Schema(description = "Result items")
@@ -25,19 +27,4 @@ public class CommonCodeGroupListResponse {
         this.limit = limit;
     }
 
-    public List<CommonCodeGroupSummaryResponse> getItems() {
-        return items;
-    }
-
-    public Integer getNextOffset() {
-        return nextOffset;
-    }
-
-    public Boolean getHasNext() {
-        return hasNext;
-    }
-
-    public Integer getLimit() {
-        return limit;
-    }
 }

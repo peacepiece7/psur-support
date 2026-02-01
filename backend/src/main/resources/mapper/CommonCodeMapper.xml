@@ -3,6 +3,11 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.service.demo.domain.commoncode.mapper.CommonCodeMapper">
+  <!--
+    테이블 역할 요약
+    - common_code_group: 공통 코드 그룹(대분류) 정의
+    - common_code: 그룹에 속한 실제 코드(상태/유형/카테고리 등)
+  -->
 
   <resultMap id="CommonCodeGroupMap" type="com.service.demo.domain.commoncode.entity.CommonCodeGroupEntity">
     <id property="id" column="id"/>

@@ -3,6 +3,15 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.service.demo.domain.regsportsclub.mapper.RegSportsClubApplicationMapper">
+  <!--
+    테이블 역할 요약
+    - reg_sports_club_apply: 등록 스포츠클럽 신청 프로세스(접수/상태) 헤더 및 신청자 기본 정보
+    - reg_sports_club_application: 실제 등록하려는 클럽의 상세 정보(클럽명, 대표자, 종목 등)
+    - reg_sports_club_application_category: 신청 클럽에 연결된 카테고리(다대다 매핑)
+    - reg_sports_club_apply_history: 신청 상태 변경 이력(처리자/메모/처리시각 포함)
+    - common_code: 상태코드/역할/종목 등 공통 코드 조회용
+    - sports_club: 승인 후 연결되는 실제 클럽 엔티티
+  -->
 
   <resultMap id="RegSportsClubApplyMap" type="com.service.demo.domain.regsportsclub.entity.RegSportsClubApplyEntity">
     <id property="id" column="id"/>

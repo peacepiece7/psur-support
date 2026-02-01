@@ -17,6 +17,7 @@ import com.service.demo.domain.regsportsclub.mapper.RegSportsClubApplicationMapp
 import com.service.demo.domain.sportsclub.entity.SportsClubCategoryEntity;
 import com.service.demo.domain.sportsclub.entity.SportsClubEntity;
 import com.service.demo.domain.sportsclub.mapper.SportsClubMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,22 +28,16 @@ import java.util.List;
 import java.util.Map;
 
 @Service
+@RequiredArgsConstructor
 public class RegSportsClubApplicationService {
     private final RegSportsClubApplicationMapper regSportsClubApplicationMapper;
     private final SportsClubMapper sportsClubMapper;
     private final CommonCodeMapper commonCodeMapper;
     private final CommonCodeLookupService commonCodeLookupService;
 
-    public RegSportsClubApplicationService(RegSportsClubApplicationMapper regSportsClubApplicationMapper,
-                                           SportsClubMapper sportsClubMapper,
-                                           CommonCodeMapper commonCodeMapper,
-                                           CommonCodeLookupService commonCodeLookupService) {
-        this.regSportsClubApplicationMapper = regSportsClubApplicationMapper;
-        this.sportsClubMapper = sportsClubMapper;
-        this.commonCodeMapper = commonCodeMapper;
-        this.commonCodeLookupService = commonCodeLookupService;
-    }
-
+    /**
+     * @apiNote 등록스포츠크럽 신청
+     */
     @Transactional
     public RegSportsClubApplicationResponse create(RegSportsClubApplicationCreateRequest req) {
         RegSportsClubApplyEntity applyEntity = new RegSportsClubApplyEntity();

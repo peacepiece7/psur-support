@@ -86,4 +86,5 @@ public class CommonCodeController {
         commonCodeService.deleteCode(groupCode, code);
         return ApiResponse.ok(null);
     }
+
 }

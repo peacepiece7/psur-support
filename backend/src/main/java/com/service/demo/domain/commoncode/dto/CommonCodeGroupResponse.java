@@ -4,7 +4,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.ArrayList;
 import java.util.List;
+import lombok.Getter;
 
+@Getter
 public class CommonCodeGroupResponse {
     @Schema(description = "Group code", example = "CLUB_ROLE")
     private final String groupCode;
@@ -29,31 +31,4 @@ public class CommonCodeGroupResponse {
         this.sortOrder = sortOrder;
     }
 
-    public String getGroupCode() {
-        return groupCode;
-    }
-
-    public String getGroupName() {
-        return groupName;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public Integer getLevel() {
-        return level;
-    }
-
-    public Integer getSortOrder() {
-        return sortOrder;
-    }
-
-    public List<CommonCodeResponse> getCodes() {
-        return codes;
-    }
-
-    public List<CommonCodeGroupResponse> getChildren() {
-        return children;
-    }
 }

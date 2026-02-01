@@ -4,7 +4,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
 
+@Setter
+@Getter
 public class RegSportsClubApplicationResponse {
     @Schema(description = "Application info ID", example = "1")
     private Long applyId;
@@ -87,147 +91,4 @@ public class RegSportsClubApplicationResponse {
         this.approvedClubId = approvedClubId;
     }
 
-    public Long getApplyId() {
-        return applyId;
-    }
-
-    public void setApplyId(Long applyId) {
-        this.applyId = applyId;
-    }
-
-    public Long getApplicationId() {
-        return applicationId;
-    }
-
-    public void setApplicationId(Long applicationId) {
-        this.applicationId = applicationId;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public String getCodeName() {
-        return codeName;
-    }
-
-    public void setCodeName(String codeName) {
-        this.codeName = codeName;
-    }
-
-    public LocalDateTime getAppliedAt() {
-        return appliedAt;
-    }
-
-    public void setAppliedAt(LocalDateTime appliedAt) {
-        this.appliedAt = appliedAt;
-    }
-
-    public String getApplicantName() {
-        return applicantName;
-    }
-
-    public void setApplicantName(String applicantName) {
-        this.applicantName = applicantName;
-    }
-
-    public String getApplicantTelno() {
-        return applicantTelno;
-    }
-
-    public void setApplicantTelno(String applicantTelno) {
-        this.applicantTelno = applicantTelno;
-    }
-
-    public String getApplicantEmail() {
-        return applicantEmail;
-    }
-
-    public void setApplicantEmail(String applicantEmail) {
-        this.applicantEmail = applicantEmail;
-    }
-
-    public String getClubName() {
-        return clubName;
-    }
-
-    public void setClubName(String clubName) {
-        this.clubName = clubName;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
-    public String getRepresentativeName() {
-        return representativeName;
-    }
-
-    public void setRepresentativeName(String representativeName) {
-        this.representativeName = representativeName;
-    }
-
-    public String getRepresentativeTelno() {
-        return representativeTelno;
-    }
-
-    public void setRepresentativeTelno(String representativeTelno) {
-        this.representativeTelno = representativeTelno;
-    }
-
-    public String getBusinessNo() {
-        return businessNo;
-    }
-
-    public void setBusinessNo(String businessNo) {
-        this.businessNo = businessNo;
-    }
-
-    public Long getClubRoleCodeId() {
-        return clubRoleCodeId;
-    }
-
-    public void setClubRoleCodeId(Long clubRoleCodeId) {
-        this.clubRoleCodeId = clubRoleCodeId;
-    }
-
-    public Long getOperatingSportParentCodeId() {
-        return operatingSportParentCodeId;
-    }
-
-    public void setOperatingSportParentCodeId(Long operatingSportParentCodeId) {
-        this.operatingSportParentCodeId = operatingSportParentCodeId;
-    }
-
-    public Long getOperatingSportChildCodeId() {
-        return operatingSportChildCodeId;
-    }
-
-    public void setOperatingSportChildCodeId(Long operatingSportChildCodeId) {
-        this.operatingSportChildCodeId = operatingSportChildCodeId;
-    }
-
-    public List<Long> getOperatingSportCodeIds() {
-        return operatingSportCodeIds;
-    }
-
-    public void setOperatingSportCodeIds(List<Long> operatingSportCodeIds) {
-        this.operatingSportCodeIds = operatingSportCodeIds;
-    }
-
-    public Long getApprovedClubId() {
-        return approvedClubId;
-    }
-
-    public void setApprovedClubId(Long approvedClubId) {
-        this.approvedClubId = approvedClubId;
-    }
 }

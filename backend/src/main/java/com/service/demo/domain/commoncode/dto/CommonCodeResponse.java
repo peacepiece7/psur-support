@@ -1,7 +1,9 @@
 package com.service.demo.domain.commoncode.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Getter;
 
+@Getter
 public class CommonCodeResponse {
     @Schema(description = "Code ID", example = "123")
     private final Long id;
@@ -25,27 +27,4 @@ public class CommonCodeResponse {
         this.groupCode = groupCode;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public String getCodeName() {
-        return codeName;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public Integer getSortOrder() {
-        return sortOrder;
-    }
-
-    public String getGroupCode() {
-        return groupCode;
-    }
 }

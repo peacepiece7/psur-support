@@ -4,7 +4,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 
 import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
 
+@Setter
+@Getter
 public class SportsClubCreateRequest {
     @Schema(description = "Club name", example = "Seoul Sports Club")
     @NotBlank
@@ -24,69 +28,5 @@ public class SportsClubCreateRequest {
     private Long clubRoleCodeId;
     @Schema(description = "Operating sport common code IDs", example = "[1,2]")
     private List<Long> categoryIds;
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
-    public String getRepresentativeName() {
-        return representativeName;
-    }
-
-    public void setRepresentativeName(String representativeName) {
-        this.representativeName = representativeName;
-    }
-
-    public String getRepresentativeTelno() {
-        return representativeTelno;
-    }
-
-    public void setRepresentativeTelno(String representativeTelno) {
-        this.representativeTelno = representativeTelno;
-    }
-
-    public String getClubNo() {
-        return clubNo;
-    }
-
-    public void setClubNo(String clubNo) {
-        this.clubNo = clubNo;
-    }
-
-    public String getBusinessNo() {
-        return businessNo;
-    }
-
-    public void setBusinessNo(String businessNo) {
-        this.businessNo = businessNo;
-    }
-
-    public Long getClubRoleCodeId() {
-        return clubRoleCodeId;
-    }
-
-    public void setClubRoleCodeId(Long clubRoleCodeId) {
-        this.clubRoleCodeId = clubRoleCodeId;
-    }
-
-    public List<Long> getCategoryIds() {
-        return categoryIds;
-    }
-
-    public void setCategoryIds(List<Long> categoryIds) {
-        this.categoryIds = categoryIds;
-    }
 
 }

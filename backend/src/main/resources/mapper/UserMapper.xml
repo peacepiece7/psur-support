@@ -3,6 +3,10 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.service.demo.domain.user.mapper.UserMapper">
+  <!--
+    테이블 역할 요약
+    - users: 사용자 계정 정보(로그인/연락처/상태 등)
+  -->
 
   <resultMap id="UserMap" type="com.service.demo.domain.user.entity.UserEntity">
     <id property="id" column="id"/>

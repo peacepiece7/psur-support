@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,12 +25,9 @@ import java.util.List;
 @SecurityRequirement(name = "sessionAuth")
 @RestController
 @RequestMapping("/reg-sports-club-applications")
+@RequiredArgsConstructor
 public class RegSportsClubApplicationController {
     private final RegSportsClubApplicationService regSportsClubApplicationService;
-
-    public RegSportsClubApplicationController(RegSportsClubApplicationService regSportsClubApplicationService) {
-        this.regSportsClubApplicationService = regSportsClubApplicationService;
-    }
 
     @Operation(summary = "Create application", description = "Creates a registered sports club application.")
     @PostMapping

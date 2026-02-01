@@ -1,5 +1,10 @@
 package com.service.demo.domain.regsportsclub.entity;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Setter
+@Getter
 public class RegSportsClubApplicationCategoryEntity {
     private Long applicationId;
     private Long categoryId;
@@ -12,19 +17,4 @@ public class RegSportsClubApplicationCategoryEntity {
         this.categoryId = categoryId;
     }
 
-    public Long getApplicationId() {
-        return applicationId;
-    }
-
-    public void setApplicationId(Long applicationId) {
-        this.applicationId = applicationId;
-    }
-
-    public Long getCategoryId() {
-        return categoryId;
-    }
-
-    public void setCategoryId(Long categoryId) {
-        this.categoryId = categoryId;
-    }
 }

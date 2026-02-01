@@ -1,5 +1,10 @@
 package com.service.demo.domain.sportsclub.entity;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Setter
+@Getter
 public class SportsClubCategoryEntity {
     private Long clubId;
     private Long categoryId;
@@ -12,19 +17,4 @@ public class SportsClubCategoryEntity {
         this.categoryId = categoryId;
     }
 
-    public Long getClubId() {
-        return clubId;
-    }
-
-    public void setClubId(Long clubId) {
-        this.clubId = clubId;
-    }
-
-    public Long getCategoryId() {
-        return categoryId;
-    }
-
-    public void setCategoryId(Long categoryId) {
-        this.categoryId = categoryId;
-    }
 }

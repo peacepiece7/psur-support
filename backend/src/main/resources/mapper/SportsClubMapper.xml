@@ -3,6 +3,11 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.service.demo.domain.sportsclub.mapper.SportsClubMapper">
+  <!--
+    테이블 역할 요약
+    - sports_club: 승인된 스포츠클럽 기본 정보
+    - sports_club_category: 클럽-카테고리 매핑(다대다)
+  -->
 
   <resultMap id="SportsClubMap" type="com.service.demo.domain.sportsclub.entity.SportsClubEntity">
     <id property="id" column="id"/>

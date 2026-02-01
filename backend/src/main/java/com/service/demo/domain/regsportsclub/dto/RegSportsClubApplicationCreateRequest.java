@@ -6,6 +6,11 @@ import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
 import lombok.Getter;
+import lombok.Setter;
+
+
+@Setter
+@Getter
 public class RegSportsClubApplicationCreateRequest {
     @Schema(description = "Application status code ID", example = "1")
     private Long statusCodeId;
@@ -52,115 +57,4 @@ public class RegSportsClubApplicationCreateRequest {
     @Schema(description = "Operating sport common code IDs", example = "[100,200]")
     private List<Long> operatingSportCodeIds;
 
-    public Long getStatusCodeId() {
-        return statusCodeId;
-    }
-
-    public void setStatusCodeId(Long statusCodeId) {
-        this.statusCodeId = statusCodeId;
-    }
-
-    public String getStatusCode() {
-        return statusCode;
-    }
-
-    public void setStatusCode(String statusCode) {
-        this.statusCode = statusCode;
-    }
-
-    public String getApplicantName() {
-        return applicantName;
-    }
-
-    public void setApplicantName(String applicantName) {
-        this.applicantName = applicantName;
-    }
-
-    public String getApplicantTelno() {
-        return applicantTelno;
-    }
-
-    public void setApplicantTelno(String applicantTelno) {
-        this.applicantTelno = applicantTelno;
-    }
-
-    public String getApplicantEmail() {
-        return applicantEmail;
-    }
-
-    public void setApplicantEmail(String applicantEmail) {
-        this.applicantEmail = applicantEmail;
-    }
-
-    public String getClubName() {
-        return clubName;
-    }
-
-    public void setClubName(String clubName) {
-        this.clubName = clubName;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
-    public String getRepresentativeName() {
-        return representativeName;
-    }
-
-    public void setRepresentativeName(String representativeName) {
-        this.representativeName = representativeName;
-    }
-
-    public String getRepresentativeTelno() {
-        return representativeTelno;
-    }
-
-    public void setRepresentativeTelno(String representativeTelno) {
-        this.representativeTelno = representativeTelno;
-    }
-
-    public String getBusinessNo() {
-        return businessNo;
-    }
-
-    public void setBusinessNo(String businessNo) {
-        this.businessNo = businessNo;
-    }
-
-    public Long getClubRoleCodeId() {
-        return clubRoleCodeId;
-    }
-
-    public void setClubRoleCodeId(Long clubRoleCodeId) {
-        this.clubRoleCodeId = clubRoleCodeId;
-    }
-
-    public Long getOperatingSportParentCodeId() {
-        return operatingSportParentCodeId;
-    }
-
-    public void setOperatingSportParentCodeId(Long operatingSportParentCodeId) {
-        this.operatingSportParentCodeId = operatingSportParentCodeId;
-    }
-
-    public Long getOperatingSportChildCodeId() {
-        return operatingSportChildCodeId;
-    }
-
-    public void setOperatingSportChildCodeId(Long operatingSportChildCodeId) {
-        this.operatingSportChildCodeId = operatingSportChildCodeId;
-    }
-
-    public List<Long> getOperatingSportCodeIds() {
-        return operatingSportCodeIds;
-    }
-
-    public void setOperatingSportCodeIds(List<Long> operatingSportCodeIds) {
-        this.operatingSportCodeIds = operatingSportCodeIds;
-    }
 }

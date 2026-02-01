@@ -1,5 +1,8 @@
 package com.service.demo.domain.regsportsclub.constant;
 
+import lombok.Getter;
+
+@Getter
 public enum RegSportsClubApplyStatus {
     SAVED("SAVED"),
     APPLY("APPLY"),
@@ -18,7 +21,4 @@ public enum RegSportsClubApplyStatus {
         this.code = code;
     }
 
-    public String getCode() {
-        return code;
-    }
 }

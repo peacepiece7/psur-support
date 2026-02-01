@@ -2,7 +2,11 @@ package com.service.demo.domain.regsportsclub.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.Setter;
 
+@Setter
+@Getter
 public class RegSportsClubApplicationStatusUpdateRequest {
     @Schema(description = "Application status code ID", example = "2")
     @NotNull
@@ -20,43 +24,4 @@ public class RegSportsClubApplicationStatusUpdateRequest {
     @Schema(description = "Handling memo", example = "Checked documents.")
     private String memo;
 
-    public Long getStatusCodeId() {
-        return statusCodeId;
-    }
-
-    public void setStatusCodeId(Long statusCodeId) {
-        this.statusCodeId = statusCodeId;
-    }
-
-    public String getHandlerName() {
-        return handlerName;
-    }
-
-    public void setHandlerName(String handlerName) {
-        this.handlerName = handlerName;
-    }
-
-    public String getHandlerTelno() {
-        return handlerTelno;
-    }
-
-    public void setHandlerTelno(String handlerTelno) {
-        this.handlerTelno = handlerTelno;
-    }
-
-    public String getHandlerEmail() {
-        return handlerEmail;
-    }
-
-    public void setHandlerEmail(String handlerEmail) {
-        this.handlerEmail = handlerEmail;
-    }
-
-    public String getMemo() {
-        return memo;
-    }
-
-    public void setMemo(String memo) {
-        this.memo = memo;
-    }
 }
