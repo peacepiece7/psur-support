@@ -28,6 +28,7 @@ public class ActionService {
         if (action == Action.SAVE) {
             return;
         }
+
         bpmService.update(applyEntity.getProcessTaskId(), action.getBpmValue());
     }
 
@@ -35,7 +36,7 @@ public class ActionService {
         if (applyEntity.getProcessTaskId() != null) {
             return;
         }
-        Long processTaskId = bpmService.start();
+        String processTaskId = bpmService.start();
         regSportsClubApplicationMapper.updateApplyProcessTaskId(applyEntity.getId(), processTaskId);
         applyEntity.setProcessTaskId(processTaskId);
     }

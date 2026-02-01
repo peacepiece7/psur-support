@@ -13,8 +13,8 @@ import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
 export class CommonCodesService {
     /**
-     * Create common code
-     * Creates a common code under a group.
+     * 공통 코드 생성
+     * 공통 코드 그룹 하위에 코드를 생성합니다.
      * @returns ApiResponseCommonCodeResponse OK
      * @throws ApiError
      */
@@ -31,8 +31,8 @@ export class CommonCodesService {
         });
     }
     /**
-     * Get common code tree
-     * Returns a group tree (up to 3 levels) with codes.
+     * 공통 코드 트리 조회
+     * 공통 코드 그룹 트리(최대 3레벨)를 조회합니다.
      * @returns ApiResponseCommonCodeGroupResponse OK
      * @throws ApiError
      */
@@ -43,19 +43,19 @@ export class CommonCodesService {
         includeInactive,
     }: {
         /**
-         * Root group code
+         * 루트 그룹 코드
          */
         groupCode: string,
         /**
-         * Depth (1-3)
+         * 조회 깊이(1-3)
          */
         depth: number,
         /**
-         * Include codes in response
+         * 코드 포함 여부
          */
         includeCodes: boolean,
         /**
-         * Include inactive codes and groups
+         * 비활성 코드/그룹 포함 여부
          */
         includeInactive: boolean,
     }): CancelablePromise<ApiResponseCommonCodeGroupResponse> {
@@ -73,8 +73,8 @@ export class CommonCodesService {
         });
     }
     /**
-     * List common code groups
-     * Returns all active common code groups for lookup.
+     * 공통 코드 그룹 목록
+     * 공통 코드 그룹 목록을 조회합니다.
      * @returns ApiResponseCommonCodeGroupListResponse OK
      * @throws ApiError
      */
@@ -87,27 +87,27 @@ export class CommonCodesService {
         limit,
     }: {
         /**
-         * Search by group name or code
+         * 그룹명 또는 코드로 검색
          */
         name: string,
         /**
-         * Include inactive groups
+         * 비활성 그룹 포함 여부
          */
         includeInactive: boolean,
         /**
-         * Sort by (groupCode, groupName, level, sortOrder, id, parentGroupId)
+         * 정렬 기준 (groupCode, groupName, level, sortOrder, id, parentGroupId)
          */
         sortBy: string,
         /**
-         * Sort direction (asc, desc)
+         * 정렬 방향 (asc, desc)
          */
         sortDir: string,
         /**
-         * Offset for pagination
+         * 페이지 오프셋
          */
         offset: number,
         /**
-         * Limit for pagination (max 200)
+         * 페이지 크기 (최대 200)
          */
         limit: number,
     }): CancelablePromise<ApiResponseCommonCodeGroupListResponse> {
@@ -125,8 +125,8 @@ export class CommonCodesService {
         });
     }
     /**
-     * List root common code groups
-     * Returns top-level common code groups.
+     * 루트 공통 코드 그룹 목록
+     * 최상위 공통 코드 그룹 목록을 조회합니다.
      * @returns ApiResponseListCommonCodeGroupSummaryResponse OK
      * @throws ApiError
      */
@@ -137,8 +137,8 @@ export class CommonCodesService {
         });
     }
     /**
-     * Delete common code
-     * Soft deletes a common code.
+     * 공통 코드 삭제
+     * 공통 코드를 소프트 삭제합니다.
      * @returns ApiResponseVoid OK
      * @throws ApiError
      */

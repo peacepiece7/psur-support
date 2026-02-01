@@ -7,8 +7,15 @@
   import ApplyRegSprtClubNewStep2 from '~/components/views/apply/reg-sprt-club/new/ApplyRegSprtClubNewStep2.vue'
   import ApplyRegSprtClubNewStep3 from '~/components/views/apply/reg-sprt-club/new/ApplyRegSprtClubNewStep3.vue'
 
+  const route = useRoute()
   const newRegSprtClubStore = useNewRegSprtClubStore()
   const applyContainerRef = ref<HTMLElement | null>(null)
+
+  onMounted(() => {
+    if (route.query.applyId != null) {
+      newRegSprtClubStore.actions.setApplyId(route.query.applyId)
+    }
+  })
 
   // 폼 타입 정의
   type FormValues = {
@@ -86,28 +93,34 @@
 
   const noticeAgreed = ref(false)
 
-  const saveDraft = () => {
-    // TODO: 임시저장 API 연결
-    console.log('임시저장')
+  const formSnapshot = () => ({
+    applicantName: values.applicantName,
+    applicantTelno: values.applicantTelno,
+    applicantEmail: values.applicantEmail,
+    name: values.name,
+    location: values.location,
+    representativeName: values.representativeName,
+    representativeTelno: values.representativeTelno,
+    businessNo: values.businessNo,
+    operatingSportParentCodeId: values.operatingSportParentCodeId,
+    operatingSportChildCodeId: values.operatingSportChildCodeId,
+  })
+
+  // step2에서 임시저장 (저장 API)
+  const saveDraft = async () => {
+    try {
+      await newRegSprtClubStore.actions.saveApplication(formSnapshot())
+      alert('저장되었습니다.')
+    } catch (error) {
+      console.error('저장 실패:', error)
+      alert('저장에 실패했습니다. 다시 시도해주세요.')
+    }
   }
 
-  // step2에서 신청하기
+  // step2에서 신청하기 (신청 API)
   const handleSubmit = async () => {
     try {
-      await newRegSprtClubStore.actions.createApplicationFromStep2({
-        ...values,
-        applicantName: values.applicantName,
-        applicantTelno: values.applicantTelno,
-        applicantEmail: values.applicantEmail,
-        name: values.name,
-        location: values.location,
-        representativeName: values.representativeName,
-        representativeTelno: values.representativeTelno,
-        businessNo: values.businessNo,
-        operatingSportParentCodeId: values.operatingSportParentCodeId,
-        operatingSportChildCodeId: values.operatingSportChildCodeId,
-      })
-      // 성공 시 step3로 이동
+      await newRegSprtClubStore.actions.applyApplication(formSnapshot())
       newRegSprtClubStore.actions.step.setIndex(2)
       scrollApplyContainerToTop()
     } catch (error) {

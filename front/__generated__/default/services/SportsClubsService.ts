@@ -12,8 +12,8 @@ import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
 export class SportsClubsService {
     /**
-     * Get sports club
-     * Returns a sports club by ID.
+     * 체육동호회 조회
+     * 체육동호회 ID로 정보를 조회합니다.
      * @returns ApiResponseSportsClubResponse OK
      * @throws ApiError
      */
@@ -21,7 +21,7 @@ export class SportsClubsService {
         id,
     }: {
         /**
-         * Sports club ID
+         * 체육동호회 ID
          */
         id: number,
     }): CancelablePromise<ApiResponseSportsClubResponse> {
@@ -34,8 +34,8 @@ export class SportsClubsService {
         });
     }
     /**
-     * Update sports club
-     * Updates a sports club and its categories.
+     * 체육동호회 수정
+     * 체육동호회 정보를 수정합니다.
      * @returns ApiResponseSportsClubResponse OK
      * @throws ApiError
      */
@@ -44,7 +44,7 @@ export class SportsClubsService {
         requestBody,
     }: {
         /**
-         * Sports club ID
+         * 체육동호회 ID
          */
         id: number,
         requestBody: SportsClubUpdateRequest,
@@ -60,8 +60,8 @@ export class SportsClubsService {
         });
     }
     /**
-     * Delete sports club
-     * Soft deletes a sports club.
+     * 체육동호회 삭제
+     * 체육동호회를 소프트 삭제합니다.
      * @returns ApiResponseVoid OK
      * @throws ApiError
      */
@@ -69,7 +69,7 @@ export class SportsClubsService {
         id,
     }: {
         /**
-         * Sports club ID
+         * 체육동호회 ID
          */
         id: number,
     }): CancelablePromise<ApiResponseVoid> {
@@ -82,8 +82,8 @@ export class SportsClubsService {
         });
     }
     /**
-     * List sports clubs
-     * Returns all sports clubs.
+     * 체육동호회 목록
+     * 체육동호회 목록을 조회합니다.
      * @returns ApiResponseListSportsClubListResponse OK
      * @throws ApiError
      */
@@ -94,8 +94,8 @@ export class SportsClubsService {
         });
     }
     /**
-     * Create sports club
-     * Creates a sports club with optional categories.
+     * 체육동호회 생성
+     * 체육동호회를 생성합니다.
      * @returns ApiResponseSportsClubResponse OK
      * @throws ApiError
      */

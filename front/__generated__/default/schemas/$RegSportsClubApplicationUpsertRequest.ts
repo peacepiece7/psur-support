@@ -2,8 +2,13 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export const $RegSportsClubApplicationCreateRequest = {
+export const $RegSportsClubApplicationUpsertRequest = {
     properties: {
+        applyId: {
+            type: 'number',
+            description: `Application info ID (optional for new save/apply)`,
+            format: 'int64',
+        },
         statusCodeId: {
             type: 'number',
             description: `Application status code ID`,

@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@Tag(name = "Users", description = "User profile endpoints")
+@Tag(name = "Users", description = "사용자 프로필 API")
 @SecurityRequirement(name = "sessionAuth")
 @RestController
 @RequestMapping("/users")
@@ -28,13 +28,13 @@ public class UserController {
         this.userService = userService;
     }
 
-    @Operation(summary = "Get my profile", description = "Returns the authenticated user's profile.")
+    @Operation(summary = "내 프로필 조회", description = "로그인한 사용자의 프로필을 조회합니다.")
     @GetMapping("/me")
     public ApiResponse<UserResponse> me(@Parameter(hidden = true) @UserSession Long userId) {
         return ApiResponse.ok(userService.getById(userId));
     }
 
-    @Operation(summary = "Update my profile", description = "Updates the authenticated user's profile.")
+    @Operation(summary = "내 프로필 수정", description = "로그인한 사용자의 프로필을 수정합니다.")
     @PutMapping("/me")
     public ApiResponse<UserResponse> update(@Parameter(hidden = true) @UserSession Long userId,
                                             @Valid @RequestBody UpdateProfileRequest req) {

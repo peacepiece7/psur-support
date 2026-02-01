@@ -114,6 +114,31 @@
     )
   </insert>
 
+  <update id="updateApply" parameterType="com.service.demo.domain.regsportsclub.entity.RegSportsClubApplyEntity">
+    UPDATE reg_sports_club_apply
+    SET
+      status_code_id = #{statusCodeId},
+      applied_at = #{appliedAt},
+      applicant_name = #{applicantName},
+      applicant_telno = #{applicantTelno},
+      applicant_email = #{applicantEmail}
+    WHERE id = #{id} AND deleted_at IS NULL
+  </update>
+
+  <update id="updateApplication" parameterType="com.service.demo.domain.regsportsclub.entity.RegSportsClubApplicationEntity">
+    UPDATE reg_sports_club_application
+    SET
+      name = #{name},
+      location = #{location},
+      representative_name = #{representativeName},
+      representative_telno = #{representativeTelno},
+      business_no = #{businessNo},
+      club_role_code_id = #{clubRoleCodeId},
+      operating_sport_parent_code_id = #{operatingSportParentCodeId},
+      operating_sport_child_code_id = #{operatingSportChildCodeId}
+    WHERE apply_id = #{applyId} AND deleted_at IS NULL
+  </update>
+
   <select id="findApplyById" resultMap="RegSportsClubApplyMap">
     SELECT * FROM reg_sports_club_apply
     WHERE id = #{id} AND deleted_at IS NULL

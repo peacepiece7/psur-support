@@ -2,7 +2,11 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type RegSportsClubApplicationCreateRequest = {
+export type RegSportsClubApplicationUpsertRequest = {
+    /**
+     * Application info ID (optional for new save/apply)
+     */
+    applyId?: number;
     /**
      * Application status code ID
      */

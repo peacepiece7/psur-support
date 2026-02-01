@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@Tag(name = "Auth", description = "Authentication and session management")
+@Tag(name = "Auth", description = "인증 및 세션 관리")
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
@@ -29,13 +29,13 @@ public class AuthController {
         this.authService = authService;
     }
 
-    @Operation(summary = "Register a new user", description = "Creates a new user account and returns the profile.")
+    @Operation(summary = "회원가입", description = "새 사용자 계정을 생성하고 프로필을 반환합니다.")
     @PostMapping("/register")
     public ApiResponse<LoginResponse> register(@Valid @RequestBody RegisterRequest req) {
         return ApiResponse.ok(authService.register(req));
     }
 
-    @Operation(summary = "Login", description = "Validates credentials and creates a session.")
+    @Operation(summary = "로그인", description = "자격 증명을 확인하고 세션을 생성합니다.")
     @PostMapping("/login")
     public ApiResponse<LoginResponse> login(@Valid @RequestBody LoginRequest req,
                                             @Parameter(hidden = true) HttpSession session) {
@@ -44,14 +44,14 @@ public class AuthController {
         return ApiResponse.ok(response);
     }
 
-    @Operation(summary = "Logout", description = "Invalidates the current session.")
+    @Operation(summary = "로그아웃", description = "현재 세션을 종료합니다.")
     @PostMapping("/logout")
     public ApiResponse<Void> logout(@Parameter(hidden = true) HttpSession session) {
         session.invalidate();
         return ApiResponse.ok(null);
     }
 
-    @Operation(summary = "Reset password", description = "Changes the password for the authenticated user.")
+    @Operation(summary = "비밀번호 변경", description = "로그인한 사용자의 비밀번호를 변경합니다.")
     @PostMapping("/password/reset")
     public ApiResponse<Void> resetPassword(@Parameter(hidden = true) @UserSession Long userId,
                                            @Valid @RequestBody ResetPasswordRequest req) {

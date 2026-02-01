@@ -12,8 +12,8 @@ import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
 export class AuthService {
     /**
-     * Register a new user
-     * Creates a new user account and returns the profile.
+     * 회원가입
+     * 새 사용자 계정을 생성하고 프로필을 반환합니다.
      * @returns ApiResponseLoginResponse OK
      * @throws ApiError
      */
@@ -30,8 +30,8 @@ export class AuthService {
         });
     }
     /**
-     * Reset password
-     * Changes the password for the authenticated user.
+     * 비밀번호 변경
+     * 로그인한 사용자의 비밀번호를 변경합니다.
      * @returns ApiResponseVoid OK
      * @throws ApiError
      */
@@ -48,8 +48,8 @@ export class AuthService {
         });
     }
     /**
-     * Logout
-     * Invalidates the current session.
+     * 로그아웃
+     * 현재 세션을 종료합니다.
      * @returns ApiResponseVoid OK
      * @throws ApiError
      */
@@ -60,8 +60,8 @@ export class AuthService {
         });
     }
     /**
-     * Login
-     * Validates credentials and creates a session.
+     * 로그인
+     * 자격 증명을 확인하고 세션을 생성합니다.
      * @returns ApiResponseLoginResponse OK
      * @throws ApiError
      */

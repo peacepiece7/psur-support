@@ -1,7 +1,7 @@
 package com.service.demo.domain.regsportsclub.controller;
 
 import com.service.demo.common.api.ApiResponse;
-import com.service.demo.domain.regsportsclub.dto.RegSportsClubApplicationCreateRequest;
+import com.service.demo.domain.regsportsclub.dto.RegSportsClubApplicationUpsertRequest;
 import com.service.demo.domain.regsportsclub.dto.RegSportsClubApplicationResponse;
 import com.service.demo.domain.regsportsclub.service.RegSportsClubApplicationService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@Tag(name = "Registered Sports Club Applications", description = "Registered sports club application flow")
+@Tag(name = "Registered Sports Club Applications", description = "등록 체육동호회 신청 흐름")
 @SecurityRequirement(name = "sessionAuth")
 @RestController
 @RequestMapping("/reg-sports-club-applications")
@@ -27,39 +27,30 @@ import java.util.List;
 public class RegSportsClubApplicationController {
     private final RegSportsClubApplicationService regSportsClubApplicationService;
 
-    @Operation(summary = "Create application", description = "Creates a registered sports club application.")
-    @PostMapping
-    public ApiResponse<RegSportsClubApplicationResponse> create(
-            @Valid @RequestBody RegSportsClubApplicationCreateRequest req) {
-        return ApiResponse.ok(regSportsClubApplicationService.create(req));
+    @Operation(summary = "저장", description = "상태 전이 없이 신청 데이터를 저장합니다.")
+    @PostMapping("/save")
+    public ApiResponse<RegSportsClubApplicationResponse> save(
+            @Valid @RequestBody RegSportsClubApplicationUpsertRequest req) {
+        return ApiResponse.ok(regSportsClubApplicationService.save(req));
     }
 
-    @Operation(summary = "Save application", description = "Saves application data without state transition.")
-    @PostMapping("/{applyId}/save")
-    public ApiResponse<Void> save(
-            @Parameter(description = "Application info ID", example = "1") @PathVariable Long applyId) {
-        regSportsClubApplicationService.save(applyId);
-        return ApiResponse.ok(null);
-    }
-
-    @Operation(summary = "Apply application", description = "Applies application data and triggers BPM transition.")
-    @PostMapping("/{applyId}/apply")
-    public ApiResponse<Void> apply(
-            @Parameter(description = "Application info ID", example = "1") @PathVariable Long applyId) {
-        regSportsClubApplicationService.apply(applyId);
-        return ApiResponse.ok(null);
+    @Operation(summary = "신청", description = "신청 데이터를 반영하고 BPM 상태 전이를 수행합니다.")
+    @PostMapping("/apply")
+    public ApiResponse<RegSportsClubApplicationResponse> apply(
+            @Valid @RequestBody RegSportsClubApplicationUpsertRequest req) {
+        return ApiResponse.ok(regSportsClubApplicationService.apply(req));
     }
 
     // @TODO: {applyId}/receipt, {applyId}/reject, {applyId}/review, {applyId}/approve endpoints to be implemented
 
-    @Operation(summary = "Get application", description = "Returns a registered sports club application by ID.")
+    @Operation(summary = "신청 조회", description = "신청 ID로 등록 체육동호회 신청 정보를 조회합니다.")
     @GetMapping("/{applyId}")
     public ApiResponse<RegSportsClubApplicationResponse> get(
-            @Parameter(description = "Application info ID", example = "1") @PathVariable Long applyId) {
+            @Parameter(description = "신청 ID", example = "1") @PathVariable Long applyId) {
         return ApiResponse.ok(regSportsClubApplicationService.getByApplyId(applyId));
     }
 
-    @Operation(summary = "List applications", description = "Returns all registered sports club applications.")
+    @Operation(summary = "신청 목록", description = "등록 체육동호회 신청 목록을 조회합니다.")
     @GetMapping
     public ApiResponse<List<RegSportsClubApplicationResponse>> list() {
         return ApiResponse.ok(regSportsClubApplicationService.list());

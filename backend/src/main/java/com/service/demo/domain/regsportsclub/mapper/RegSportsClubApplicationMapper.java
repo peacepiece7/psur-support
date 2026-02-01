@@ -17,7 +17,9 @@ public interface RegSportsClubApplicationMapper {
     RegSportsClubApplicationEntity findApplicationByApplyId(@Param("applyId") Long applyId);
     RegSportsClubApplicationResponse findApplicationDetail(@Param("applyId") Long applyId);
     List<RegSportsClubApplicationResponse> findAllApplications();
-    int updateApplyProcessTaskId(@Param("id") Long id, @Param("processTaskId") Long processTaskId);
+    int updateApply(RegSportsClubApplyEntity entity);
+    int updateApplication(RegSportsClubApplicationEntity entity);
+    int updateApplyProcessTaskId(@Param("id") Long id, @Param("processTaskId") String processTaskId);
     int updateApprovedClubId(@Param("applyId") Long applyId, @Param("approvedClubId") Long approvedClubId);
     int deleteApplicationCategoriesByApplicationId(@Param("applicationId") Long applicationId);
     int insertApplicationCategories(@Param("applicationId") Long applicationId, @Param("categoryIds") List<Long> categoryIds);

@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
-@Tag(name = "Common Codes", description = "Common code group and code lookup")
+@Tag(name = "Common Codes", description = "공통 코드/그룹 조회")
 @SecurityRequirement(name = "sessionAuth")
 @RestController
 @RequestMapping("/common-codes")
@@ -33,13 +33,13 @@ public class CommonCodeController {
         this.commonCodeService = commonCodeService;
     }
 
-    @Operation(summary = "Get common code tree", description = "Returns a group tree (up to 3 levels) with codes.")
+    @Operation(summary = "공통 코드 트리 조회", description = "공통 코드 그룹 트리(최대 3레벨)를 조회합니다.")
     @GetMapping("/{groupCode}/tree")
     public ApiResponse<CommonCodeGroupResponse> getTree(
-            @Parameter(description = "Root group code", example = "REGION") @PathVariable String groupCode,
-            @Parameter(description = "Depth (1-3)") Integer depth,
-            @Parameter(description = "Include codes in response") Boolean includeCodes,
-            @Parameter(description = "Include inactive codes and groups") Boolean includeInactive) {
+            @Parameter(description = "루트 그룹 코드", example = "REGION") @PathVariable String groupCode,
+            @Parameter(description = "조회 깊이(1-3)") Integer depth,
+            @Parameter(description = "코드 포함 여부") Boolean includeCodes,
+            @Parameter(description = "비활성 코드/그룹 포함 여부") Boolean includeInactive) {
         return ApiResponse.ok(commonCodeService.getGroupTree(
                 groupCode,
                 depth,
@@ -48,16 +48,16 @@ public class CommonCodeController {
         ));
     }
 
-    @Operation(summary = "List common code groups", description = "Returns all active common code groups for lookup.")
+    @Operation(summary = "공통 코드 그룹 목록", description = "공통 코드 그룹 목록을 조회합니다.")
     @GetMapping("/groups")
     public ApiResponse<CommonCodeGroupListResponse> listGroups(
-            @Parameter(description = "Search by group name or code") String name,
-            @Parameter(description = "Include inactive groups") Boolean includeInactive,
-            @Parameter(description = "Sort by (groupCode, groupName, level, sortOrder, id, parentGroupId)")
+            @Parameter(description = "그룹명 또는 코드로 검색") String name,
+            @Parameter(description = "비활성 그룹 포함 여부") Boolean includeInactive,
+            @Parameter(description = "정렬 기준 (groupCode, groupName, level, sortOrder, id, parentGroupId)")
             String sortBy,
-            @Parameter(description = "Sort direction (asc, desc)") String sortDir,
-            @Parameter(description = "Offset for pagination") Integer offset,
-            @Parameter(description = "Limit for pagination (max 200)") Integer limit) {
+            @Parameter(description = "정렬 방향 (asc, desc)") String sortDir,
+            @Parameter(description = "페이지 오프셋") Integer offset,
+            @Parameter(description = "페이지 크기 (최대 200)") Integer limit) {
         return ApiResponse.ok(commonCodeService.listGroups(
                 name,
                 Boolean.TRUE.equals(includeInactive),
@@ -68,19 +68,19 @@ public class CommonCodeController {
         ));
     }
 
-    @Operation(summary = "List root common code groups", description = "Returns top-level common code groups.")
+    @Operation(summary = "루트 공통 코드 그룹 목록", description = "최상위 공통 코드 그룹 목록을 조회합니다.")
     @GetMapping("/groups/root")
     public ApiResponse<List<CommonCodeGroupSummaryResponse>> listRootGroups() {
         return ApiResponse.ok(commonCodeService.listRootGroups());
     }
 
-    @Operation(summary = "Create common code", description = "Creates a common code under a group.")
+    @Operation(summary = "공통 코드 생성", description = "공통 코드 그룹 하위에 코드를 생성합니다.")
     @PostMapping
     public ApiResponse<CommonCodeResponse> createCode(@RequestBody CommonCodeCreateRequest request) {
         return ApiResponse.ok(commonCodeService.createCode(request));
     }
 
-    @Operation(summary = "Delete common code", description = "Soft deletes a common code.")
+    @Operation(summary = "공통 코드 삭제", description = "공통 코드를 소프트 삭제합니다.")
     @DeleteMapping("/{groupCode}/codes/{code}")
     public ApiResponse<Void> deleteCode(@PathVariable String groupCode, @PathVariable String code) {
         commonCodeService.deleteCode(groupCode, code);

@@ -4,15 +4,50 @@
 /* eslint-disable */
 import type { ApiResponseListRegSportsClubApplicationResponse } from '../models/ApiResponseListRegSportsClubApplicationResponse';
 import type { ApiResponseRegSportsClubApplicationResponse } from '../models/ApiResponseRegSportsClubApplicationResponse';
-import type { ApiResponseVoid } from '../models/ApiResponseVoid';
-import type { RegSportsClubApplicationCreateRequest } from '../models/RegSportsClubApplicationCreateRequest';
+import type { RegSportsClubApplicationUpsertRequest } from '../models/RegSportsClubApplicationUpsertRequest';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
 export class RegisteredSportsClubApplicationsService {
     /**
-     * List applications
-     * Returns all registered sports club applications.
+     * 저장
+     * 상태 전이 없이 신청 데이터를 저장합니다.
+     * @returns ApiResponseRegSportsClubApplicationResponse OK
+     * @throws ApiError
+     */
+    public static save({
+        requestBody,
+    }: {
+        requestBody: RegSportsClubApplicationUpsertRequest,
+    }): CancelablePromise<ApiResponseRegSportsClubApplicationResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/reg-sports-club-applications/save',
+            body: requestBody,
+            mediaType: 'application/json',
+        });
+    }
+    /**
+     * 신청
+     * 신청 데이터를 반영하고 BPM 상태 전이를 수행합니다.
+     * @returns ApiResponseRegSportsClubApplicationResponse OK
+     * @throws ApiError
+     */
+    public static apply({
+        requestBody,
+    }: {
+        requestBody: RegSportsClubApplicationUpsertRequest,
+    }): CancelablePromise<ApiResponseRegSportsClubApplicationResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/reg-sports-club-applications/apply',
+            body: requestBody,
+            mediaType: 'application/json',
+        });
+    }
+    /**
+     * 신청 목록
+     * 등록 체육동호회 신청 목록을 조회합니다.
      * @returns ApiResponseListRegSportsClubApplicationResponse OK
      * @throws ApiError
      */
@@ -23,70 +58,8 @@ export class RegisteredSportsClubApplicationsService {
         });
     }
     /**
-     * Create application
-     * Creates a registered sports club application.
-     * @returns ApiResponseRegSportsClubApplicationResponse OK
-     * @throws ApiError
-     */
-    public static create1({
-        requestBody,
-    }: {
-        requestBody: RegSportsClubApplicationCreateRequest,
-    }): CancelablePromise<ApiResponseRegSportsClubApplicationResponse> {
-        return __request(OpenAPI, {
-            method: 'POST',
-            url: '/reg-sports-club-applications',
-            body: requestBody,
-            mediaType: 'application/json',
-        });
-    }
-    /**
-     * Save application
-     * Saves application data without state transition.
-     * @returns ApiResponseVoid OK
-     * @throws ApiError
-     */
-    public static save({
-        applyId,
-    }: {
-        /**
-         * Application info ID
-         */
-        applyId: number,
-    }): CancelablePromise<ApiResponseVoid> {
-        return __request(OpenAPI, {
-            method: 'POST',
-            url: '/reg-sports-club-applications/{applyId}/save',
-            path: {
-                'applyId': applyId,
-            },
-        });
-    }
-    /**
-     * Apply application
-     * Applies application data and triggers BPM transition.
-     * @returns ApiResponseVoid OK
-     * @throws ApiError
-     */
-    public static apply({
-        applyId,
-    }: {
-        /**
-         * Application info ID
-         */
-        applyId: number,
-    }): CancelablePromise<ApiResponseVoid> {
-        return __request(OpenAPI, {
-            method: 'POST',
-            url: '/reg-sports-club-applications/{applyId}/apply',
-            path: {
-                'applyId': applyId,
-            },
-        });
-    }
-    /**
-     * Get application
-     * Returns a registered sports club application by ID.
+     * 신청 조회
+     * 신청 ID로 등록 체육동호회 신청 정보를 조회합니다.
      * @returns ApiResponseRegSportsClubApplicationResponse OK
      * @throws ApiError
      */
@@ -94,7 +67,7 @@ export class RegisteredSportsClubApplicationsService {
         applyId,
     }: {
         /**
-         * Application info ID
+         * 신청 ID
          */
         applyId: number,
     }): CancelablePromise<ApiResponseRegSportsClubApplicationResponse> {

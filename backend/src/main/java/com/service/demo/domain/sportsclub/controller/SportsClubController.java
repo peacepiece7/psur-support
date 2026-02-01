@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@Tag(name = "Sports Clubs", description = "Sports club management")
+@Tag(name = "Sports Clubs", description = "체육동호회 관리")
 @SecurityRequirement(name = "sessionAuth")
 @RestController
 @RequestMapping("/sports-clubs")
@@ -34,36 +34,36 @@ public class SportsClubController {
         this.sportsClubService = sportsClubService;
     }
 
-    @Operation(summary = "Create sports club", description = "Creates a sports club with optional categories.")
+    @Operation(summary = "체육동호회 생성", description = "체육동호회를 생성합니다.")
     @PostMapping
     public ApiResponse<SportsClubResponse> create(@Valid @RequestBody SportsClubCreateRequest req) {
         return ApiResponse.ok(sportsClubService.create(req));
     }
 
-    @Operation(summary = "Get sports club", description = "Returns a sports club by ID.")
+    @Operation(summary = "체육동호회 조회", description = "체육동호회 ID로 정보를 조회합니다.")
     @GetMapping("/{id}")
     public ApiResponse<SportsClubResponse> get(
-            @Parameter(description = "Sports club ID", example = "1") @PathVariable Long id) {
+            @Parameter(description = "체육동호회 ID", example = "1") @PathVariable Long id) {
         return ApiResponse.ok(sportsClubService.getById(id));
     }
 
-    @Operation(summary = "List sports clubs", description = "Returns all sports clubs.")
+    @Operation(summary = "체육동호회 목록", description = "체육동호회 목록을 조회합니다.")
     @GetMapping
     public ApiResponse<List<SportsClubListResponse>> list() {
         return ApiResponse.ok(sportsClubService.list());
     }
 
-    @Operation(summary = "Update sports club", description = "Updates a sports club and its categories.")
+    @Operation(summary = "체육동호회 수정", description = "체육동호회 정보를 수정합니다.")
     @PutMapping("/{id}")
     public ApiResponse<SportsClubResponse> update(
-            @Parameter(description = "Sports club ID", example = "1") @PathVariable Long id,
+            @Parameter(description = "체육동호회 ID", example = "1") @PathVariable Long id,
             @Valid @RequestBody SportsClubUpdateRequest req) {
         return ApiResponse.ok(sportsClubService.update(id, req));
     }
 
-    @Operation(summary = "Delete sports club", description = "Soft deletes a sports club.")
+    @Operation(summary = "체육동호회 삭제", description = "체육동호회를 소프트 삭제합니다.")
     @DeleteMapping("/{id}")
-    public ApiResponse<Void> delete(@Parameter(description = "Sports club ID", example = "1") @PathVariable Long id) {
+    public ApiResponse<Void> delete(@Parameter(description = "체육동호회 ID", example = "1") @PathVariable Long id) {
         sportsClubService.delete(id);
         return ApiResponse.ok(null);
     }

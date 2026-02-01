@@ -5,24 +5,22 @@ import com.service.demo.common.exception.ApiException;
 import com.service.demo.domain.commoncode.mapper.CommonCodeMapper;
 import com.service.demo.domain.commoncode.service.CommonCodeLookupService;
 import com.service.demo.domain.regsportsclub.constant.RegSportsClubApplyStatus;
-import com.service.demo.domain.regsportsclub.dto.RegSportsClubApplicationCreateRequest;
 import com.service.demo.domain.regsportsclub.dto.RegSportsClubApplicationResponse;
+import com.service.demo.domain.regsportsclub.dto.RegSportsClubApplicationUpsertRequest;
 import com.service.demo.domain.regsportsclub.entity.RegSportsClubApplyEntity;
 import com.service.demo.domain.regsportsclub.entity.RegSportsClubApplicationCategoryEntity;
 import com.service.demo.domain.regsportsclub.entity.RegSportsClubApplicationEntity;
 import com.service.demo.domain.regsportsclub.mapper.RegSportsClubApplicationMapper;
+import com.service.demo.domain.regsportsclub.service.ActionService;
 import com.service.demo.domain.sportsclub.entity.SportsClubCategoryEntity;
 import com.service.demo.domain.sportsclub.entity.SportsClubEntity;
 import com.service.demo.domain.sportsclub.mapper.SportsClubMapper;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -33,65 +31,21 @@ public class RegSportsClubApplicationService {
     private final CommonCodeLookupService commonCodeLookupService;
     private final ActionService actionService;
 
-    /**
-     * @apiNote 등록스포츠크럽 신청
-     */
     @Transactional
-    public RegSportsClubApplicationResponse create(RegSportsClubApplicationCreateRequest req) {
-        RegSportsClubApplyEntity applyEntity = new RegSportsClubApplyEntity();
-        Long statusCodeId = req.getStatusCodeId();
+    public RegSportsClubApplicationResponse save(RegSportsClubApplicationUpsertRequest req) {
+        Long applyId = upsert(req, RegSportsClubApplyStatus.SAVED);
+        actionService.handleAction(applyId, com.service.demo.domain.regsportsclub.constant.Action.SAVE);
+        return getByApplyId(applyId);
+    }
 
-        if (statusCodeId == null) {
-            String statusCode = req.getStatusCode();
-            if (statusCode != null && !statusCode.isBlank()) {
-                statusCodeId = commonCodeLookupService.getCodeId(
-                        RegSportsClubApplyStatus.GROUP_CODE,
-                        statusCode
-                );
-            }
-
-            if (statusCodeId == null) {
-                statusCodeId = commonCodeLookupService.getCodeId(
-                        RegSportsClubApplyStatus.GROUP_CODE,
-                        RegSportsClubApplyStatus.SAVED.getCode()
-                );
-            }
-            if (statusCodeId == null) {
-                throw new ApiException(ErrorCode.BAD_REQUEST, "Apply status code not found");
-            }
-        }
-        applyEntity.setStatusCodeId(statusCodeId);
-        applyEntity.setAppliedAt(LocalDateTime.now());
-        applyEntity.setApplicantName(req.getApplicantName());
-        applyEntity.setApplicantTelno(req.getApplicantTelno());
-        applyEntity.setApplicantEmail(req.getApplicantEmail());
-        regSportsClubApplicationMapper.insertApply(applyEntity);
-
-        Long clubRoleCodeId = req.getClubRoleCodeId();
-        if (clubRoleCodeId == null) { // 19
-            clubRoleCodeId = commonCodeMapper.findCodeIdByGroupCodeAndCode("CLUB_ROLE", "REG_CLUB");
-            if (clubRoleCodeId == null) {
-                throw new ApiException(ErrorCode.BAD_REQUEST, "Club role code not found");
-            }
-        }
-
-        RegSportsClubApplicationEntity applicationEntity = new RegSportsClubApplicationEntity();
-        applicationEntity.setApplyId(applyEntity.getId());
-        applicationEntity.setName(req.getClubName());
-        applicationEntity.setLocation(req.getLocation());
-        applicationEntity.setRepresentativeName(req.getRepresentativeName());
-        applicationEntity.setRepresentativeTelno(req.getRepresentativeTelno());
-        applicationEntity.setBusinessNo(req.getBusinessNo());
-        applicationEntity.setClubRoleCodeId(clubRoleCodeId);
-        applicationEntity.setOperatingSportParentCodeId(req.getOperatingSportParentCodeId());
-        applicationEntity.setOperatingSportChildCodeId(req.getOperatingSportChildCodeId());
-        regSportsClubApplicationMapper.insertApplication(applicationEntity);
-        saveApplicationCategories(applicationEntity.getId(), req.getOperatingSportCodeIds(),
-                req.getOperatingSportParentCodeId(), req.getOperatingSportChildCodeId());
-
-        // 요기 bmpService.start() 이후 exception 이 발생하면 외부 서비스는 롤백이 안되서 무한이 "bpm task"가 쌓임
-        // 프로젝트가 성숙해질수록 로그-알람, 롤백 처리(보상 시스템, 삭제 , 메시지-큐) 또는 배치 스케줄러가 들어가면 좋을 것 같음
-        return getByApplyId(applyEntity.getId());
+    @Transactional
+    public RegSportsClubApplicationResponse apply(RegSportsClubApplicationUpsertRequest req) {
+        // 등록 스포츠클럽 신청 정보를 저장하고 상태를 "APPLY"로 변경
+        Long applyId = upsert(req, RegSportsClubApplyStatus.APPLY);
+        
+        // bmp 상태 전이 수행
+        actionService.handleAction(applyId, com.service.demo.domain.regsportsclub.constant.Action.APPLY);
+        return getByApplyId(applyId);
     }
 
     public RegSportsClubApplicationResponse getByApplyId(Long applyId) {
@@ -118,7 +72,7 @@ public class RegSportsClubApplicationService {
         if (!applicationIds.isEmpty()) {
             List<RegSportsClubApplicationCategoryEntity> pairs =
                     regSportsClubApplicationMapper.findCategoryPairsByApplicationIds(applicationIds);
-            Map<Long, List<Long>> grouped = new HashMap<>();
+            java.util.Map<Long, List<Long>> grouped = new java.util.HashMap<>();
             for (RegSportsClubApplicationCategoryEntity pair : pairs) {
                 grouped.computeIfAbsent(pair.getApplicationId(), key -> new ArrayList<>())
                         .add(pair.getCategoryId());
@@ -131,14 +85,99 @@ public class RegSportsClubApplicationService {
         return responses;
     }
 
-    @Transactional
-    public void save(Long applyId) {
-        actionService.handleAction(applyId, com.service.demo.domain.regsportsclub.constant.Action.SAVE);
+    private Long upsert(RegSportsClubApplicationUpsertRequest req, RegSportsClubApplyStatus defaultStatus) {
+        Long statusCodeId = resolveStatusCodeId(req, defaultStatus);
+        Long clubRoleCodeId = resolveClubRoleCodeId(req.getClubRoleCodeId());
+        if (req.getApplyId() == null) {
+            RegSportsClubApplyEntity applyEntity = new RegSportsClubApplyEntity();
+            applyEntity.setStatusCodeId(statusCodeId);
+            applyEntity.setAppliedAt(LocalDateTime.now());
+            applyEntity.setApplicantName(req.getApplicantName());
+            applyEntity.setApplicantTelno(req.getApplicantTelno());
+            applyEntity.setApplicantEmail(req.getApplicantEmail());
+            regSportsClubApplicationMapper.insertApply(applyEntity);
+
+            RegSportsClubApplicationEntity applicationEntity = new RegSportsClubApplicationEntity();
+            applicationEntity.setApplyId(applyEntity.getId());
+            applicationEntity.setName(req.getClubName());
+            applicationEntity.setLocation(req.getLocation());
+            applicationEntity.setRepresentativeName(req.getRepresentativeName());
+            applicationEntity.setRepresentativeTelno(req.getRepresentativeTelno());
+            applicationEntity.setBusinessNo(req.getBusinessNo());
+            applicationEntity.setClubRoleCodeId(clubRoleCodeId);
+            applicationEntity.setOperatingSportParentCodeId(req.getOperatingSportParentCodeId());
+            applicationEntity.setOperatingSportChildCodeId(req.getOperatingSportChildCodeId());
+            regSportsClubApplicationMapper.insertApplication(applicationEntity);
+            saveApplicationCategories(applicationEntity.getId(), req.getOperatingSportCodeIds(),
+                    req.getOperatingSportParentCodeId(), req.getOperatingSportChildCodeId());
+
+            return applyEntity.getId();
+        }
+
+        RegSportsClubApplyEntity applyEntity = regSportsClubApplicationMapper.findApplyById(req.getApplyId());
+        if (applyEntity == null) {
+            throw new ApiException(ErrorCode.BAD_REQUEST, "Application not found");
+        }
+        applyEntity.setStatusCodeId(statusCodeId);
+        applyEntity.setAppliedAt(LocalDateTime.now());
+        applyEntity.setApplicantName(req.getApplicantName());
+        applyEntity.setApplicantTelno(req.getApplicantTelno());
+        applyEntity.setApplicantEmail(req.getApplicantEmail());
+        regSportsClubApplicationMapper.updateApply(applyEntity);
+
+        RegSportsClubApplicationEntity applicationEntity =
+                regSportsClubApplicationMapper.findApplicationByApplyId(req.getApplyId());
+        if (applicationEntity == null) {
+            throw new ApiException(ErrorCode.BAD_REQUEST, "Application detail not found");
+        }
+        applicationEntity.setName(req.getClubName());
+        applicationEntity.setLocation(req.getLocation());
+        applicationEntity.setRepresentativeName(req.getRepresentativeName());
+        applicationEntity.setRepresentativeTelno(req.getRepresentativeTelno());
+        applicationEntity.setBusinessNo(req.getBusinessNo());
+        applicationEntity.setClubRoleCodeId(clubRoleCodeId);
+        applicationEntity.setOperatingSportParentCodeId(req.getOperatingSportParentCodeId());
+        applicationEntity.setOperatingSportChildCodeId(req.getOperatingSportChildCodeId());
+        regSportsClubApplicationMapper.updateApplication(applicationEntity);
+        saveApplicationCategories(applicationEntity.getId(), req.getOperatingSportCodeIds(),
+                req.getOperatingSportParentCodeId(), req.getOperatingSportChildCodeId());
+
+        return req.getApplyId();
     }
 
-    @Transactional
-    public void apply(Long applyId) {
-        actionService.handleAction(applyId, com.service.demo.domain.regsportsclub.constant.Action.APPLY);
+    private Long resolveStatusCodeId(RegSportsClubApplicationUpsertRequest req, RegSportsClubApplyStatus defaultStatus) {
+        Long statusCodeId = req.getStatusCodeId();
+        if (statusCodeId != null) {
+            return statusCodeId;
+        }
+        String statusCode = req.getStatusCode();
+        if (statusCode != null && !statusCode.isBlank()) {
+            statusCodeId = commonCodeLookupService.getCodeId(
+                    RegSportsClubApplyStatus.GROUP_CODE,
+                    statusCode
+            );
+        }
+        if (statusCodeId == null) {
+            statusCodeId = commonCodeLookupService.getCodeId(
+                    RegSportsClubApplyStatus.GROUP_CODE,
+                    defaultStatus.getCode()
+            );
+        }
+        if (statusCodeId == null) {
+            throw new ApiException(ErrorCode.BAD_REQUEST, "Apply status code not found");
+        }
+        return statusCodeId;
+    }
+
+    private Long resolveClubRoleCodeId(Long clubRoleCodeId) {
+        if (clubRoleCodeId != null) {
+            return clubRoleCodeId;
+        }
+        clubRoleCodeId = commonCodeMapper.findCodeIdByGroupCodeAndCode("CLUB_ROLE", "REG_CLUB");
+        if (clubRoleCodeId == null) {
+            throw new ApiException(ErrorCode.BAD_REQUEST, "Club role code not found");
+        }
+        return clubRoleCodeId;
     }
 
     private void approveToSportsClub(Long applyId) {

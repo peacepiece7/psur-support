@@ -9,8 +9,8 @@ import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
 export class UsersService {
     /**
-     * Get my profile
-     * Returns the authenticated user's profile.
+     * 내 프로필 조회
+     * 로그인한 사용자의 프로필을 조회합니다.
      * @returns ApiResponseUserResponse OK
      * @throws ApiError
      */
@@ -21,8 +21,8 @@ export class UsersService {
         });
     }
     /**
-     * Update my profile
-     * Updates the authenticated user's profile.
+     * 내 프로필 수정
+     * 로그인한 사용자의 프로필을 수정합니다.
      * @returns ApiResponseUserResponse OK
      * @throws ApiError
      */

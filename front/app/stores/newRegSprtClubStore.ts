@@ -1,4 +1,3 @@
-import { request } from './../../__generated__/default/core/request'
 import { defineStore } from 'pinia'
 import { computed, reactive, ref, toRefs } from 'vue'
 import type {
@@ -7,7 +6,7 @@ import type {
   NewRegSprtClubRes,
   NewRegSprtClubSport,
 } from '~/types/apis/registered-sports-club/newRegSprtClub.types'
-import type { RegSportsClubApplicationCreateRequest } from '~/types/models/RegSportsClubApplicationCreateRequest'
+import type { RegSportsClubApplicationUpsertRequest } from '~/types/models/RegSportsClubApplicationUpsertRequest'
 import type { ApiResponseRegSportsClubApplicationResponse } from '~/types/models/ApiResponseRegSportsClubApplicationResponse'
 import type { RegSportsClubApplicationResponse } from '~/types/models/RegSportsClubApplicationResponse'
 import { API_BASE_URL } from '~/constants/url'
@@ -21,6 +20,9 @@ export const useNewRegSprtClubStore = defineStore('newRegSprtClub', () => {
 
   // 신청 응답 데이터 (Step3에서 사용)
   const applicationResponse = ref<RegSportsClubApplicationResponse | null>(null)
+
+  // 저장 시 response로 내려온 applyId (저장/신청 시 다시 전달)
+  const applyId = ref<number | null>(null)
 
   // UI state (0-based step index)
   const currentIndex = ref(0)
@@ -77,9 +79,57 @@ export const useNewRegSprtClubStore = defineStore('newRegSprtClub', () => {
     },
 
     /**
-     * Step2 폼 데이터를 받아서 API 요청 형식으로 변환하고 서버로 전송
+     * route.query.applyId 등 외부에서 applyId 설정 (onMounted 시 사용)
      */
-    async createApplicationFromStep2(formValues: {
+    setApplyId(id: string | string[] | number | undefined) {
+      if (id == null) {
+        applyId.value = null
+        return
+      }
+      const num =
+        typeof id === 'number'
+          ? id
+          : parseInt(Array.isArray(id) ? id[0] : id, 10)
+      applyId.value = Number.isFinite(num) ? num : null
+    },
+
+    /**
+     * Step2 폼 데이터로 UpsertRequest 생성 (저장/신청 공통)
+     */
+    _formToUpsertRequest(formValues: {
+      applicantName: string
+      applicantTelno: string
+      applicantEmail: string
+      name: string
+      location: string
+      representativeName: string
+      representativeTelno: string
+      businessNo: string
+      operatingSportParentCodeId: { id?: number } | null
+      operatingSportChildCodeId: { id?: number } | null
+    }): RegSportsClubApplicationUpsertRequest {
+      const req: RegSportsClubApplicationUpsertRequest = {
+        applicantName: formValues.applicantName || '',
+        applicantTelno: formValues.applicantTelno || '',
+        applicantEmail: formValues.applicantEmail || '',
+        clubName: formValues.name || '',
+        location: formValues.location || undefined,
+        representativeName: formValues.representativeName || undefined,
+        representativeTelno: formValues.representativeTelno || undefined,
+        businessNo: formValues.businessNo || undefined,
+        operatingSportParentCodeId:
+          formValues.operatingSportParentCodeId?.id ?? undefined,
+        operatingSportChildCodeId:
+          formValues.operatingSportChildCodeId?.id ?? undefined,
+      }
+      if (applyId.value != null) req.applyId = applyId.value
+      return req
+    },
+
+    /**
+     * 저장 API (상태 전이 없이 신청 데이터 저장, response.applyId 저장)
+     */
+    async saveApplication(formValues: {
       applicantName: string
       applicantTelno: string
       applicantEmail: string
@@ -91,54 +141,60 @@ export const useNewRegSprtClubStore = defineStore('newRegSprtClub', () => {
       operatingSportParentCodeId: { id?: number } | null
       operatingSportChildCodeId: { id?: number } | null
     }) {
-      // 폼 데이터를 API 요청 형식으로 변환
-      // 운영종목 코드 ID는 선택된 객체의 id 필드에서 추출
-      const request: RegSportsClubApplicationCreateRequest = {
-        statusCode: 'APPLY',
-        applicantName: formValues.applicantName || undefined,
-        applicantTelno: formValues.applicantTelno || undefined,
-        applicantEmail: formValues.applicantEmail || undefined,
-        clubName: formValues.name,
-        location: formValues.location || undefined,
-        representativeName: formValues.representativeName || undefined,
-        representativeTelno: formValues.representativeTelno || undefined,
-        businessNo: formValues.businessNo || undefined,
-        operatingSportParentCodeId:
-          formValues.operatingSportParentCodeId?.id || undefined,
-        operatingSportChildCodeId:
-          formValues.operatingSportChildCodeId?.id || undefined,
+      const requestBody = actions._formToUpsertRequest(formValues)
+      const response =
+        await $fetch<ApiResponseRegSportsClubApplicationResponse>(
+          `${API_BASE_URL}/reg-sports-club-applications/save`,
+          {
+            method: 'POST',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: requestBody,
+          },
+        )
+      if (response.resultCode !== 200) {
+        throw new Error(response.resultMessage || '저장에 실패했습니다.')
       }
-
-      return await actions.createApplication(request)
+      if (response.data?.applyId != null) {
+        applyId.value = response.data.applyId
+      }
+      return response.data
     },
 
-    async createApplication(request: RegSportsClubApplicationCreateRequest) {
-      try {
-        const response =
-          await $fetch<ApiResponseRegSportsClubApplicationResponse>(
-            `${API_BASE_URL}/reg-sports-club-applications`,
-            {
-              method: 'POST',
-              credentials: 'include',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: request,
-            },
-          )
-
-        if (response.resultCode === 200) {
-          // 응답 데이터 저장
-          applicationResponse.value = response.data
-          return response.data
-        } else {
-          throw new Error(response.resultMessage || '신청 등록에 실패했습니다.')
-        }
-      } catch (error) {
-        console.error('Create application error:', error)
-        console.error(error)
-        throw error
+    /**
+     * 신청 API (BPM 상태 전이 수행)
+     */
+    async applyApplication(formValues: {
+      applicantName: string
+      applicantTelno: string
+      applicantEmail: string
+      name: string
+      location: string
+      representativeName: string
+      representativeTelno: string
+      businessNo: string
+      operatingSportParentCodeId: { id?: number } | null
+      operatingSportChildCodeId: { id?: number } | null
+    }) {
+      const requestBody = actions._formToUpsertRequest(formValues)
+      const response =
+        await $fetch<ApiResponseRegSportsClubApplicationResponse>(
+          `${API_BASE_URL}/reg-sports-club-applications/apply`,
+          {
+            method: 'POST',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: requestBody,
+          },
+        )
+      if (response.resultCode !== 200) {
+        throw new Error(response.resultMessage || '신청에 실패했습니다.')
       }
+      applicationResponse.value = response.data ?? null
+      if (response.data?.applyId != null) {
+        applyId.value = response.data.applyId
+      }
+      return response.data
     },
 
     setRes(next: Partial<NewRegSprtClubRes>) {
@@ -151,10 +207,9 @@ export const useNewRegSprtClubStore = defineStore('newRegSprtClub', () => {
 
     initialize() {
       _resetState()
-      // reset할 때 step index도 초기화
       currentIndex.value = 0
-      // 응답 데이터도 초기화
       applicationResponse.value = null
+      applyId.value = null
     },
   }
 
@@ -315,6 +370,7 @@ export const useNewRegSprtClubStore = defineStore('newRegSprtClub', () => {
     ...toRefs(newRegSportClubRes),
     newRegSportClubRes,
     applicationResponse,
+    applyId,
     currentIndex,
     getters,
     actions,

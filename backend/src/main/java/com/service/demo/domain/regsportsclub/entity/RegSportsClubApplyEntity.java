@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 public class RegSportsClubApplyEntity {
     private Long id;
-    private Long processTaskId;
+    private String processTaskId;
     private Long statusCodeId;
     private LocalDateTime appliedAt;
     private String applicantName;

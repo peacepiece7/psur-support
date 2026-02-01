@@ -27,7 +27,7 @@ public class BpmService {
         this.processDefinitionId = processDefinitionId;
     }
 
-    public Long start() {
+    public String start() {
         String url = baseUrl + "/v2/process-instances";
         ProcessInstanceCreateRequest request = new ProcessInstanceCreateRequest();
         request.setProcessDefinitionId(processDefinitionId);
@@ -40,7 +40,7 @@ public class BpmService {
         return response.getProcessInstanceKey();
     }
 
-    public void update(Long processTaskId, String action) {
+    public void update(String processTaskId, String action) {
         String searchUrl = baseUrl + "/v2/user-tasks/search";
         UserTaskSearchRequest searchRequest = new UserTaskSearchRequest();
         UserTaskFilter filter = new UserTaskFilter();
@@ -48,12 +48,7 @@ public class BpmService {
         filter.setState("CREATED");
         searchRequest.setFilter(filter);
 
-        UserTaskSearchResult searchResult =
-                restTemplate.postForObject(searchUrl, searchRequest, UserTaskSearchResult.class);
-        if (searchResult == null || searchResult.getItems() == null || searchResult.getItems().isEmpty()) {
-            throw new ApiException(ErrorCode.BAD_REQUEST, "Active user task not found");
-        }
-        Long userTaskKey = searchResult.getItems().get(0).getUserTaskKey();
+        String userTaskKey = findUserTaskKeyWithRetry(searchUrl, searchRequest);
         if (userTaskKey == null) {
             throw new ApiException(ErrorCode.BAD_REQUEST, "User task key not found");
         }
@@ -64,6 +59,25 @@ public class BpmService {
         variables.put("action", action);
         completionRequest.setVariables(variables);
         restTemplate.postForEntity(completeUrl, completionRequest, Void.class);
+    }
+
+    private String findUserTaskKeyWithRetry(String searchUrl, UserTaskSearchRequest searchRequest) {
+        int maxRetries = 10;
+        long delayMs = 200L;
+        for (int i = 0; i < maxRetries; i++) {
+            UserTaskSearchResult searchResult =
+                    restTemplate.postForObject(searchUrl, searchRequest, UserTaskSearchResult.class);
+            if (searchResult != null && searchResult.getItems() != null && !searchResult.getItems().isEmpty()) {
+                return searchResult.getItems().get(0).getUserTaskKey();
+            }
+            try {
+                Thread.sleep(delayMs);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                break;
+            }
+        }
+        throw new ApiException(ErrorCode.BAD_REQUEST, "Active user task not found");
     }
 
     @Getter
@@ -77,7 +91,7 @@ public class BpmService {
     @Setter
     @JsonIgnoreProperties(ignoreUnknown = true)
     private static class ProcessInstanceCreateResponse {
-        private Long processInstanceKey;
+        private String processInstanceKey;
     }
 
     @Getter
@@ -89,7 +103,7 @@ public class BpmService {
     @Getter
     @Setter
     private static class UserTaskFilter {
-        private Long processInstanceKey;
+        private String processInstanceKey;
         private String state;
     }
 
@@ -104,7 +118,7 @@ public class BpmService {
     @Setter
     @JsonIgnoreProperties(ignoreUnknown = true)
     private static class UserTaskResult {
-        private Long userTaskKey;
+        private String userTaskKey;
     }
 
     @Getter
