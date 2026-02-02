@@ -4,42 +4,24 @@
   import * as yup from 'yup'
   import type { CommonCodeResponse } from '~/types/models/CommonCodeResponse'
   import type { CommonCodeGroupSummaryResponse } from '~/types/models/CommonCodeGroupSummaryResponse'
-  import type { ApiResponseCommonCodeGroupResponse } from '~/types/models/ApiResponseCommonCodeGroupResponse'
-  import type { ApiResponseListCommonCodeGroupSummaryResponse } from '~/types/models/ApiResponseListCommonCodeGroupSummaryResponse'
+  import type { CommonCodeCreateRequest } from '~/types/models/CommonCodeCreateRequest'
   import SelectV2 from '~/components/atoms/SelectV2.vue'
   import TextField from '~/components/atoms/TextField.vue'
   import NumberInput from '~/components/atoms/NumberInput.vue'
   import Button from '~/components/atoms/Button.vue'
   import Switch from '~/components/atoms/Switch.vue'
   import FormField from '~/components/molecules/FormField.vue'
-  import { API_BASE_URL } from '~/constants/url'
+  import { useCommonCodeStore } from '~/stores/useCommonCodeStore'
 
-  // 공통코드 생성 요청 타입
-  type CommonCodeCreateRequest = {
-    groupCode: string
-    code: string
-    codeName: string
-    childGroupCode?: string
-    sortOrder: number
-    isActive: boolean
-    description?: string
-  }
-
-  // 로그인 상태 확인
   const authStore = useAuthStore()
   const isLoggedIn = computed(() => authStore.isLoggedIn)
-
   if (!isLoggedIn.value) {
     await navigateTo('/')
   }
 
-  // ========== 최상위 그룹 목록 섹션 ==========
-  const rootGroups = ref<CommonCodeGroupSummaryResponse[]>([])
-  const selectedRootGroupForEdit = ref<CommonCodeGroupSummaryResponse | null>(null)
-  const isRootGroupEditMode = ref<'add' | 'edit' | null>(null)
-  const isSubmittingRootGroup = ref(false)
+  const store = useCommonCodeStore()
 
-  // 루트 그룹 폼 스키마
+  // ========== 루트 그룹 폼 (vee-validate) ==========
   const rootGroupFormSchema = yup.object({
     groupCode: yup.string().required('그룹 코드를 입력해주세요'),
     groupName: yup.string().required('그룹명을 입력해주세요'),
@@ -50,9 +32,7 @@
       .min(0, '정렬 순서는 0 이상이어야 합니다')
       .integer('정렬 순서는 정수여야 합니다'),
   })
-
   type RootGroupFormValues = yup.InferType<typeof rootGroupFormSchema>
-
   const rootGroupForm = useForm<RootGroupFormValues>({
     validationSchema: toTypedSchema(rootGroupFormSchema),
     initialValues: {
@@ -62,43 +42,14 @@
       sortOrder: 0,
     },
   })
-
   const {
     handleSubmit: handleRootGroupSubmit,
     resetForm: resetRootGroupForm,
     setValues: setRootGroupValues,
   } = rootGroupForm
 
-  // 최상위 그룹 목록 조회
-  const fetchRootGroups = async () => {
-    try {
-      const response = await $fetch<ApiResponseListCommonCodeGroupSummaryResponse>(
-        `${API_BASE_URL}/common-codes/groups/root`,
-        {
-          method: 'GET',
-          credentials: 'include',
-        },
-      )
-
-      if (response.resultCode === 200 && response.data) {
-        rootGroups.value = response.data
-      } else {
-        alert(response.resultMessage || '루트 그룹 목록을 불러오는데 실패했습니다.')
-      }
-    } catch (error: unknown) {
-      console.error('Fetch root groups error:', error)
-      const errorMessage =
-        (error as { data?: { resultMessage?: string } })?.data?.resultMessage ||
-        (error as { message?: string })?.message ||
-        '루트 그룹 목록을 불러오는 중 오류가 발생했습니다.'
-      alert(errorMessage)
-    }
-  }
-
-  // 최상위 그룹 추가 모드
   const startAddRootGroup = () => {
-    isRootGroupEditMode.value = 'add'
-    selectedRootGroupForEdit.value = null
+    store.actions.startAddRootGroup()
     resetRootGroupForm()
     setRootGroupValues({
       groupCode: '',
@@ -108,10 +59,8 @@
     })
   }
 
-  // 최상위 그룹 수정 모드
   const startEditRootGroup = (group: CommonCodeGroupSummaryResponse) => {
-    isRootGroupEditMode.value = 'edit'
-    selectedRootGroupForEdit.value = group
+    store.actions.startEditRootGroup(group)
     setRootGroupValues({
       groupCode: group.groupCode || '',
       groupName: group.groupName || '',
@@ -120,91 +69,42 @@
     })
   }
 
-  // 최상위 그룹 편집 취소
   const cancelRootGroupEdit = () => {
-    isRootGroupEditMode.value = null
-    selectedRootGroupForEdit.value = null
+    store.actions.cancelRootGroupEdit()
     resetRootGroupForm()
   }
 
-  // 최상위 그룹 생성/수정
-  const createRootGroup = async (data: RootGroupFormValues) => {
-    try {
-      const response = await $fetch<{ resultCode?: number; resultMessage?: string }>(
-        `${API_BASE_URL}/common-codes/groups/root`,
-        {
-          method: 'POST',
-          credentials: 'include',
-          body: data,
-        },
-      )
-
-      if (response.resultCode === 200) {
-        return true
-      } else {
-        alert(response.resultMessage || '루트 그룹 생성에 실패했습니다.')
-        return false
-      }
-    } catch (error: unknown) {
-      console.error('Create root group error:', error)
-      const errorMessage =
-        (error as { data?: { resultMessage?: string } })?.data?.resultMessage ||
-        (error as { message?: string })?.message ||
-        '루트 그룹 생성 중 오류가 발생했습니다.'
-      alert(errorMessage)
-      return false
-    }
-  }
-
-  // 최상위 그룹 제출
   const onRootGroupSubmit = handleRootGroupSubmit(async (formValues) => {
-    if (isSubmittingRootGroup.value) return
-
+    if (store.isSubmittingRootGroup) return
     try {
-      isSubmittingRootGroup.value = true
-
-      if (isRootGroupEditMode.value === 'add') {
-        const success = await createRootGroup(formValues)
+      store.actions.setSubmittingRootGroup(true)
+      if (store.isRootGroupEditMode === 'add') {
+        const success = await store.actions.createRootGroup({
+          groupCode: formValues.groupCode,
+          groupName: formValues.groupName,
+          description: formValues.description,
+          sortOrder: formValues.sortOrder,
+        })
         if (success) {
-          await fetchRootGroups()
+          await store.actions.fetchRootGroups()
           cancelRootGroupEdit()
           alert('루트 그룹이 생성되었습니다.')
         }
-      } else if (isRootGroupEditMode.value === 'edit') {
-        // 수정은 삭제 후 생성으로 처리 (API에 수정 엔드포인트가 없음)
-        if (!selectedRootGroupForEdit.value?.groupCode) {
+      } else if (store.isRootGroupEditMode === 'edit') {
+        if (!store.selectedRootGroupForEdit?.groupCode) {
           alert('수정할 수 없습니다.')
           return
         }
-
-        // TODO: 삭제 API 호출 후 생성
         alert('수정 기능은 아직 구현되지 않았습니다.')
       }
     } catch (error) {
       console.error('Root group submit error:', error)
     } finally {
-      isSubmittingRootGroup.value = false
+      store.actions.setSubmittingRootGroup(false)
     }
   })
 
-  // ========== 그룹별 코드 관리 섹션 ==========
-  const selectedGroupCode = ref<string | null>(null)
-  const selectedCode = ref<CommonCodeResponse['code'] | null>(null)
-  const selectedChildCode = ref<CommonCodeResponse['code'] | null>(null)
-
-  const codeList = ref<CommonCodeResponse[]>([])
-  const childCodeList = ref<CommonCodeResponse[]>([])
-
-  const isLoadingCodes = ref(false)
-  const isLoadingChildCodes = ref(false)
-
-  const isCodeEditMode = ref<'add' | 'edit' | null>(null)
-  const isChildCodeEditMode = ref<'add' | 'edit' | null>(null)
-  const editingCode = ref<CommonCodeResponse | null>(null)
-  const editingChildCode = ref<CommonCodeResponse | null>(null)
-  const isSubmittingCode = ref(false)
-
-  // 코드 폼 스키마
+  // ========== 코드 폼 (vee-validate) ==========
   const codeFormSchema = yup.object({
     groupCode: yup.string().required('그룹 코드를 입력해주세요'),
     code: yup.string().required('코드를 입력해주세요'),
@@ -218,9 +118,7 @@
     isActive: yup.boolean().required('활성 상태를 선택해주세요'),
     description: yup.string().optional(),
   })
-
   type CodeFormValues = yup.InferType<typeof codeFormSchema>
-
   const codeForm = useForm<CodeFormValues>({
     validationSchema: toTypedSchema(codeFormSchema),
     initialValues: {
@@ -233,126 +131,33 @@
       description: '',
     },
   })
-
   const {
     handleSubmit: handleCodeSubmit,
     resetForm: resetCodeForm,
     setValues: setCodeValues,
   } = codeForm
 
-  // 그룹 선택 시 코드 목록 조회
-  watch(selectedGroupCode, async (newGroupCode) => {
-    if (newGroupCode) {
-      selectedCode.value = null
-      selectedChildCode.value = null
-      childCodeList.value = []
-      await fetchCodeList(newGroupCode)
-    } else {
-      codeList.value = []
-      selectedCode.value = null
-      selectedChildCode.value = null
-      childCodeList.value = []
-    }
-  })
+  watch(
+    () => store.selectedGroupCode,
+    (newGroup) => {
+      store.actions.onSelectedGroupCodeChange(newGroup ?? null)
+    },
+    { immediate: true },
+  )
+  watch(
+    () => store.selectedCode,
+    (newCode) => {
+      store.actions.onSelectedCodeChange(newCode ?? null)
+    },
+    { immediate: true },
+  )
 
-  // 코드 선택 시 하위 코드 목록 조회
-  watch(selectedCode, async (newCode) => {
-    if (newCode) {
-      selectedChildCode.value = null
-      // codeList에서 선택된 code를 찾아서 groupCode를 가져옴
-      const selectedCodeItem = codeList.value.find((item) => item.code === newCode)
-      if (selectedCodeItem?.groupCode) {
-        await fetchChildCodeList(selectedCodeItem.groupCode)
-      } else {
-        childCodeList.value = []
-      }
-    } else {
-      childCodeList.value = []
-      selectedChildCode.value = null
-    }
-  })
-
-  // 코드 목록 조회
-  const fetchCodeList = async (groupCode: string) => {
-    if (!groupCode) return
-
-    try {
-      isLoadingCodes.value = true
-      const response = await $fetch<ApiResponseCommonCodeGroupResponse>(
-        `${API_BASE_URL}/common-codes/${groupCode}/tree`,
-        {
-          method: 'GET',
-          credentials: 'include',
-          query: {
-            depth: 3,
-            includeCodes: true,
-          },
-        },
-      )
-
-      if (response.resultCode === 200 && response.data?.codes) {
-        codeList.value = response.data.codes
-      } else {
-        alert(response.resultMessage || '코드 목록을 불러오는데 실패했습니다.')
-      }
-    } catch (error: unknown) {
-      console.error('Fetch code list error:', error)
-      const errorMessage =
-        (error as { data?: { resultMessage?: string } })?.data?.resultMessage ||
-        (error as { message?: string })?.message ||
-        '코드 목록을 불러오는 중 오류가 발생했습니다.'
-      alert(errorMessage)
-    } finally {
-      isLoadingCodes.value = false
-    }
-  }
-
-  // 하위 코드 목록 조회
-  const fetchChildCodeList = async (code: string) => {
-    if (!code) return
-
-    try {
-      isLoadingChildCodes.value = true
-      const response = await $fetch<ApiResponseCommonCodeGroupResponse>(
-        `${API_BASE_URL}/common-codes/${code}/tree`,
-        {
-          method: 'GET',
-          credentials: 'include',
-          query: {
-            depth: 3,
-            includeCodes: true,
-          },
-        },
-      )
-
-      if (response.resultCode === 200 && response.data?.codes) {
-        childCodeList.value = response.data.codes
-      } else {
-        alert(response.resultMessage || '하위 코드 목록을 불러오는데 실패했습니다.')
-      }
-    } catch (error: unknown) {
-      console.error('Fetch child code list error:', error)
-      const errorMessage =
-        (error as { data?: { resultMessage?: string } })?.data?.resultMessage ||
-        (error as { message?: string })?.message ||
-        '하위 코드 목록을 불러오는 중 오류가 발생했습니다.'
-      alert(errorMessage)
-    } finally {
-      isLoadingChildCodes.value = false
-    }
-  }
-
-  // 코드 추가 모드
   const startAddCode = () => {
-    if (!selectedGroupCode.value) return
-
-    isCodeEditMode.value = 'add'
-    isChildCodeEditMode.value = null
-    editingCode.value = null
-    editingChildCode.value = null
+    store.actions.startAddCode()
+    if (!store.getters.selectedGroupCodeValue()) return
     resetCodeForm()
     setCodeValues({
-      groupCode: selectedGroupCode.value,
+      groupCode: store.getters.selectedGroupCodeValue() ?? '',
       code: '',
       codeName: '',
       childGroupCode: '',
@@ -362,22 +167,15 @@
     })
   }
 
-  // 코드 선택 핸들러
   const handleCodeSelect = (code: CommonCodeResponse) => {
-    selectedCode.value = code.code || null
-    // 선택 시 자동으로 수정 모드로 진입하지 않음 (명시적으로 수정 버튼 클릭 필요)
+    store.actions.setSelectedCode(code.code || null)
   }
 
-  // 코드 수정 모드
   const startEditCode = (code: CommonCodeResponse) => {
-    selectedCode.value = code.code || null
-    isCodeEditMode.value = 'edit'
-    isChildCodeEditMode.value = null
-    editingCode.value = code
-    editingChildCode.value = null
+    store.actions.startEditCode(code)
     resetCodeForm()
     setCodeValues({
-      groupCode: selectedGroupCode.value || '',
+      groupCode: store.selectedGroupCode?.groupCode ?? '',
       code: code.code || '',
       codeName: code.codeName || '',
       childGroupCode: code.groupCode || '',
@@ -387,25 +185,13 @@
     })
   }
 
-  // 하위 코드 추가 모드
   const startAddChildCode = () => {
-    if (!selectedCode.value) return
-
-    // codeList에서 선택된 code를 찾아서 groupCode를 가져옴
-    const selectedCodeItem = codeList.value.find((item) => item.code === selectedCode.value)
-    if (!selectedCodeItem?.groupCode) {
-      alert('하위 코드를 추가할 수 없습니다. (groupCode가 없습니다)')
-      return
-    }
-
-    isChildCodeEditMode.value = 'add'
-    isCodeEditMode.value = null
-    editingCode.value = null
-    editingChildCode.value = null
+    store.actions.startAddChildCode()
+    const item = store.getters.selectedCodeItem()
+    if (!item?.groupCode) return
     resetCodeForm()
-
     setCodeValues({
-      groupCode: selectedCodeItem.groupCode,
+      groupCode: item.groupCode,
       code: '',
       codeName: '',
       childGroupCode: '',
@@ -415,33 +201,17 @@
     })
   }
 
-  // 하위 코드 선택 핸들러
   const handleChildCodeSelect = (code: CommonCodeResponse) => {
-    selectedChildCode.value = code.code || null
-    // 선택 시 자동으로 수정 모드로 진입하지 않음 (명시적으로 수정 버튼 클릭 필요)
+    store.actions.setSelectedChildCode(code.code || null)
   }
 
-  // 하위 코드 수정 모드
   const startEditChildCode = (code: CommonCodeResponse) => {
-    if (!selectedCode.value) return
-
-    selectedChildCode.value = code.code || null
-
-    // codeList에서 선택된 code를 찾아서 groupCode를 가져옴
-    const selectedCodeItem = codeList.value.find((item) => item.code === selectedCode.value)
-    if (!selectedCodeItem?.groupCode) {
-      alert('하위 코드를 수정할 수 없습니다. (groupCode가 없습니다)')
-      return
-    }
-
-    isChildCodeEditMode.value = 'edit'
-    isCodeEditMode.value = null
-    editingCode.value = null
-    editingChildCode.value = code
+    store.actions.startEditChildCode(code)
+    const item = store.getters.selectedCodeItem()
+    if (!item?.groupCode) return
     resetCodeForm()
-
     setCodeValues({
-      groupCode: selectedCodeItem.groupCode,
+      groupCode: item.groupCode,
       code: code.code || '',
       codeName: code.codeName || '',
       childGroupCode: code.groupCode || '',
@@ -451,198 +221,96 @@
     })
   }
 
-  // 코드 편집 취소
   const cancelCodeEdit = () => {
-    isCodeEditMode.value = null
-    isChildCodeEditMode.value = null
-    editingCode.value = null
-    editingChildCode.value = null
+    store.actions.cancelCodeEdit()
     resetCodeForm()
   }
 
-  // 공통코드 생성
-  const createCommonCode = async (data: CommonCodeCreateRequest) => {
-    try {
-      const response = await $fetch<{ resultCode?: number; resultMessage?: string }>(
-        `${API_BASE_URL}/common-codes`,
-        {
-          method: 'POST',
-          credentials: 'include',
-          body: data,
-        },
-      )
+  const toCreateRequest = (
+    formValues: CodeFormValues,
+  ): CommonCodeCreateRequest => ({
+    groupCode: formValues.groupCode,
+    code: formValues.code,
+    codeName: formValues.codeName,
+    sortOrder: formValues.sortOrder,
+    isActive: formValues.isActive,
+    childGroupCode: formValues.childGroupCode || undefined,
+    description: formValues.description || undefined,
+  })
 
-      if (response.resultCode === 200) {
-        return true
-      } else {
-        alert(response.resultMessage || '공통코드 생성에 실패했습니다.')
-        return false
-      }
-    } catch (error: unknown) {
-      console.error('Create common code error:', error)
-      const errorMessage =
-        (error as { data?: { resultMessage?: string } })?.data?.resultMessage ||
-        (error as { message?: string })?.message ||
-        '공통코드 생성 중 오류가 발생했습니다.'
-      alert(errorMessage)
-      return false
-    }
-  }
-
-  // 공통코드 삭제
-  const deleteCommonCode = async (groupCode: string, code: string) => {
-    if (!confirm('정말 삭제하시겠습니까?')) {
-      return false
-    }
-
-    try {
-      const response = await $fetch<{ resultCode?: number; resultMessage?: string }>(
-        `${API_BASE_URL}/common-codes/${groupCode}/codes/${code}`,
-        {
-          method: 'DELETE',
-          credentials: 'include',
-        },
-      )
-
-      if (response.resultCode === 200) {
-        return true
-      } else {
-        alert(response.resultMessage || '공통코드 삭제에 실패했습니다.')
-        return false
-      }
-    } catch (error: unknown) {
-      console.error('Delete common code error:', error)
-      const errorMessage =
-        (error as { data?: { resultMessage?: string } })?.data?.resultMessage ||
-        (error as { message?: string })?.message ||
-        '공통코드 삭제 중 오류가 발생했습니다.'
-      alert(errorMessage)
-      return false
-    }
-  }
-
-  // 코드 제출
   const onCodeSubmit = handleCodeSubmit(async (formValues) => {
-    if (isSubmittingCode.value) return
-
+    if (store.isSubmittingCode) return
     try {
-      isSubmittingCode.value = true
-
-      if (isCodeEditMode.value === 'add') {
-        const requestData: CommonCodeCreateRequest = {
-          groupCode: formValues.groupCode,
-          code: formValues.code,
-          codeName: formValues.codeName,
-          sortOrder: formValues.sortOrder,
-          isActive: formValues.isActive,
-          childGroupCode: formValues.childGroupCode || undefined,
-          description: formValues.description || undefined,
-        }
-
-        const success = await createCommonCode(requestData)
+      store.actions.setSubmittingCode(true)
+      if (store.isCodeEditMode === 'add') {
+        const success = await store.actions.createCommonCode(
+          toCreateRequest(formValues),
+        )
         if (success) {
-          await fetchCodeList(selectedGroupCode.value || '')
+          const gc = store.getters.selectedGroupCodeValue()
+          if (gc) await store.actions.fetchCodeList(gc)
           cancelCodeEdit()
           alert('공통코드가 생성되었습니다.')
         }
-      } else if (isCodeEditMode.value === 'edit' && editingCode.value) {
-        // 수정은 삭제 후 생성으로 처리
-        const oldGroupCode = selectedGroupCode.value
-        const oldCode = editingCode.value.code
-
+      } else if (store.isCodeEditMode === 'edit' && store.editingCode) {
+        const oldGroupCode = store.getters.selectedGroupCodeValue()
+        const oldCode = store.editingCode.code
         if (!oldGroupCode || !oldCode) {
           alert('수정할 수 없습니다.')
           return
         }
-
-        const deleteSuccess = await deleteCommonCode(oldGroupCode, oldCode)
-        if (!deleteSuccess) {
-          return
-        }
-
-        const requestData: CommonCodeCreateRequest = {
-          groupCode: formValues.groupCode,
-          code: formValues.code,
-          codeName: formValues.codeName,
-          sortOrder: formValues.sortOrder,
-          isActive: formValues.isActive,
-          childGroupCode: formValues.childGroupCode || undefined,
-          description: formValues.description || undefined,
-        }
-
-        const createSuccess = await createCommonCode(requestData)
+        const deleteSuccess = await store.actions.deleteCommonCode(
+          oldGroupCode,
+          oldCode,
+        )
+        if (!deleteSuccess) return
+        const createSuccess = await store.actions.createCommonCode(
+          toCreateRequest(formValues),
+        )
         if (createSuccess) {
-          await fetchCodeList(selectedGroupCode.value || '')
+          await store.actions.fetchCodeList(oldGroupCode)
           cancelCodeEdit()
           alert('공통코드가 수정되었습니다.')
         }
-      } else if (isChildCodeEditMode.value === 'add') {
-        if (!selectedCode.value) {
+      } else if (store.isChildCodeEditMode === 'add') {
+        const item = store.getters.selectedCodeItem()
+        if (!store.selectedCode || !item?.groupCode) {
           alert('코드를 선택해주세요.')
           return
         }
-
-        const selectedCodeItem = codeList.value.find((item) => item.code === selectedCode.value)
-        if (!selectedCodeItem?.groupCode) {
-          alert('하위 코드를 추가할 수 없습니다.')
-          return
-        }
-
-        const requestData: CommonCodeCreateRequest = {
-          groupCode: formValues.groupCode,
-          code: formValues.code,
-          codeName: formValues.codeName,
-          sortOrder: formValues.sortOrder,
-          isActive: formValues.isActive,
-          childGroupCode: formValues.childGroupCode || undefined,
-          description: formValues.description || undefined,
-        }
-
-        const success = await createCommonCode(requestData)
+        const success = await store.actions.createCommonCode(
+          toCreateRequest(formValues),
+        )
         if (success) {
-          await fetchChildCodeList(selectedCodeItem.groupCode)
+          await store.actions.fetchChildCodeList(item.groupCode)
           cancelCodeEdit()
           alert('하위 코드가 생성되었습니다.')
         }
-      } else if (isChildCodeEditMode.value === 'edit' && editingChildCode.value) {
-        if (!selectedCode.value) {
+      } else if (
+        store.isChildCodeEditMode === 'edit' &&
+        store.editingChildCode
+      ) {
+        const item = store.getters.selectedCodeItem()
+        if (!store.selectedCode || !item?.groupCode) {
           alert('수정할 수 없습니다.')
           return
         }
-
-        const selectedCodeItem = codeList.value.find((item) => item.code === selectedCode.value)
-        if (!selectedCodeItem?.groupCode) {
-          alert('수정할 수 없습니다.')
-          return
-        }
-
-        // 수정은 삭제 후 생성으로 처리
-        const oldGroupCode = selectedCodeItem.groupCode
-        const oldCode = editingChildCode.value.code
-
+        const oldGroupCode = item.groupCode
+        const oldCode = store.editingChildCode.code
         if (!oldCode) {
           alert('수정할 수 없습니다.')
           return
         }
-
-        const deleteSuccess = await deleteCommonCode(oldGroupCode, oldCode)
-        if (!deleteSuccess) {
-          return
-        }
-
-        const requestData: CommonCodeCreateRequest = {
-          groupCode: formValues.groupCode,
-          code: formValues.code,
-          codeName: formValues.codeName,
-          sortOrder: formValues.sortOrder,
-          isActive: formValues.isActive,
-          childGroupCode: formValues.childGroupCode || undefined,
-          description: formValues.description || undefined,
-        }
-
-        const createSuccess = await createCommonCode(requestData)
+        const deleteSuccess = await store.actions.deleteCommonCode(
+          oldGroupCode,
+          oldCode,
+        )
+        if (!deleteSuccess) return
+        const createSuccess = await store.actions.createCommonCode(
+          toCreateRequest(formValues),
+        )
         if (createSuccess) {
-          await fetchChildCodeList(selectedCodeItem.groupCode)
+          await store.actions.fetchChildCodeList(oldGroupCode)
           cancelCodeEdit()
           alert('하위 코드가 수정되었습니다.')
         }
@@ -650,54 +318,43 @@
     } catch (error) {
       console.error('Code submit error:', error)
     } finally {
-      isSubmittingCode.value = false
+      store.actions.setSubmittingCode(false)
     }
   })
 
-  // 코드 삭제
   const handleDeleteCode = async (code: CommonCodeResponse) => {
-    if (!selectedGroupCode.value || !code.code) {
+    const groupCode = store.getters.selectedGroupCodeValue()
+    if (!groupCode || !code.code) {
       alert('삭제할 수 없습니다.')
       return
     }
-
-    const success = await deleteCommonCode(selectedGroupCode.value, code.code)
+    const success = await store.actions.deleteCommonCode(groupCode, code.code)
     if (success) {
-      await fetchCodeList(selectedGroupCode.value)
-      if (editingCode.value?.code === code.code) {
-        cancelCodeEdit()
-      }
+      await store.actions.fetchCodeList(groupCode)
+      if (store.editingCode?.code === code.code) cancelCodeEdit()
       alert('공통코드가 삭제되었습니다.')
     }
   }
 
-  // 하위 코드 삭제
   const handleDeleteChildCode = async (code: CommonCodeResponse) => {
-    if (!selectedCode.value || !code.code) {
+    const item = store.getters.selectedCodeItem()
+    if (!store.selectedCode || !code.code || !item?.groupCode) {
       alert('삭제할 수 없습니다.')
       return
     }
-
-    // codeList에서 선택된 code를 찾아서 groupCode를 가져옴
-    const selectedCodeItem = codeList.value.find((item) => item.code === selectedCode.value)
-    if (!selectedCodeItem?.groupCode) {
-      alert('삭제할 수 없습니다.')
-      return
-    }
-
-    const success = await deleteCommonCode(selectedCodeItem.groupCode, code.code)
+    const success = await store.actions.deleteCommonCode(
+      item.groupCode,
+      code.code,
+    )
     if (success) {
-      await fetchChildCodeList(selectedCodeItem.groupCode)
-      if (editingChildCode.value?.code === code.code) {
-        cancelCodeEdit()
-      }
+      await store.actions.fetchChildCodeList(item.groupCode)
+      if (store.editingChildCode?.code === code.code) cancelCodeEdit()
       alert('하위 코드가 삭제되었습니다.')
     }
   }
 
-  // 페이지 마운트 시 초기 데이터 로드
-  onMounted(async () => {
-    await fetchRootGroups()
+  onMounted(() => {
+    store.actions.fetchRootGroups()
   })
 </script>
 
@@ -719,26 +376,26 @@
           </h2>
           <div class="grid gap-6 lg:grid-cols-3">
             <!-- 최상위 그룹 카드 리스트 -->
-            <div class="border-neutral-stroke-300 rounded-lg border bg-white p-6">
+            <div
+              class="border-neutral-stroke-300 rounded-lg border bg-white p-6"
+            >
               <div class="mb-4 flex items-center justify-between">
-                <h3 class="text-neutral-text-title text-base font-bold">최상위 그룹 목록</h3>
-                <Button
-                  color="primary"
-                  size="sm"
-                  @click="startAddRootGroup"
-                >
+                <h3 class="text-neutral-text-title text-base font-bold">
+                  최상위 그룹 목록
+                </h3>
+                <Button color="primary" size="sm" @click="startAddRootGroup">
                   추가
                 </Button>
               </div>
               <div class="space-y-2">
                 <div
-                  v-for="group in rootGroups"
+                  v-for="group in store.rootGroups"
                   :key="group.id"
-                  class="border-neutral-stroke-200 rounded border p-3 hover:bg-neutral-fill-50 cursor-pointer"
+                  class="border-neutral-stroke-200 hover:bg-neutral-fill-50 cursor-pointer rounded border p-3"
                   :class="{
                     'bg-primary-50 border-primary-300':
-                      isRootGroupEditMode === 'edit' &&
-                      selectedRootGroupForEdit?.id === group.id,
+                      store.isRootGroupEditMode === 'edit' &&
+                      store.selectedRootGroupForEdit?.id === group.id,
                   }"
                   @click="startEditRootGroup(group)"
                 >
@@ -752,7 +409,7 @@
                   </div>
                 </div>
                 <div
-                  v-if="rootGroups.length === 0"
+                  v-if="store.rootGroups.length === 0"
                   class="text-neutral-text-caption py-8 text-center text-sm"
                 >
                   최상위 그룹 목록이 없습니다.
@@ -762,11 +419,15 @@
 
             <!-- 최상위 그룹 편집 영역 -->
             <div
-              v-if="isRootGroupEditMode"
+              v-if="store.isRootGroupEditMode"
               class="border-neutral-stroke-300 rounded-lg border bg-white p-6 lg:col-span-2"
             >
               <h3 class="text-neutral-text-title mb-4 text-base font-bold">
-                {{ isRootGroupEditMode === 'add' ? '최상위 그룹 추가' : '최상위 그룹 수정' }}
+                {{
+                  store.isRootGroupEditMode === 'add'
+                    ? '최상위 그룹 추가'
+                    : '최상위 그룹 수정'
+                }}
               </h3>
               <form @submit.prevent="onRootGroupSubmit">
                 <div class="space-y-4">
@@ -778,7 +439,7 @@
                         label="그룹 코드"
                         placeholder="그룹 코드를 입력하세요"
                         size="md"
-                        :readonly="isRootGroupEditMode === 'edit'"
+                        :readonly="store.isRootGroupEditMode === 'edit'"
                       />
                     </template>
                   </FormField>
@@ -834,7 +495,7 @@
                     type="submit"
                     color="primary"
                     size="md"
-                    :disabled="isSubmittingRootGroup"
+                    :disabled="store.isSubmittingRootGroup"
                   >
                     저장
                   </Button>
@@ -851,15 +512,22 @@
           </h2>
           <div class="grid gap-6 lg:grid-cols-3">
             <!-- 왼쪽 영역: 그룹 선택 및 코드 목록 -->
-            <div class="lg:col-span-2 border-neutral-stroke-300 rounded-lg border bg-white p-6">
+            <div
+              class="border-neutral-stroke-300 rounded-lg border bg-white p-6 lg:col-span-2"
+            >
               <!-- 그룹 선택 -->
               <div class="mb-4">
-                <label class="text-neutral-text-title mb-2 block text-sm font-semibold">
+                <label
+                  class="text-neutral-text-title mb-2 block text-sm font-semibold"
+                >
                   그룹 선택
                 </label>
                 <SelectV2
-                  v-model="selectedGroupCode"
-                  :items="rootGroups"
+                  :model-value="store.selectedGroupCode"
+                  @update:model-value="
+                    store.actions.setSelectedGroupCode($event)
+                  "
+                  :items="store.rootGroups"
                   item-text="groupName"
                   item-value="groupCode"
                   placeholder="그룹을 선택하세요"
@@ -869,42 +537,40 @@
               </div>
 
               <!-- 코드 선택 -->
-              <div v-if="selectedGroupCode" class="mb-4">
+              <div v-if="store.selectedGroupCode" class="mb-4">
                 <div class="mb-2 flex items-center justify-between">
-                  <label class="text-neutral-text-title block text-sm font-semibold">
+                  <label
+                    class="text-neutral-text-title block text-sm font-semibold"
+                  >
                     코드 선택
                   </label>
-                  <Button
-                    color="primary"
-                    size="xs"
-                    @click="startAddCode"
-                  >
+                  <Button color="primary" size="xs" @click="startAddCode">
                     추가
                   </Button>
                 </div>
                 <div
-                  v-if="isLoadingCodes"
+                  v-if="store.isLoadingCodes"
                   class="text-neutral-text-caption py-4 text-center text-sm"
                 >
                   로딩 중...
                 </div>
-                <div
-                  v-else-if="codeList.length > 0"
-                  class="space-y-1"
-                >
+                <div v-else-if="store.codeList.length > 0" class="space-y-1">
                   <div
-                    v-for="item in codeList"
+                    v-for="item in store.codeList"
                     :key="item.code"
-                    class="border-neutral-stroke-200 flex items-center justify-between rounded border p-2 hover:bg-neutral-fill-50 cursor-pointer"
+                    class="border-neutral-stroke-200 hover:bg-neutral-fill-50 flex cursor-pointer items-center justify-between rounded border p-2"
                     :class="{
                       'bg-primary-50 border-primary-300':
-                        selectedCode === item.code ||
-                        (isCodeEditMode === 'edit' && editingCode?.code === item.code),
+                        store.selectedCode === item.code ||
+                        (store.isCodeEditMode === 'edit' &&
+                          store.editingCode?.code === item.code),
                     }"
                     @click="handleCodeSelect(item)"
                   >
                     <div>
-                      <div class="text-neutral-text-title text-sm font-semibold">
+                      <div
+                        class="text-neutral-text-title text-sm font-semibold"
+                      >
                         {{ item.codeName }}
                       </div>
                       <div class="text-neutral-text-caption text-xs">
@@ -940,42 +606,43 @@
               </div>
 
               <!-- 하위 코드 선택 -->
-              <div v-if="selectedCode" class="mb-4">
+              <div v-if="store.selectedCode" class="mb-4">
                 <div class="mb-2 flex items-center justify-between">
-                  <label class="text-neutral-text-title block text-sm font-semibold">
+                  <label
+                    class="text-neutral-text-title block text-sm font-semibold"
+                  >
                     하위 코드 선택
                   </label>
-                  <Button
-                    color="primary"
-                    size="xs"
-                    @click="startAddChildCode"
-                  >
+                  <Button color="primary" size="xs" @click="startAddChildCode">
                     추가
                   </Button>
                 </div>
                 <div
-                  v-if="isLoadingChildCodes"
+                  v-if="store.isLoadingChildCodes"
                   class="text-neutral-text-caption py-4 text-center text-sm"
                 >
                   로딩 중...
                 </div>
                 <div
-                  v-else-if="childCodeList.length > 0"
+                  v-else-if="store.childCodeList.length > 0"
                   class="space-y-1"
                 >
                   <div
-                    v-for="item in childCodeList"
+                    v-for="item in store.childCodeList"
                     :key="item.code"
-                    class="border-neutral-stroke-200 flex items-center justify-between rounded border p-2 hover:bg-neutral-fill-50 cursor-pointer"
+                    class="border-neutral-stroke-200 hover:bg-neutral-fill-50 flex cursor-pointer items-center justify-between rounded border p-2"
                     :class="{
                       'bg-primary-50 border-primary-300':
-                        selectedChildCode === item.code ||
-                        (isChildCodeEditMode === 'edit' && editingChildCode?.code === item.code),
+                        store.selectedChildCode === item.code ||
+                        (store.isChildCodeEditMode === 'edit' &&
+                          store.editingChildCode?.code === item.code),
                     }"
                     @click="handleChildCodeSelect(item)"
                   >
                     <div>
-                      <div class="text-neutral-text-title text-sm font-semibold">
+                      <div
+                        class="text-neutral-text-title text-sm font-semibold"
+                      >
                         {{ item.codeName }}
                       </div>
                       <div class="text-neutral-text-caption text-xs">
@@ -1013,16 +680,19 @@
 
             <!-- 오른쪽 영역: 코드 편집 -->
             <div
-              v-if="(isCodeEditMode || isChildCodeEditMode) && selectedGroupCode"
+              v-if="
+                (store.isCodeEditMode || store.isChildCodeEditMode) &&
+                store.selectedGroupCode
+              "
               class="border-neutral-stroke-300 rounded-lg border bg-white p-6 lg:col-span-1"
             >
               <h3 class="text-neutral-text-title mb-4 text-base font-bold">
                 {{
-                  isCodeEditMode === 'add'
+                  store.isCodeEditMode === 'add'
                     ? '코드 추가'
-                    : isCodeEditMode === 'edit'
+                    : store.isCodeEditMode === 'edit'
                       ? '코드 수정'
-                      : isChildCodeEditMode === 'add'
+                      : store.isChildCodeEditMode === 'add'
                         ? '하위 코드 추가'
                         : '하위 코드 수정'
                 }}
@@ -1037,7 +707,7 @@
                         label="그룹 코드"
                         placeholder="그룹 코드를 입력하세요"
                         size="md"
-                        :readonly="isChildCodeEditMode !== null"
+                        :readonly="store.isChildCodeEditMode !== null"
                       />
                     </template>
                   </FormField>
@@ -1050,7 +720,10 @@
                         label="코드"
                         placeholder="코드를 입력하세요"
                         size="md"
-                        :readonly="isCodeEditMode === 'edit' || isChildCodeEditMode === 'edit'"
+                        :readonly="
+                          store.isCodeEditMode === 'edit' ||
+                          store.isChildCodeEditMode === 'edit'
+                        "
                       />
                     </template>
                   </FormField>
@@ -1095,7 +768,9 @@
                   <FormField name="isActive">
                     <template #default="{ bind, field }">
                       <div>
-                        <label class="text-neutral-text-title mb-2 block text-sm font-semibold">
+                        <label
+                          class="text-neutral-text-title mb-2 block text-sm font-semibold"
+                        >
                           활성 상태
                         </label>
                         <Switch
@@ -1133,7 +808,7 @@
                     type="submit"
                     color="primary"
                     size="md"
-                    :disabled="isSubmittingCode"
+                    :disabled="store.isSubmittingCode"
                   >
                     저장
                   </Button>
