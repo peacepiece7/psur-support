@@ -6,6 +6,7 @@ import com.service.demo.domain.commoncode.dto.CommonCodeGroupListResponse;
 import com.service.demo.domain.commoncode.dto.CommonCodeGroupResponse;
 import com.service.demo.domain.commoncode.dto.CommonCodeGroupSummaryResponse;
 import com.service.demo.domain.commoncode.dto.CommonCodeResponse;
+import com.service.demo.domain.commoncode.dto.CommonCodeUpdateRequest;
 import com.service.demo.domain.commoncode.service.CommonCodeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -87,4 +89,9 @@ public class CommonCodeController {
         return ApiResponse.ok(null);
     }
 
+    @Operation(summary = "공통 코드 수정", description = "공통 코드를 수정합니다.")
+    @PutMapping
+    public ApiResponse<CommonCodeResponse> updateCode(@RequestBody CommonCodeUpdateRequest request) {
+        return ApiResponse.ok(commonCodeService.updateCode(request));
+    }
 }

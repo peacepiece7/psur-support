@@ -110,6 +110,13 @@
       AND deleted_at IS NULL
   </select>
 
+  <select id="findCodeByGroupAndCode" resultMap="CommonCodeMap">
+    SELECT * FROM common_code
+    WHERE group_id = #{groupId}
+      AND code = #{code}
+      AND deleted_at IS NULL
+  </select>
+
   <select id="findCodeIdByGroupCodeAndCode" resultType="long">
     SELECT c.id
     FROM common_code c
@@ -139,6 +146,18 @@
       #{description}
     )
   </insert>
+
+  <update id="updateCode">
+    UPDATE common_code
+    SET
+      code_name = #{codeName},
+      child_group_code = #{childGroupCode},
+      sort_order = #{sortOrder},
+      is_active = #{isActive},
+      description = #{description}
+    WHERE id = #{id}
+      AND deleted_at IS NULL
+  </update>
 
   <update id="softDeleteCode">
     UPDATE common_code c

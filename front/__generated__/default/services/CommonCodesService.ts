@@ -8,10 +8,29 @@ import type { ApiResponseCommonCodeResponse } from '../models/ApiResponseCommonC
 import type { ApiResponseListCommonCodeGroupSummaryResponse } from '../models/ApiResponseListCommonCodeGroupSummaryResponse';
 import type { ApiResponseVoid } from '../models/ApiResponseVoid';
 import type { CommonCodeCreateRequest } from '../models/CommonCodeCreateRequest';
+import type { CommonCodeUpdateRequest } from '../models/CommonCodeUpdateRequest';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
 export class CommonCodesService {
+    /**
+     * 공통 코드 수정
+     * 공통 코드를 수정합니다.
+     * @returns ApiResponseCommonCodeResponse OK
+     * @throws ApiError
+     */
+    public static updateCode({
+        requestBody,
+    }: {
+        requestBody: CommonCodeUpdateRequest,
+    }): CancelablePromise<ApiResponseCommonCodeResponse> {
+        return __request(OpenAPI, {
+            method: 'PUT',
+            url: '/common-codes',
+            body: requestBody,
+            mediaType: 'application/json',
+        });
+    }
     /**
      * 공통 코드 생성
      * 공통 코드 그룹 하위에 코드를 생성합니다.

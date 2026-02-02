@@ -10,16 +10,22 @@ import lombok.Getter;
 public class CommonCodeGroupResponse {
     @Schema(description = "Group code", example = "CLUB_ROLE")
     private final String groupCode;
+
     @Schema(description = "Group name", example = "Sports Club Role")
     private final String groupName;
+
     @Schema(description = "Group description", example = "Roles available for sports clubs")
     private final String description;
+
     @Schema(description = "Group level (1-3)", example = "1")
     private final Integer level;
+
     @Schema(description = "Sort order", example = "1")
     private final Integer sortOrder;
+
     @Schema(description = "Codes under this group")
     private final List<CommonCodeResponse> codes = new ArrayList<>();
+
     @Schema(description = "Child groups")
     private final List<CommonCodeGroupResponse> children = new ArrayList<>();
 

@@ -23,6 +23,7 @@ export type { CommonCodeGroupListResponse } from './models/CommonCodeGroupListRe
 export type { CommonCodeGroupResponse } from './models/CommonCodeGroupResponse';
 export type { CommonCodeGroupSummaryResponse } from './models/CommonCodeGroupSummaryResponse';
 export type { CommonCodeResponse } from './models/CommonCodeResponse';
+export type { CommonCodeUpdateRequest } from './models/CommonCodeUpdateRequest';
 export type { LoginRequest } from './models/LoginRequest';
 export type { LoginResponse } from './models/LoginResponse';
 export type { RegisterRequest } from './models/RegisterRequest';
@@ -52,6 +53,7 @@ export { $CommonCodeGroupListResponse } from './schemas/$CommonCodeGroupListResp
 export { $CommonCodeGroupResponse } from './schemas/$CommonCodeGroupResponse';
 export { $CommonCodeGroupSummaryResponse } from './schemas/$CommonCodeGroupSummaryResponse';
 export { $CommonCodeResponse } from './schemas/$CommonCodeResponse';
+export { $CommonCodeUpdateRequest } from './schemas/$CommonCodeUpdateRequest';
 export { $LoginRequest } from './schemas/$LoginRequest';
 export { $LoginResponse } from './schemas/$LoginResponse';
 export { $RegisterRequest } from './schemas/$RegisterRequest';

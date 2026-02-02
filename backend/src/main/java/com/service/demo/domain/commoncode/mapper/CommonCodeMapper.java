@@ -25,7 +25,9 @@ public interface CommonCodeMapper {
     List<CommonCodeEntity> findCodesByGroupIds(@Param("groupIds") List<Long> groupIds,
                                                @Param("includeInactive") boolean includeInactive);
     CommonCodeEntity findCodeById(@Param("id") Long id);
+    CommonCodeEntity findCodeByGroupAndCode(@Param("groupId") Long groupId, @Param("code") String code);
     Long findCodeIdByGroupCodeAndCode(@Param("groupCode") String groupCode, @Param("code") String code);
     int insertCode(CommonCodeEntity code);
+    int updateCode(CommonCodeEntity code);
     int softDeleteCode(@Param("groupCode") String groupCode, @Param("code") String code);
 }

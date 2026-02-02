@@ -10,10 +10,13 @@ import lombok.Getter;
 public class CommonCodeGroupListResponse {
     @Schema(description = "Result items")
     private final List<CommonCodeGroupSummaryResponse> items;
+
     @Schema(description = "Next offset for infinite scroll", example = "20")
     private final Integer nextOffset;
+
     @Schema(description = "Whether more items are available", example = "true")
     private final Boolean hasNext;
+
     @Schema(description = "Applied limit size", example = "20")
     private final Integer limit;
 

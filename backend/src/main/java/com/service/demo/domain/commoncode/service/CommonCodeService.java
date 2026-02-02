@@ -7,9 +7,11 @@ import com.service.demo.domain.commoncode.dto.CommonCodeGroupListResponse;
 import com.service.demo.domain.commoncode.dto.CommonCodeGroupResponse;
 import com.service.demo.domain.commoncode.dto.CommonCodeGroupSummaryResponse;
 import com.service.demo.domain.commoncode.dto.CommonCodeResponse;
+import com.service.demo.domain.commoncode.dto.CommonCodeUpdateRequest;
 import com.service.demo.domain.commoncode.entity.CommonCodeEntity;
 import com.service.demo.domain.commoncode.entity.CommonCodeGroupEntity;
 import com.service.demo.domain.commoncode.mapper.CommonCodeMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -18,15 +20,10 @@ import java.util.List;
 import java.util.Map;
 
 @Service
+@RequiredArgsConstructor
 public class CommonCodeService {
     private final CommonCodeMapper commonCodeMapper;
     private final CommonCodeLookupService commonCodeLookupService;
-
-    public CommonCodeService(CommonCodeMapper commonCodeMapper,
-                             CommonCodeLookupService commonCodeLookupService) {
-        this.commonCodeMapper = commonCodeMapper;
-        this.commonCodeLookupService = commonCodeLookupService;
-    }
 
     public CommonCodeGroupResponse getGroupTree(String groupCode,
                                                 Integer depth,
@@ -176,12 +173,12 @@ public class CommonCodeService {
     }
 
     public CommonCodeResponse createCode(CommonCodeCreateRequest request) {
-        CommonCodeGroupEntity group = commonCodeMapper.findGroupByCode(request.getGroupCode(), false);
+        var group = commonCodeMapper.findGroupByCode(request.getGroupCode(), false);
         if (group == null) {
             throw new ApiException(ErrorCode.BAD_REQUEST, "Group not found");
         }
 
-        CommonCodeEntity entity = new CommonCodeEntity();
+        var entity = new CommonCodeEntity();
         entity.setGroupId(group.getId());
         entity.setCode(request.getCode());
         entity.setCodeName(request.getCodeName());
@@ -197,9 +194,49 @@ public class CommonCodeService {
             entity.getId(),
             entity.getCode(),
             entity.getCodeName(),
-                entity.getDescription(),
-                entity.getSortOrder(),
-                entity.getChildGroupCode()
+            entity.getDescription(),
+            entity.getSortOrder(),
+            entity.getChildGroupCode()
+        );
+    }
+
+    public CommonCodeResponse updateCode(CommonCodeUpdateRequest request) {
+        var group = commonCodeMapper.findGroupByCode(request.getGroupCode(), false);
+        if (group == null) {
+            throw new ApiException(ErrorCode.BAD_REQUEST, "Group not found");
+        }
+
+        var entity = commonCodeMapper.findCodeByGroupAndCode(
+            group.getId(),
+            request.getCode()
+        );
+        if (entity == null) {
+            throw new ApiException(ErrorCode.NOT_FOUND, "Code not found");
+        }
+
+        entity.setCodeName(request.getCodeName());
+        entity.setChildGroupCode(request.getChildGroupCode());
+        entity.setDescription(request.getDescription());
+        entity.setSortOrder(
+            request.getSortOrder() == null ? entity.getSortOrder() : request.getSortOrder()
+        );
+
+        if (request.getIsActive() != null) {
+            entity.setIsActive(request.getIsActive());
+        }
+
+        int updated = commonCodeMapper.updateCode(entity);
+        if (updated == 0) {
+            throw new ApiException(ErrorCode.NOT_FOUND);
+        }
+        commonCodeLookupService.evictCodeId(request.getGroupCode(), request.getCode());
+
+        return new CommonCodeResponse(entity.getId(),
+            entity.getCode(),
+            entity.getCodeName(),
+            entity.getDescription(),
+            entity.getSortOrder(),
+            entity.getChildGroupCode()
         );
     }
 

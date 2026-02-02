@@ -7,6 +7,7 @@ public enum ErrorCode implements ErrorCodeIfs {
     BAD_REQUEST(HttpStatus.BAD_REQUEST.value(), 400, "Bad request"),
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED.value(), 401, "Unauthorized"),
     SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR.value(), 500, "Server error"),
+    NOT_FOUND(HttpStatus.NOT_FOUND.value(), 404, "Resource not found"),
     CONVERT_ERROR(HttpStatus.INTERNAL_SERVER_ERROR.value(), 500, "Entity conversion failed"),
     NULL_POINT(HttpStatus.INTERNAL_SERVER_ERROR.value(), 512, "Null point");
 

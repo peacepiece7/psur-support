@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import type { CommonCodeResponse } from '~/types/models/CommonCodeResponse'
 import type { CommonCodeGroupSummaryResponse } from '~/types/models/CommonCodeGroupSummaryResponse'
 import type { CommonCodeCreateRequest } from '~/types/models/CommonCodeCreateRequest'
+import type { CommonCodeUpdateRequest } from '~/types/models/CommonCodeUpdateRequest'
 import type { ApiResponseCommonCodeGroupResponse } from '~/types/models/ApiResponseCommonCodeGroupResponse'
 import type { ApiResponseListCommonCodeGroupSummaryResponse } from '~/types/models/ApiResponseListCommonCodeGroupSummaryResponse'
 import { API_BASE_URL } from '~/constants/url'
@@ -332,6 +333,26 @@ export const useCommonCodeStore = defineStore('commonCode', () => {
         return false
       } catch (error: unknown) {
         console.error('Delete common code error:', error)
+        alert(_getErrorMessage(error))
+        return false
+      }
+    },
+
+    async updateCommonCode(data: CommonCodeUpdateRequest): Promise<boolean> {
+      try {
+        const response = await $fetch<{
+          resultCode?: number
+          resultMessage?: string
+        }>(`${API_BASE_URL}/common-codes`, {
+          method: 'PUT',
+          credentials: 'include',
+          body: data,
+        })
+        if (response.resultCode === 200) return true
+        alert(response.resultMessage || '공통코드 수정에 실패했습니다.')
+        return false
+      } catch (error: unknown) {
+        console.error('Update common code error:', error)
         alert(_getErrorMessage(error))
         return false
       }
