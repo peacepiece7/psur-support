@@ -14,8 +14,20 @@ Auth:
 - `POST /auth/password/reset`
 
 User:
+- `GET /users`
 - `GET /users/me`
+- `GET /users/me/detail`
 - `PUT /users/me`
+
+Roles:
+- `GET /roles`
+
+User Roles:
+- `GET /user-roles`
+- `POST /user-roles`
+- `PUT /user-roles`
+- `PUT /user-roles/bulk`
+- `DELETE /user-roles`
 
 Common Codes:
 - `GET /common-codes/{groupCode}/tree`

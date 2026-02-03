@@ -39,7 +39,7 @@ export class SportsClubsService {
      * @returns ApiResponseSportsClubResponse OK
      * @throws ApiError
      */
-    public static update1({
+    public static update2({
         id,
         requestBody,
     }: {
@@ -65,7 +65,7 @@ export class SportsClubsService {
      * @returns ApiResponseVoid OK
      * @throws ApiError
      */
-    public static delete({
+    public static delete1({
         id,
     }: {
         /**
@@ -87,7 +87,7 @@ export class SportsClubsService {
      * @returns ApiResponseListSportsClubListResponse OK
      * @throws ApiError
      */
-    public static list(): CancelablePromise<ApiResponseListSportsClubListResponse> {
+    public static list2(): CancelablePromise<ApiResponseListSportsClubListResponse> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/sports-clubs',

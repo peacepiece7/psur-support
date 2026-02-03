@@ -101,6 +101,10 @@
             title: '공통코드리스트 관리',
             to: '/management/common-code-list',
           },
+          {
+            title: '권한 관리',
+            to: '/management/user-role',
+          },
         ],
       }
       items.push(managementMenu)

@@ -2,6 +2,8 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
+import type { ApiResponseListUserListResponse } from '../models/ApiResponseListUserListResponse';
+import type { ApiResponseMeDetailResponse } from '../models/ApiResponseMeDetailResponse';
 import type { ApiResponseUserResponse } from '../models/ApiResponseUserResponse';
 import type { UpdateProfileRequest } from '../models/UpdateProfileRequest';
 import type { CancelablePromise } from '../core/CancelablePromise';
@@ -9,8 +11,8 @@ import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
 export class UsersService {
     /**
-     * 내 프로필 조회
-     * 로그인한 사용자의 프로필을 조회합니다.
+     * Get my profile
+     * Returns logged-in user's profile
      * @returns ApiResponseUserResponse OK
      * @throws ApiError
      */
@@ -21,8 +23,8 @@ export class UsersService {
         });
     }
     /**
-     * 내 프로필 수정
-     * 로그인한 사용자의 프로필을 수정합니다.
+     * Update my profile
+     * Updates logged-in user's profile
      * @returns ApiResponseUserResponse OK
      * @throws ApiError
      */
@@ -36,6 +38,40 @@ export class UsersService {
             url: '/users/me',
             body: requestBody,
             mediaType: 'application/json',
+        });
+    }
+    /**
+     * List users
+     * Returns users list
+     * @returns ApiResponseListUserListResponse OK
+     * @throws ApiError
+     */
+    public static list({
+        includeInactive,
+    }: {
+        /**
+         * Include inactive users
+         */
+        includeInactive?: boolean,
+    }): CancelablePromise<ApiResponseListUserListResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/users',
+            query: {
+                'includeInactive': includeInactive,
+            },
+        });
+    }
+    /**
+     * Get my profile detail
+     * Returns user profile with roles and clubs
+     * @returns ApiResponseMeDetailResponse OK
+     * @throws ApiError
+     */
+    public static meDetail(): CancelablePromise<ApiResponseMeDetailResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/users/me/detail',
         });
     }
 }

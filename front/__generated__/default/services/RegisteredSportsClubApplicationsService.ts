@@ -51,7 +51,7 @@ export class RegisteredSportsClubApplicationsService {
      * @returns ApiResponseListRegSportsClubApplicationResponse OK
      * @throws ApiError
      */
-    public static list1(): CancelablePromise<ApiResponseListRegSportsClubApplicationResponse> {
+    public static list4(): CancelablePromise<ApiResponseListRegSportsClubApplicationResponse> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/reg-sports-club-applications',

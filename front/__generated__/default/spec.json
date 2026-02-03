@@ -13,16 +13,24 @@
   ],
   "tags": [
     {
-      "name": "Users",
-      "description": "사용자 프로필 API"
+      "name": "User Roles",
+      "description": "User role assignment"
     },
     {
       "name": "Auth",
       "description": "인증 및 세션 관리"
     },
     {
+      "name": "Roles",
+      "description": "Role management"
+    },
+    {
       "name": "Common Codes",
       "description": "공통 코드/그룹 조회"
+    },
+    {
+      "name": "Users",
+      "description": "User profile API"
     },
     {
       "name": "Sports Clubs",
@@ -39,8 +47,8 @@
         "tags": [
           "Users"
         ],
-        "summary": "내 프로필 조회",
-        "description": "로그인한 사용자의 프로필을 조회합니다.",
+        "summary": "Get my profile",
+        "description": "Returns logged-in user's profile",
         "operationId": "me",
         "responses": {
           "200": {
@@ -64,8 +72,8 @@
         "tags": [
           "Users"
         ],
-        "summary": "내 프로필 수정",
-        "description": "로그인한 사용자의 프로필을 수정합니다.",
+        "summary": "Update my profile",
+        "description": "Updates logged-in user's profile",
         "operationId": "update",
         "requestBody": {
           "content": {
@@ -84,6 +92,208 @@
               "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiResponseUserResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "sessionAuth": []
+          }
+        ]
+      }
+    },
+    "/user-roles": {
+      "get": {
+        "tags": [
+          "User Roles"
+        ],
+        "summary": "List user roles",
+        "description": "Returns user role assignments",
+        "operationId": "list_1",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "description": "User ID",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "includeInactive",
+            "in": "query",
+            "description": "Include inactive user roles",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseListUserRoleResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "sessionAuth": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "User Roles"
+        ],
+        "summary": "Update user role",
+        "description": "Soft deletes old role and assigns new role",
+        "operationId": "update_1",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserRoleUpdateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseUserRoleResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "sessionAuth": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "User Roles"
+        ],
+        "summary": "Assign role to user",
+        "description": "Assigns a role to a user (upsert)",
+        "operationId": "assign",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserRoleAssignRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseUserRoleResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "sessionAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "User Roles"
+        ],
+        "summary": "Delete user role",
+        "description": "Soft deletes a user role assignment",
+        "operationId": "delete",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "description": "User ID",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "roleId",
+            "in": "query",
+            "description": "Role ID",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseVoid"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "sessionAuth": []
+          }
+        ]
+      }
+    },
+    "/user-roles/bulk": {
+      "put": {
+        "tags": [
+          "User Roles"
+        ],
+        "summary": "Bulk update user roles",
+        "description": "Replaces user roles with given list",
+        "operationId": "bulkUpdate",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserRoleBulkUpdateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseListUserRoleResponse"
                 }
               }
             }
@@ -141,7 +351,7 @@
         ],
         "summary": "체육동호회 수정",
         "description": "체육동호회 정보를 수정합니다.",
-        "operationId": "update_1",
+        "operationId": "update_2",
         "parameters": [
           {
             "name": "id",
@@ -189,7 +399,7 @@
         ],
         "summary": "체육동호회 삭제",
         "description": "체육동호회를 소프트 삭제합니다.",
-        "operationId": "delete",
+        "operationId": "delete_1",
         "parameters": [
           {
             "name": "id",
@@ -301,7 +511,7 @@
         ],
         "summary": "체육동호회 목록",
         "description": "체육동호회 목록을 조회합니다.",
-        "operationId": "list",
+        "operationId": "list_2",
         "responses": {
           "200": {
             "description": "OK",
@@ -548,6 +758,109 @@
         }
       }
     },
+    "/users": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "List users",
+        "description": "Returns users list",
+        "operationId": "list",
+        "parameters": [
+          {
+            "name": "includeInactive",
+            "in": "query",
+            "description": "Include inactive users",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseListUserListResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "sessionAuth": []
+          }
+        ]
+      }
+    },
+    "/users/me/detail": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get my profile detail",
+        "description": "Returns user profile with roles and clubs",
+        "operationId": "meDetail",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseMeDetailResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "sessionAuth": []
+          }
+        ]
+      }
+    },
+    "/roles": {
+      "get": {
+        "tags": [
+          "Roles"
+        ],
+        "summary": "List roles",
+        "description": "Returns all roles",
+        "operationId": "list_3",
+        "parameters": [
+          {
+            "name": "includeInactive",
+            "in": "query",
+            "description": "Include inactive roles",
+            "required": true,
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseListRoleResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "sessionAuth": []
+          }
+        ]
+      }
+    },
     "/reg-sports-club-applications": {
       "get": {
         "tags": [
@@ -555,7 +868,7 @@
         ],
         "summary": "신청 목록",
         "description": "등록 체육동호회 신청 목록을 조회합니다.",
-        "operationId": "list_1",
+        "operationId": "list_4",
         "responses": {
           "200": {
             "description": "OK",
@@ -919,6 +1232,166 @@
         },
         "description": "Response payload"
       },
+      "UserRoleUpdateRequest": {
+        "required": [
+          "newRoleId",
+          "oldRoleId",
+          "userId"
+        ],
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "integer",
+            "description": "User ID",
+            "format": "int64",
+            "example": 10
+          },
+          "oldRoleId": {
+            "type": "integer",
+            "description": "Old role ID",
+            "format": "int64",
+            "example": 2
+          },
+          "newRoleId": {
+            "type": "integer",
+            "description": "New role ID",
+            "format": "int64",
+            "example": 3
+          }
+        }
+      },
+      "ApiResponseUserRoleResponse": {
+        "type": "object",
+        "properties": {
+          "resultCode": {
+            "type": "integer",
+            "description": "Application-level result code",
+            "format": "int32",
+            "example": 200
+          },
+          "resultMessage": {
+            "type": "string",
+            "description": "Application-level result message",
+            "example": "OK"
+          },
+          "data": {
+            "$ref": "#/components/schemas/UserRoleResponse"
+          }
+        },
+        "description": "Standard API wrapper"
+      },
+      "UserRoleResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "User role ID",
+            "format": "int64",
+            "example": 1
+          },
+          "userId": {
+            "type": "integer",
+            "description": "User ID",
+            "format": "int64",
+            "example": 10
+          },
+          "roleId": {
+            "type": "integer",
+            "description": "Role ID",
+            "format": "int64",
+            "example": 2
+          },
+          "roleCode": {
+            "type": "string",
+            "description": "Role code",
+            "example": "ADMIN_SYSTEM_MANAGER"
+          },
+          "roleName": {
+            "type": "string",
+            "description": "Role name",
+            "example": "System Manager"
+          },
+          "roleType": {
+            "type": "string",
+            "description": "Role type",
+            "example": "ACCESS"
+          },
+          "isActive": {
+            "type": "boolean",
+            "description": "User role active flag",
+            "example": true
+          },
+          "assignedAt": {
+            "type": "string",
+            "description": "Assigned at",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "Updated at",
+            "format": "date-time"
+          },
+          "deletedAt": {
+            "type": "string",
+            "description": "Deleted at",
+            "format": "date-time"
+          }
+        },
+        "description": "Response payload"
+      },
+      "UserRoleBulkUpdateRequest": {
+        "required": [
+          "roleIds",
+          "userId"
+        ],
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "integer",
+            "description": "User ID",
+            "format": "int64",
+            "example": 10
+          },
+          "roleIds": {
+            "type": "array",
+            "description": "Role IDs to keep/assign",
+            "example": [
+              2,
+              3,
+              4
+            ],
+            "items": {
+              "type": "integer",
+              "description": "Role IDs to keep/assign",
+              "format": "int64"
+            }
+          }
+        }
+      },
+      "ApiResponseListUserRoleResponse": {
+        "type": "object",
+        "properties": {
+          "resultCode": {
+            "type": "integer",
+            "description": "Application-level result code",
+            "format": "int32",
+            "example": 200
+          },
+          "resultMessage": {
+            "type": "string",
+            "description": "Application-level result message",
+            "example": "OK"
+          },
+          "data": {
+            "type": "array",
+            "description": "Response payload",
+            "items": {
+              "$ref": "#/components/schemas/UserRoleResponse"
+            }
+          }
+        },
+        "description": "Standard API wrapper"
+      },
       "SportsClubUpdateRequest": {
         "required": [
           "name"
@@ -1164,6 +1637,27 @@
           }
         },
         "description": "Response payload"
+      },
+      "UserRoleAssignRequest": {
+        "required": [
+          "roleId",
+          "userId"
+        ],
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "integer",
+            "description": "User ID",
+            "format": "int64",
+            "example": 10
+          },
+          "roleId": {
+            "type": "integer",
+            "description": "Role ID",
+            "format": "int64",
+            "example": 2
+          }
+        }
       },
       "SportsClubCreateRequest": {
         "required": [
@@ -1645,6 +2139,175 @@
           }
         }
       },
+      "ApiResponseListUserListResponse": {
+        "type": "object",
+        "properties": {
+          "resultCode": {
+            "type": "integer",
+            "description": "Application-level result code",
+            "format": "int32",
+            "example": 200
+          },
+          "resultMessage": {
+            "type": "string",
+            "description": "Application-level result message",
+            "example": "OK"
+          },
+          "data": {
+            "type": "array",
+            "description": "Response payload",
+            "items": {
+              "$ref": "#/components/schemas/UserListResponse"
+            }
+          }
+        },
+        "description": "Standard API wrapper"
+      },
+      "UserListResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "User ID",
+            "format": "int64",
+            "example": 1
+          },
+          "loginId": {
+            "type": "string",
+            "description": "Login ID",
+            "example": "demo"
+          },
+          "username": {
+            "type": "string",
+            "description": "User name",
+            "example": "Demo User"
+          },
+          "email": {
+            "type": "string",
+            "description": "Email",
+            "example": "demo@test.com"
+          },
+          "telno": {
+            "type": "string",
+            "description": "Phone number",
+            "example": "010-1111-2222"
+          },
+          "status": {
+            "type": "string",
+            "description": "Status",
+            "example": "ACTIVE"
+          },
+          "isActive": {
+            "type": "boolean",
+            "description": "Active flag",
+            "example": true
+          },
+          "lastLoginAt": {
+            "type": "string",
+            "description": "Last login time",
+            "format": "date-time"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "Created time",
+            "format": "date-time"
+          }
+        },
+        "description": "Response payload"
+      },
+      "ApiResponseMeDetailResponse": {
+        "type": "object",
+        "properties": {
+          "resultCode": {
+            "type": "integer",
+            "description": "Application-level result code",
+            "format": "int32",
+            "example": 200
+          },
+          "resultMessage": {
+            "type": "string",
+            "description": "Application-level result message",
+            "example": "OK"
+          },
+          "data": {
+            "$ref": "#/components/schemas/MeDetailResponse"
+          }
+        },
+        "description": "Standard API wrapper"
+      },
+      "MeDetailResponse": {
+        "type": "object",
+        "properties": {
+          "user": {
+            "$ref": "#/components/schemas/UserResponse"
+          },
+          "userRoles": {
+            "type": "array",
+            "description": "User roles",
+            "items": {
+              "$ref": "#/components/schemas/UserRoleSummary"
+            }
+          },
+          "sportsClubList": {
+            "type": "array",
+            "description": "Sports clubs owned by user",
+            "items": {
+              "$ref": "#/components/schemas/SportsClubSummary"
+            }
+          }
+        },
+        "description": "Response payload"
+      },
+      "SportsClubSummary": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Club ID",
+            "format": "int64",
+            "example": 10
+          },
+          "name": {
+            "type": "string",
+            "description": "Club name",
+            "example": "Seoul Sports Club"
+          },
+          "clubRoleCodeId": {
+            "type": "integer",
+            "description": "Common code ID for club role",
+            "format": "int64",
+            "example": 10
+          }
+        },
+        "description": "Sports clubs owned by user"
+      },
+      "UserRoleSummary": {
+        "type": "object",
+        "properties": {
+          "roleId": {
+            "type": "integer",
+            "description": "Role ID",
+            "format": "int64",
+            "example": 2
+          },
+          "roleCode": {
+            "type": "string",
+            "description": "Role code",
+            "example": "ADMIN_SYSTEM_MANAGER"
+          },
+          "roleName": {
+            "type": "string",
+            "description": "Role name",
+            "example": "System Manager"
+          },
+          "roleType": {
+            "type": "string",
+            "description": "Role type",
+            "example": "ACCESS"
+          }
+        },
+        "description": "User roles"
+      },
       "ApiResponseListSportsClubListResponse": {
         "type": "object",
         "properties": {
@@ -1717,6 +2380,67 @@
           "isActive": {
             "type": "boolean",
             "description": "Club active flag",
+            "example": true
+          }
+        },
+        "description": "Response payload"
+      },
+      "ApiResponseListRoleResponse": {
+        "type": "object",
+        "properties": {
+          "resultCode": {
+            "type": "integer",
+            "description": "Application-level result code",
+            "format": "int32",
+            "example": 200
+          },
+          "resultMessage": {
+            "type": "string",
+            "description": "Application-level result message",
+            "example": "OK"
+          },
+          "data": {
+            "type": "array",
+            "description": "Response payload",
+            "items": {
+              "$ref": "#/components/schemas/RoleResponse"
+            }
+          }
+        },
+        "description": "Standard API wrapper"
+      },
+      "RoleResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Role ID",
+            "format": "int64",
+            "example": 1
+          },
+          "roleCode": {
+            "type": "string",
+            "description": "Role code",
+            "example": "ADMIN_SYSTEM_MANAGER"
+          },
+          "roleName": {
+            "type": "string",
+            "description": "Role name",
+            "example": "System Manager"
+          },
+          "roleType": {
+            "type": "string",
+            "description": "Role type",
+            "example": "ACCESS"
+          },
+          "description": {
+            "type": "string",
+            "description": "Role description",
+            "example": "System admin role"
+          },
+          "isActive": {
+            "type": "boolean",
+            "description": "Role active flag",
             "example": true
           }
         },

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.service.demo.domain.role.mapper.UserRoleMapper">
+
+  <resultMap id="UserRoleMap" type="com.service.demo.domain.role.entity.UserRoleEntity">
+    <id property="id" column="id"/>
+    <result property="userId" column="user_id"/>
+    <result property="roleId" column="role_id"/>
+    <result property="roleCode" column="role_code"/>
+    <result property="roleName" column="role_name"/>
+    <result property="roleType" column="role_type"/>
+    <result property="isActive" column="is_active"/>
+    <result property="assignedAt" column="assigned_at"/>
+    <result property="updatedAt" column="updated_at"/>
+    <result property="deletedAt" column="deleted_at"/>
+  </resultMap>
+
+  <insert id="upsertUserRole" parameterType="com.service.demo.domain.role.entity.UserRoleEntity">
+    INSERT INTO user_role (user_id, role_id, is_active, assigned_at, deleted_at)
+    VALUES (#{userId}, #{roleId}, 1, NOW(), NULL)
+    ON DUPLICATE KEY UPDATE
+      is_active = 1,
+      deleted_at = NULL,
+      updated_at = NOW(),
+      assigned_at = NOW()
+  </insert>
+
+  <update id="softDeleteUserRole">
+    UPDATE user_role
+    SET is_active = 0,
+        deleted_at = NOW(),
+        updated_at = NOW()
+    WHERE user_id = #{userId}
+      AND role_id = #{roleId}
+      AND deleted_at IS NULL
+  </update>
+
+  <update id="softDeleteByUserId">
+    UPDATE user_role
+    SET is_active = 0,
+        deleted_at = NOW(),
+        updated_at = NOW()
+    WHERE user_id = #{userId}
+      AND deleted_at IS NULL
+  </update>
+
+  <update id="softDeleteByUserIdExcludingRoleIds">
+    UPDATE user_role
+    SET is_active = 0,
+        deleted_at = NOW(),
+        updated_at = NOW()
+    WHERE user_id = #{userId}
+      AND deleted_at IS NULL
+      AND role_id NOT IN
+      <foreach collection="roleIds" item="id" open="(" close=")" separator=",">
+        #{id}
+      </foreach>
+  </update>
+
+  <select id="findByUserIdAndRoleId" resultMap="UserRoleMap">
+    SELECT ur.id,
+           ur.user_id,
+           ur.role_id,
+           ur.is_active,
+           ur.assigned_at,
+           ur.updated_at,
+           ur.deleted_at,
+           r.role_code,
+           r.role_name,
+           r.role_type
+    FROM user_role ur
+    JOIN role r ON ur.role_id = r.id
+    WHERE ur.user_id = #{userId}
+      AND ur.role_id = #{roleId}
+  </select>
+
+  <select id="findAllWithRole" resultMap="UserRoleMap">
+    SELECT ur.id,
+           ur.user_id,
+           ur.role_id,
+           ur.is_active,
+           ur.assigned_at,
+           ur.updated_at,
+           ur.deleted_at,
+           r.role_code,
+           r.role_name,
+           r.role_type
+    FROM user_role ur
+    JOIN role r ON ur.role_id = r.id
+    <where>
+      <if test="userId != null">
+        ur.user_id = #{userId}
+      </if>
+      <if test="!includeInactive">
+        AND ur.deleted_at IS NULL
+      </if>
+    </where>
+    ORDER BY ur.id DESC
+  </select>
+
+  <select id="findActiveRoleIdsByUserId" resultType="long">
+    SELECT role_id FROM user_role
+    WHERE user_id = #{userId}
+      AND deleted_at IS NULL
+  </select>
+
+</mapper>

@@ -38,6 +38,7 @@ CREATE TABLE IF NOT EXISTS user_role (
   updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   deleted_at DATETIME NULL,
   UNIQUE KEY uk_user_role_user_role (user_id, role_id),
+  KEY idx_user_role_user_id (user_id),
   KEY idx_user_role_role_id (role_id),
   CONSTRAINT fk_user_roles_user_id FOREIGN KEY (user_id) REFERENCES users(id),
   CONSTRAINT fk_user_roles_role_id FOREIGN KEY (role_id) REFERENCES role(id)

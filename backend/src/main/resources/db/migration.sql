@@ -50,6 +50,7 @@ ALTER TABLE user_role
   DROP INDEX uk_user_roles_user_role,
   DROP INDEX idx_user_roles_role_id,
   ADD UNIQUE KEY uk_user_role_user_role (user_id, role_id),
+  ADD KEY idx_user_role_user_id (user_id),
   ADD KEY idx_user_role_role_id (role_id);
 
 SET FOREIGN_KEY_CHECKS = 1;

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.service.demo.domain.role.mapper.RoleMapper">
+
+  <resultMap id="RoleMap" type="com.service.demo.domain.role.entity.RoleEntity">
+    <id property="id" column="id"/>
+    <result property="roleCode" column="role_code"/>
+    <result property="roleName" column="role_name"/>
+    <result property="roleType" column="role_type"/>
+    <result property="description" column="description"/>
+    <result property="isActive" column="is_active"/>
+    <result property="createdAt" column="created_at"/>
+    <result property="updatedAt" column="updated_at"/>
+  </resultMap>
+
+  <select id="findAll" resultMap="RoleMap">
+    SELECT * FROM role
+    <if test="!includeInactive">
+      WHERE is_active = 1
+    </if>
+    ORDER BY id ASC
+  </select>
+
+  <select id="findById" resultMap="RoleMap">
+    SELECT * FROM role WHERE id = #{id}
+  </select>
+
+  <select id="findByIds" resultMap="RoleMap">
+    SELECT * FROM role
+    WHERE id IN
+    <foreach collection="ids" item="id" open="(" close=")" separator=",">
+      #{id}
+    </foreach>
+  </select>
+
+</mapper>
