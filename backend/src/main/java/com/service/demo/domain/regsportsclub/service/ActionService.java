@@ -29,15 +29,15 @@ public class ActionService {
             return;
         }
 
-        bpmService.update(applyEntity.getProcessTaskId(), action.getBpmValue());
+        bpmService.update(applyEntity.getProcessInstanceId(), action.getBpmValue());
     }
 
     private void ensureProcessStarted(RegSportsClubApplyEntity applyEntity) {
-        if (applyEntity.getProcessTaskId() != null) {
+        if (applyEntity.getProcessInstanceId() != null) {
             return;
         }
-        String processTaskId = bpmService.start();
-        regSportsClubApplicationMapper.updateApplyProcessTaskId(applyEntity.getId(), processTaskId);
-        applyEntity.setProcessTaskId(processTaskId);
+        String processInstanceId = bpmService.start();
+        regSportsClubApplicationMapper.updateApplyProcessInstanceId(applyEntity.getId(), processInstanceId);
+        applyEntity.setProcessInstanceId(processInstanceId);
     }
 }

@@ -65,6 +65,11 @@
      * 고정 헤더
      */
     fixedHeader?: boolean
+
+    /**
+     * 아이템의 고유 식별자 필드명 (item-value prop)
+     */
+    itemValue?: string
   }
 
   const props = withDefaults(defineProps<TableProps>(), {
@@ -77,6 +82,7 @@
     sortBy: () => [],
     height: undefined,
     fixedHeader: false,
+    itemValue: 'id',
   })
 
   const emit = defineEmits<{
@@ -107,22 +113,42 @@
     set: (value) => emit('update:sortBy', value),
   })
 
-  const handleRowClick = (item: Record<string, unknown>, index: number) => {
-    emit('click:row', item, index)
+  const handleRowClick = (
+    event: MouseEvent,
+    { item }: { item: Record<string, unknown> },
+  ) => {
+    // Vuetify의 click:row 이벤트는 (event, { item }) 형태로 전달됨
+    // index는 items 배열에서 찾음
+    // item-value prop을 사용하여 고유 식별자로 비교
+    const itemValue = props.itemValue
+    const itemId = itemValue ? item[itemValue] : undefined
+    const index = itemId
+      ? props.items.findIndex((i) => i[itemValue] === itemId)
+      : props.items.findIndex((i) => i === item)
+    emit('click:row', item, index >= 0 ? index : -1)
   }
 
   // 표시 범위 계산
   const startItem = computed(() => {
     if (props.totalItems === undefined) return undefined
+    // items-per-page가 -1이면 전체 표시이므로 범위 계산 불필요
+    if (currentItemsPerPage.value <= 0) return undefined
     return (currentPage.value - 1) * currentItemsPerPage.value + 1
   })
 
   const endItem = computed(() => {
     if (props.totalItems === undefined) return undefined
+    // items-per-page가 -1이면 전체 표시이므로 범위 계산 불필요
+    if (currentItemsPerPage.value <= 0) return undefined
     return Math.min(
       currentPage.value * currentItemsPerPage.value,
       props.totalItems,
     )
+  })
+
+  // 전체 표시 여부 (items-per-page가 -1이거나 0 이하일 때)
+  const isShowingAll = computed(() => {
+    return currentItemsPerPage.value <= 0
   })
 
   // 페이지당 항목 수 옵션
@@ -132,6 +158,14 @@
     { title: '50', value: 50 },
     { title: '100', value: 100 },
   ]
+
+  // 스켈레톤 UI용 항목 수 계산 (items-per-page가 -1이거나 유효하지 않을 때 기본값 사용)
+  const skeletonItemCount = computed(() => {
+    if (props.itemsPerPage <= 0 || props.itemsPerPage > 100) {
+      return 10 // 기본값
+    }
+    return props.itemsPerPage
+  })
 </script>
 
 <template>
@@ -145,13 +179,16 @@
       <div v-if="loading" class="flex items-center gap-2">
         <v-skeleton-loader type="text" width="80px" height="1.25rem" />
       </div>
+      <div v-else-if="isShowingAll" class="text-grey-600 text-sm">
+        전체 {{ totalItems.toLocaleString() }}개
+      </div>
       <div v-else class="text-grey-600 text-sm">
         {{ totalItems.toLocaleString() }} 중
         {{ startItem?.toLocaleString() }}-{{ endItem?.toLocaleString() }}
       </div>
 
       <!-- 페이지당 항목 수 선택 -->
-      <div class="flex items-center gap-2">
+      <div v-if="!isShowingAll" class="flex items-center gap-2">
         <span v-if="loading" class="text-grey-600 text-sm">
           <v-skeleton-loader type="text" width="100px" height="1.25rem" />
         </span>
@@ -193,7 +230,7 @@
 
       <!-- 행 스켈레톤 -->
       <div
-        v-for="i in itemsPerPage"
+        v-for="i in skeletonItemCount"
         :key="i"
         class="border-grey-300 border-b bg-white last:border-b-0"
       >
@@ -227,7 +264,7 @@
       :height="height"
       :fixed-header="fixedHeader"
       class="border-grey-300 border"
-      item-value="id"
+      :item-value="itemValue"
       @click:row="handleRowClick"
     >
       <template v-for="(_, name) in $slots" #[name]="slotProps">

@@ -27,8 +27,16 @@
     representativeName: string
     representativeTelno: string
     businessNo: string
-    operatingSportParentCodeId: { title: string; value: string; id?: number } | null
-    operatingSportChildCodeId: { title: string; value: string; id?: number } | null
+    operatingSportParentCodeId: {
+      title: string
+      value: string
+      id?: number
+    } | null
+    operatingSportChildCodeId: {
+      title: string
+      value: string
+      id?: number
+    } | null
   }
 
   // useForm 설정 (validation 없이)

@@ -20,8 +20,16 @@
     representativeName: string
     representativeTelno: string
     businessNo: string
-    operatingSportParentCodeId: { title: string; value: string; id?: number } | null
-    operatingSportChildCodeId: { title: string; value: string; id?: number } | null
+    operatingSportParentCodeId: {
+      title: string
+      value: string
+      id?: number
+    } | null
+    operatingSportChildCodeId: {
+      title: string
+      value: string
+      id?: number
+    } | null
   }
 
   // useFormContext에서 values 가져오기
@@ -115,132 +123,142 @@
     <h3 class="m-0 mb-4 text-2xl font-bold">2단계. 클럽 정보 입력</h3>
 
     <div class="grid max-w-[720px] gap-4">
-      <FormField name="applicantName">
-        <template #default="{ bind, field }">
-          <TextField
-            :model-value="field.value"
-            v-bind="bind"
-            label="신청자명"
-            placeholder="신청자명을 입력하세요"
-            size="md"
-          />
-        </template>
-      </FormField>
+      <div class="flex">
+        <FormField class="flex-1" name="applicantName">
+          <template #default="{ bind, field }">
+            <TextField
+              :model-value="field.value"
+              v-bind="bind"
+              label="신청자명"
+              placeholder="신청자명을 입력하세요"
+              size="md"
+            />
+          </template>
+        </FormField>
 
-      <FormField name="applicantTelno">
-        <template #default="{ bind, field }">
-          <TextField
-            :model-value="field.value"
-            v-bind="bind"
-            label="신청자 전화번호"
-            placeholder="예) 02-1234-5678"
-            type="tel"
-            size="md"
-          />
-        </template>
-      </FormField>
+        <FormField class="flex-1" name="applicantTelno">
+          <template #default="{ bind, field }">
+            <TextField
+              :model-value="field.value"
+              v-bind="bind"
+              label="신청자 전화번호"
+              placeholder="예) 02-1234-5678"
+              type="tel"
+              size="md"
+            />
+          </template>
+        </FormField>
+      </div>
 
-      <FormField name="applicantEmail">
-        <template #default="{ bind, field }">
-          <TextField
-            :model-value="field.value"
-            v-bind="bind"
-            label="신청자 이메일"
-            placeholder="예) example@email.com"
-            type="email"
-            size="md"
-          />
-        </template>
-      </FormField>
+      <div class="flex">
+        <FormField class="flex-1" name="applicantEmail">
+          <template #default="{ bind, field }">
+            <TextField
+              :model-value="field.value"
+              v-bind="bind"
+              label="신청자 이메일"
+              placeholder="예) example@email.com"
+              type="email"
+              size="md"
+            />
+          </template>
+        </FormField>
 
-      <FormField name="name">
-        <template #default="{ bind, field }">
-          <TextField
-            :model-value="field.value"
-            v-bind="bind"
-            label="클럽명"
-            placeholder="클럽명을 입력하세요"
-            size="md"
-          />
-        </template>
-      </FormField>
+        <FormField class="flex-1" name="name">
+          <template #default="{ bind, field }">
+            <TextField
+              :model-value="field.value"
+              v-bind="bind"
+              label="클럽명"
+              placeholder="클럽명을 입력하세요"
+              size="md"
+            />
+          </template>
+        </FormField>
+      </div>
 
-      <FormField name="location">
-        <template #default="{ bind, field }">
-          <TextField
-            :model-value="field.value"
-            v-bind="bind"
-            label="위치"
-            placeholder="위치를 입력하세요"
-            size="md"
-          />
-        </template>
-      </FormField>
+      <div class="flex">
+        <FormField class="flex-1" name="location">
+          <template #default="{ bind, field }">
+            <TextField
+              :model-value="field.value"
+              v-bind="bind"
+              label="위치"
+              placeholder="위치를 입력하세요"
+              size="md"
+            />
+          </template>
+        </FormField>
 
-      <FormField name="representativeName">
-        <template #default="{ bind, field }">
-          <TextField
-            :model-value="field.value"
-            v-bind="bind"
-            label="대표자명"
-            placeholder="대표자명을 입력하세요"
-            size="md"
-          />
-        </template>
-      </FormField>
+        <FormField class="flex-1" name="representativeName">
+          <template #default="{ bind, field }">
+            <TextField
+              :model-value="field.value"
+              v-bind="bind"
+              label="대표자명"
+              placeholder="대표자명을 입력하세요"
+              size="md"
+            />
+          </template>
+        </FormField>
+      </div>
 
-      <FormField name="representativeTelno">
-        <template #default="{ bind, field }">
-          <TextField
-            :model-value="field.value"
-            v-bind="bind"
-            label="대표자 전화번호"
-            placeholder="예) 02-1234-5678"
-            type="tel"
-            size="md"
-          />
-        </template>
-      </FormField>
+      <div class="flex">
+        <FormField class="flex-1" name="representativeTelno">
+          <template #default="{ bind, field }">
+            <TextField
+              :model-value="field.value"
+              v-bind="bind"
+              label="대표자 전화번호"
+              placeholder="예) 02-1234-5678"
+              type="tel"
+              size="md"
+            />
+          </template>
+        </FormField>
 
-      <FormField name="businessNo">
-        <template #default="{ bind, field }">
-          <TextField
-            :model-value="field.value"
-            v-bind="bind"
-            label="사업자등록번호"
-            placeholder="사업자등록번호를 입력하세요"
-            size="md"
-          />
-        </template>
-      </FormField>
+        <FormField class="flex-1" name="businessNo">
+          <template #default="{ bind, field }">
+            <TextField
+              :model-value="field.value"
+              v-bind="bind"
+              label="사업자등록번호"
+              placeholder="사업자등록번호를 입력하세요"
+              size="md"
+            />
+          </template>
+        </FormField>
+      </div>
 
-      <FormField name="operatingSportParentCodeId">
-        <template #default="{ bind, field }">
-          <SelectV2
-            :model-value="field.value"
-            v-bind="bind"
-            :items="operatingSportParentOptions"
-            label="운영종목 (상위)"
-            placeholder="운영종목 상위를 선택하세요"
-            size="md"
-            :loading="isLoadingOperatingSports"
-          />
-        </template>
-      </FormField>
+      <div class="flex">
+        <FormField class="flex-1" name="operatingSportParentCodeId">
+          <template #default="{ bind, field }">
+            <SelectV2
+              :model-value="field.value"
+              v-bind="bind"
+              :items="operatingSportParentOptions"
+              label="운영종목 (상위)"
+              placeholder="운영종목 상위를 선택하세요"
+              size="md"
+              :loading="isLoadingOperatingSports"
+            />
+          </template>
+        </FormField>
 
-      <FormField name="operatingSportChildCodeId">
-        <template #default="{ bind, field }">
-          <SelectV2
-            :model-value="field.value"
-            v-bind="bind"
-            :items="operatingSportChildOptions"
-            label="운영종목 (하위)"
-            placeholder="운영종목 하위를 선택하세요"
-            size="md"
-            :disabled="!values.operatingSportParentCodeId"
-          />
-        </template>
-      </FormField>
+        <FormField class="flex-1" name="operatingSportChildCodeId">
+          <template #default="{ bind, field }">
+            <SelectV2
+              :model-value="field.value"
+              v-bind="bind"
+              :items="operatingSportChildOptions"
+              label="운영종목 (하위)"
+              placeholder="운영종목 하위를 선택하세요"
+              size="md"
+              :disabled="!values.operatingSportParentCodeId"
+            />
+          </template>
+        </FormField>
+      </div>
     </div>
   </section>
 </template>

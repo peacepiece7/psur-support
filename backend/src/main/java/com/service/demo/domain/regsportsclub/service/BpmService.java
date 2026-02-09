@@ -40,11 +40,11 @@ public class BpmService {
         return response.getProcessInstanceKey();
     }
 
-    public void update(String processTaskId, String action) {
+    public void update(String processInstanceId, String action) {
         String searchUrl = baseUrl + "/v2/user-tasks/search";
         UserTaskSearchRequest searchRequest = new UserTaskSearchRequest();
         UserTaskFilter filter = new UserTaskFilter();
-        filter.setProcessInstanceKey(processTaskId);
+        filter.setProcessInstanceKey(processInstanceId);
         filter.setState("CREATED");
         searchRequest.setFilter(filter);
 

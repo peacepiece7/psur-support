@@ -68,12 +68,12 @@ Base URL (local): `http://localhost:8080`
   - `processDefinitionId`: `registration_sports_club_process`
   - `variables`: `{}` (root scope variables)
 - Response fields used:
-  - `processInstanceKey` -> persisted as `reg_sports_club_apply.process_task_id`
+  - `processInstanceKey` -> persisted as `reg_sports_club_apply.process_instance_id`
 
 #### Find active user task for a process instance
 - Endpoint: `POST /v2/user-tasks/search`
 - Request filter:
-  - `processInstanceKey`: `{processTaskId}`
+  - `processInstanceKey`: `{processInstanceId}`
   - `state`: `CREATED`
 - Response fields used:
   - `items[].userTaskKey`

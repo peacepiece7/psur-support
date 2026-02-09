@@ -4,12 +4,12 @@
 
 ### One-Process-Per-User
 - 사용자(또는 businessNo/CI) 기준 단일 활성 프로세스만 허용
-- 활성 프로세스가 이미 있으면 기존 applyId/processTaskId 재사용
+- 활성 프로세스가 이미 있으면 기존 applyId/processInstanceId 재사용
 - 승인/반려 등 완료 시점 정리 규칙 정의
 
 ### Stale Process Cleanup
 - N일 이상 비활성 프로세스 탐지 및 종료
-- DB 내 orphan processTaskId 제거/마킹
+- DB 내 orphan processInstanceId 제거/마킹
 - 스케줄러 + 알림(실패 감지) 고려
 
 ## 데이터 모델링 (ERD)

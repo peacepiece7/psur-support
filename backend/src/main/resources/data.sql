@@ -21,6 +21,36 @@ ON DUPLICATE KEY UPDATE
   description = VALUES(description),
   is_active = VALUES(is_active);
 
+-- Users
+INSERT INTO users (login_id, username, email, telno, password_hash)
+VALUES
+  ('user1', '김유저', NULL, NULL, '$2a$10$p/Yltr9C7hZGwahcNDXWjOy/jtU4Og233UeRW5r9p70LN9pFbyNMm'),
+  ('user2', '정유저', NULL, NULL, '$2a$10$p/Yltr9C7hZGwahcNDXWjOy/jtU4Og233UeRW5r9p70LN9pFbyNMm'),
+  ('manager1', '김접수', NULL, NULL, '$2a$10$p/Yltr9C7hZGwahcNDXWjOy/jtU4Og233UeRW5r9p70LN9pFbyNMm'),
+  ('reviewer1', '김검토', NULL, NULL, '$2a$10$p/Yltr9C7hZGwahcNDXWjOy/jtU4Og233UeRW5r9p70LN9pFbyNMm'),
+  ('approver1', '김승인', NULL, NULL, '$2a$10$p/Yltr9C7hZGwahcNDXWjOy/jtU4Og233UeRW5r9p70LN9pFbyNMm'),
+  ('admin1', '김행정', NULL, NULL, '$2a$10$p/Yltr9C7hZGwahcNDXWjOy/jtU4Og233UeRW5r9p70LN9pFbyNMm'),
+  ('sysadmin1', '김시스템', NULL, NULL, '$2a$10$p/Yltr9C7hZGwahcNDXWjOy/jtU4Og233UeRW5r9p70LN9pFbyNMm')
+ON DUPLICATE KEY UPDATE
+  username = VALUES(username),
+  email = VALUES(email),
+  telno = VALUES(telno),
+  password_hash = VALUES(password_hash);
+
+-- User roles
+INSERT INTO user_role (user_id, role_id, is_active)
+VALUES
+  ((SELECT id FROM users WHERE login_id = 'user1'), (SELECT id FROM role WHERE role_code = 'APPLICANT'), 1),
+  ((SELECT id FROM users WHERE login_id = 'user2'), (SELECT id FROM role WHERE role_code = 'APPLICANT'), 1),
+  ((SELECT id FROM users WHERE login_id = 'manager1'), (SELECT id FROM role WHERE role_code = 'RECEIPT_MANAGER'), 1),
+  ((SELECT id FROM users WHERE login_id = 'reviewer1'), (SELECT id FROM role WHERE role_code = 'REVIEWER'), 1),
+  ((SELECT id FROM users WHERE login_id = 'approver1'), (SELECT id FROM role WHERE role_code = 'APPROVER'), 1),
+  ((SELECT id FROM users WHERE login_id = 'admin1'), (SELECT id FROM role WHERE role_code = 'ADMIN_PORTAL_USER'), 1),
+  ((SELECT id FROM users WHERE login_id = 'sysadmin1'), (SELECT id FROM role WHERE role_code = 'ADMIN_SYSTEM_MANAGER'), 1)
+ON DUPLICATE KEY UPDATE
+  is_active = VALUES(is_active),
+  deleted_at = NULL;
+
 -- Region hierarchy (level 1 -> level 2) sample
 INSERT INTO common_code_group (group_code, group_name, parent_group_id, level, sort_order, is_active)
 VALUES ('REGION', 'Region', NULL, 1, 1, 1)

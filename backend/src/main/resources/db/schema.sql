@@ -114,7 +114,7 @@ CREATE TABLE IF NOT EXISTS sports_club_category (
 
 CREATE TABLE IF NOT EXISTS reg_sports_club_apply (
   id BIGINT AUTO_INCREMENT PRIMARY KEY,
-  process_task_id BIGINT NULL,
+  process_instance_id BIGINT NULL,
   status_code_id BIGINT NOT NULL,
   applied_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   applicant_name VARCHAR(100) NOT NULL,
@@ -123,7 +123,7 @@ CREATE TABLE IF NOT EXISTS reg_sports_club_apply (
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   deleted_at DATETIME NULL,
-  KEY idx_rsca_process_task_id (process_task_id),
+  KEY idx_rsca_process_instance_id (process_instance_id),
   KEY idx_rsca_status_code_id (status_code_id),
   CONSTRAINT fk_rsca_status_code_id FOREIGN KEY (status_code_id) REFERENCES common_code(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -169,20 +169,21 @@ CREATE TABLE IF NOT EXISTS reg_sports_club_application_category (
   CONSTRAINT fk_rscac_category_id FOREIGN KEY (category_id) REFERENCES common_code(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE IF NOT EXISTS reg_sports_club_apply_history (
+CREATE TABLE IF NOT EXISTS application_action_log (
   id BIGINT AUTO_INCREMENT PRIMARY KEY,
   apply_id BIGINT NOT NULL,
-  status_code_id BIGINT NOT NULL,
-  handler_name VARCHAR(100) NULL,
-  handler_telno VARCHAR(30) NULL,
-  handler_email VARCHAR(255) NULL,
-  memo VARCHAR(1000) NULL,
-  processed_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  process_code VARCHAR(50) NOT NULL,
+  action_key VARCHAR(50) NOT NULL,
+  task_key VARCHAR(100) NULL,
+  payload_json JSON NOT NULL,
+  actor_id BIGINT NOT NULL,
+  actor_role VARCHAR(50) NOT NULL,
+  executed_at DATETIME NOT NULL,
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  deleted_at DATETIME NULL,
-  KEY idx_rscah_apply_id (apply_id),
-  KEY idx_rscah_status_code_id (status_code_id),
-  CONSTRAINT fk_rscah_apply_id FOREIGN KEY (apply_id) REFERENCES reg_sports_club_apply(id),
-  CONSTRAINT fk_rscah_status_code_id FOREIGN KEY (status_code_id) REFERENCES common_code(id)
+  KEY idx_aal_apply_id (apply_id),
+  KEY idx_aal_process_code (process_code),
+  KEY idx_aal_action_key (action_key),
+  KEY idx_aal_actor_id (actor_id),
+  KEY idx_aal_executed_at (executed_at),
+  CONSTRAINT fk_aal_apply_id FOREIGN KEY (apply_id) REFERENCES reg_sports_club_apply(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

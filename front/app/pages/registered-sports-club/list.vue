@@ -88,13 +88,14 @@
   const fetchApplications = async () => {
     try {
       isLoading.value = true
-      const response = await $fetch<ApiResponseListRegSportsClubApplicationResponse>(
-        `${API_BASE_URL}/reg-sports-club-applications`,
-        {
-          method: 'GET',
-          credentials: 'include',
-        },
-      )
+      const response =
+        await $fetch<ApiResponseListRegSportsClubApplicationResponse>(
+          `${API_BASE_URL}/reg-sports-club-applications`,
+          {
+            method: 'GET',
+            credentials: 'include',
+          },
+        )
 
       if (response.resultCode === 200 && response.data) {
         applications.value = response.data
@@ -107,6 +108,14 @@
       applications.value = []
     } finally {
       isLoading.value = false
+    }
+  }
+
+  // 행 클릭 핸들러
+  const handleRowClick = (item: Record<string, unknown>, index: number) => {
+    const applyId = item.applyId as number | undefined
+    if (applyId != null) {
+      navigateTo(`/registered-sports-club/detail-view?applyId=${applyId}`)
     }
   }
 
@@ -132,13 +141,15 @@
       </section>
 
       <section class="mx-auto w-full max-w-[1400px]">
-        <div class="rounded-3xl border border-grey-300 bg-grey-50 p-10">
+        <div class="border-grey-300 bg-grey-50 rounded-3xl border p-10">
           <Table
             :headers="headers"
             :items="tableItems"
             :loading="isLoading"
             :items-per-page="-1"
             :total-items="applications.length"
+            item-value="applyId"
+            @click:row="handleRowClick"
           />
         </div>
       </section>

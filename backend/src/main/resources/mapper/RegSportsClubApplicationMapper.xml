@@ -15,7 +15,7 @@
 
   <resultMap id="RegSportsClubApplyMap" type="com.service.demo.domain.regsportsclub.entity.RegSportsClubApplyEntity">
     <id property="id" column="id"/>
-    <result property="processTaskId" column="process_task_id"/>
+    <result property="processInstanceId" column="process_instance_id"/>
     <result property="statusCodeId" column="status_code_id"/>
     <result property="appliedAt" column="applied_at"/>
     <result property="applicantName" column="applicant_name"/>
@@ -70,7 +70,7 @@
 
   <insert id="insertApply" parameterType="com.service.demo.domain.regsportsclub.entity.RegSportsClubApplyEntity" useGeneratedKeys="true" keyProperty="id">
     INSERT INTO reg_sports_club_apply (
-      process_task_id,
+      process_instance_id,
       status_code_id,
       applied_at,
       applicant_name,
@@ -78,7 +78,7 @@
       applicant_email
     )
     VALUES (
-      #{processTaskId},
+      #{processInstanceId},
       #{statusCodeId},
       #{appliedAt},
       #{applicantName},
@@ -203,9 +203,9 @@
     ORDER BY a.id DESC
   </select>
 
-  <update id="updateApplyProcessTaskId">
+  <update id="updateApplyProcessInstanceId">
     UPDATE reg_sports_club_apply
-    SET process_task_id = #{processTaskId}
+    SET process_instance_id = #{processInstanceId}
     WHERE id = #{id} AND deleted_at IS NULL
   </update>
 

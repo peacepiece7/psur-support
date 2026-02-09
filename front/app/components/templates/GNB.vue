@@ -69,15 +69,15 @@
       const insertIndex = items.findIndex((i) => i.to === '/info')
       const applyMenu: MenuItem = {
         title: '스포츠클럽 신청',
-        to: '/apply',
+        to: 'registered-sports-club/apply',
         children: [
           {
             title: '등록 스포츠클럽 신청',
-            to: '/apply/registered-sports-club',
+            to: '/registered-sports-club/apply',
           },
           {
             title: '등록스포츠클럽 신청 현황',
-            to: '/apply/registered-sports-club-status',
+            to: '/registered-sports-club/list',
           },
         ],
       }

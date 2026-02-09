@@ -19,7 +19,7 @@ public interface RegSportsClubApplicationMapper {
     List<RegSportsClubApplicationResponse> findAllApplications();
     int updateApply(RegSportsClubApplyEntity entity);
     int updateApplication(RegSportsClubApplicationEntity entity);
-    int updateApplyProcessTaskId(@Param("id") Long id, @Param("processTaskId") String processTaskId);
+    int updateApplyProcessInstanceId(@Param("id") Long id, @Param("processInstanceId") String processInstanceId);
     int updateApprovedClubId(@Param("applyId") Long applyId, @Param("approvedClubId") Long approvedClubId);
     int deleteApplicationCategoriesByApplicationId(@Param("applicationId") Long applicationId);
     int insertApplicationCategories(@Param("applicationId") Long applicationId, @Param("categoryIds") List<Long> categoryIds);
