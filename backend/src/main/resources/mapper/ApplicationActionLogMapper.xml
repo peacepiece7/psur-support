@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.service.demo.domain.regsportsclub.mapper.ApplicationActionLogMapper">
+
+  <insert id="insert" parameterType="com.service.demo.domain.regsportsclub.entity.ApplicationActionLogEntity" useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO application_action_log (
+      apply_id,
+      process_code,
+      action_key,
+      task_key,
+      payload_json,
+      actor_id,
+      actor_role,
+      executed_at
+    )
+    VALUES (
+      #{applyId},
+      #{processCode},
+      #{actionKey},
+      #{taskKey},
+      #{payloadJson},
+      #{actorId},
+      #{actorRole},
+      #{executedAt}
+    )
+  </insert>
+
+</mapper>

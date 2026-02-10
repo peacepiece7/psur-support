@@ -61,6 +61,27 @@ public class BpmService {
         restTemplate.postForEntity(completeUrl, completionRequest, Void.class);
     }
 
+    public String updateWithVariables(String processInstanceId, Map<String, Object> variables) {
+        String searchUrl = baseUrl + "/v2/user-tasks/search";
+        UserTaskSearchRequest searchRequest = new UserTaskSearchRequest();
+        UserTaskFilter filter = new UserTaskFilter();
+        filter.setProcessInstanceKey(processInstanceId);
+        filter.setState("CREATED");
+        searchRequest.setFilter(filter);
+
+        String userTaskKey = findUserTaskKeyWithRetry(searchUrl, searchRequest);
+        if (userTaskKey == null) {
+            throw new ApiException(ErrorCode.BAD_REQUEST, "User task key not found");
+        }
+
+        String completeUrl = baseUrl + "/v2/user-tasks/" + userTaskKey + "/completion";
+        UserTaskCompletionRequest completionRequest = new UserTaskCompletionRequest();
+        Map<String, Object> payload = variables == null ? new HashMap<>() : new HashMap<>(variables);
+        completionRequest.setVariables(payload);
+        restTemplate.postForEntity(completeUrl, completionRequest, Void.class);
+        return userTaskKey;
+    }
+
     private String findUserTaskKeyWithRetry(String searchUrl, UserTaskSearchRequest searchRequest) {
         int maxRetries = 10;
         long delayMs = 200L;

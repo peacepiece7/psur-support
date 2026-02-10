@@ -1,8 +1,9 @@
 package com.service.demo.domain.regsportsclub.controller;
 
 import com.service.demo.common.api.ApiResponse;
-import com.service.demo.domain.regsportsclub.dto.RegSportsClubApplicationUpsertRequest;
+import com.service.demo.domain.regsportsclub.dto.RegSportsClubApplicationActionRequest;
 import com.service.demo.domain.regsportsclub.dto.RegSportsClubApplicationResponse;
+import com.service.demo.domain.regsportsclub.dto.RegSportsClubApplicationUpsertRequest;
 import com.service.demo.domain.regsportsclub.service.RegSportsClubApplicationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -39,6 +40,15 @@ public class RegSportsClubApplicationController {
     public ApiResponse<RegSportsClubApplicationResponse> apply(
             @Valid @RequestBody RegSportsClubApplicationUpsertRequest req) {
         return ApiResponse.ok(regSportsClubApplicationService.apply(req));
+    }
+
+    @Operation(summary = "Action", description = "Apply action with BPM transition")
+    @PostMapping("/{applyId}/actions")
+    public ApiResponse<Void> action(
+            @Parameter(description = "Application ID", example = "1") @PathVariable Long applyId,
+            @Valid @RequestBody RegSportsClubApplicationActionRequest req) {
+        regSportsClubApplicationService.handleAction(applyId, req.getAction(), req.getPayload());
+        return ApiResponse.ok(null);
     }
 
     // @TODO: {applyId}/receipt, {applyId}/reject, {applyId}/review, {applyId}/approve endpoints to be implemented

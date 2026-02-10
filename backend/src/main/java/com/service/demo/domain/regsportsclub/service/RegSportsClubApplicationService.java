@@ -1,26 +1,38 @@
 package com.service.demo.domain.regsportsclub.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.service.demo.common.constant.SessionConst;
 import com.service.demo.common.error.ErrorCode;
+import com.service.demo.common.error.TokenErrorCode;
 import com.service.demo.common.exception.ApiException;
 import com.service.demo.domain.commoncode.mapper.CommonCodeMapper;
 import com.service.demo.domain.commoncode.service.CommonCodeLookupService;
 import com.service.demo.domain.regsportsclub.constant.RegSportsClubApplyStatus;
 import com.service.demo.domain.regsportsclub.dto.RegSportsClubApplicationResponse;
 import com.service.demo.domain.regsportsclub.dto.RegSportsClubApplicationUpsertRequest;
+import com.service.demo.domain.regsportsclub.entity.ApplicationActionLogEntity;
 import com.service.demo.domain.regsportsclub.entity.RegSportsClubApplyEntity;
 import com.service.demo.domain.regsportsclub.entity.RegSportsClubApplicationCategoryEntity;
 import com.service.demo.domain.regsportsclub.entity.RegSportsClubApplicationEntity;
+import com.service.demo.domain.regsportsclub.mapper.ApplicationActionLogMapper;
 import com.service.demo.domain.regsportsclub.mapper.RegSportsClubApplicationMapper;
-import com.service.demo.domain.regsportsclub.service.ActionService;
+import com.service.demo.domain.role.entity.UserRoleEntity;
+import com.service.demo.domain.role.mapper.UserRoleMapper;
 import com.service.demo.domain.sportsclub.entity.SportsClubCategoryEntity;
 import com.service.demo.domain.sportsclub.entity.SportsClubEntity;
 import com.service.demo.domain.sportsclub.mapper.SportsClubMapper;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +42,12 @@ public class RegSportsClubApplicationService {
     private final CommonCodeMapper commonCodeMapper;
     private final CommonCodeLookupService commonCodeLookupService;
     private final ActionService actionService;
+    private final ApplicationActionLogMapper applicationActionLogMapper;
+    private final UserRoleMapper userRoleMapper;
+    private final ObjectMapper objectMapper;
+
+    @Value("${camunda.orchestration.process-definition-id}")
+    private String processDefinitionId;
 
     @Transactional
     public RegSportsClubApplicationResponse save(RegSportsClubApplicationUpsertRequest req) {
@@ -46,6 +64,38 @@ public class RegSportsClubApplicationService {
         // bmp 상태 전이 수행
         actionService.handleAction(applyId, com.service.demo.domain.regsportsclub.constant.Action.APPLY);
         return getByApplyId(applyId);
+    }
+
+    @Transactional
+    public void handleAction(Long applyId, String actionKey, Map<String, Object> payload) {
+        Long userId = resolveCurrentUserId();
+        List<UserRoleEntity> roles = userRoleMapper.findAllWithRole(userId, false);
+        List<String> roleCodes = new ArrayList<>();
+        for (UserRoleEntity role : roles) {
+            if (role.getRoleCode() != null) {
+                roleCodes.add(role.getRoleCode());
+            }
+        }
+
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("action", actionKey);
+        variables.put("roles", roleCodes);
+        if (payload != null && !payload.isEmpty()) {
+            variables.put("payload", payload);
+        }
+
+        String taskKey = actionService.handleAction(applyId, actionKey, variables);
+
+        ApplicationActionLogEntity log = new ApplicationActionLogEntity();
+        log.setApplyId(applyId);
+        log.setProcessCode(processDefinitionId);
+        log.setActionKey(actionKey);
+        log.setTaskKey(taskKey);
+        log.setPayloadJson(serializePayload(payload));
+        log.setActorId(userId);
+        log.setActorRole(roleCodes.isEmpty() ? "UNKNOWN" : String.join(",", roleCodes));
+        log.setExecutedAt(LocalDateTime.now());
+        applicationActionLogMapper.insert(log);
     }
 
     public RegSportsClubApplicationResponse getByApplyId(Long applyId) {
@@ -83,6 +133,32 @@ public class RegSportsClubApplicationService {
             }
         }
         return responses;
+    }
+
+    private Long resolveCurrentUserId() {
+        RequestAttributes attributes = RequestContextHolder.getRequestAttributes();
+        if (attributes == null) {
+            throw new ApiException(TokenErrorCode.AUTHORIZATION_TOKEN_NOT_FOUND);
+        }
+        Object userId = attributes.getAttribute(SessionConst.USER_ID, RequestAttributes.SCOPE_REQUEST);
+        if (userId == null) {
+            throw new ApiException(TokenErrorCode.AUTHORIZATION_TOKEN_NOT_FOUND);
+        }
+        if (userId instanceof Number) {
+            return ((Number) userId).longValue();
+        }
+        return Long.parseLong(userId.toString());
+    }
+
+    private String serializePayload(Map<String, Object> payload) {
+        try {
+            if (payload == null || payload.isEmpty()) {
+                return objectMapper.writeValueAsString(new HashMap<>());
+            }
+            return objectMapper.writeValueAsString(payload);
+        } catch (JsonProcessingException e) {
+            throw new ApiException(ErrorCode.BAD_REQUEST, "Payload serialization failed");
+        }
     }
 
     private Long upsert(RegSportsClubApplicationUpsertRequest req, RegSportsClubApplyStatus defaultStatus) {
