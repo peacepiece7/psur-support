@@ -1,1 +1,8 @@
-This directory is generated for Lottie files
+# Lottie 리소스 폴더
+
+이 폴더는 Lottie JSON 애니메이션 파일을 저장합니다.
+
+## 규칙
+- UTF-8 인코딩 사용
+- 의미 있는 파일명 사용
+- 미사용 대용량 리소스는 정리
