@@ -6,6 +6,7 @@ import com.service.demo.common.constant.SessionConst;
 import com.service.demo.common.error.ErrorCode;
 import com.service.demo.common.error.TokenErrorCode;
 import com.service.demo.common.exception.ApiException;
+import com.service.demo.domain.commoncode.entity.CommonCodeEntity;
 import com.service.demo.domain.commoncode.mapper.CommonCodeMapper;
 import com.service.demo.domain.commoncode.service.CommonCodeLookupService;
 import com.service.demo.domain.regsportsclub.constant.RegSportsClubApplyStatus;
@@ -69,6 +70,7 @@ public class RegSportsClubApplicationService {
     @Transactional
     public void handleAction(Long applyId, String actionKey, Map<String, Object> payload) {
         Long userId = resolveCurrentUserId();
+        RegSportsClubApplyEntity applyEntity = getApplyEntity(applyId);
         List<UserRoleEntity> roles = userRoleMapper.findAllWithRole(userId, false);
         List<String> roleCodes = new ArrayList<>();
         for (UserRoleEntity role : roles) {
@@ -85,6 +87,7 @@ public class RegSportsClubApplicationService {
         }
 
         String taskKey = actionService.handleAction(applyId, actionKey, variables);
+        syncActionResult(applyEntity, actionKey);
 
         ApplicationActionLogEntity log = new ApplicationActionLogEntity();
         log.setApplyId(applyId);
@@ -221,6 +224,63 @@ public class RegSportsClubApplicationService {
         return req.getApplyId();
     }
 
+    private void syncActionResult(RegSportsClubApplyEntity applyEntity, String actionKey) {
+        RegSportsClubApplyStatus nextStatus = resolveActionStatus(actionKey, applyEntity.getStatusCodeId());
+        if (nextStatus == null) {
+            return;
+        }
+
+        Long statusCodeId = commonCodeLookupService.getCodeId(RegSportsClubApplyStatus.GROUP_CODE, nextStatus.getCode());
+        if (statusCodeId == null) {
+            throw new ApiException(ErrorCode.BAD_REQUEST, "Apply status code not found");
+        }
+
+        applyEntity.setStatusCodeId(statusCodeId);
+        regSportsClubApplicationMapper.updateApply(applyEntity);
+
+        if (nextStatus == RegSportsClubApplyStatus.APPROVED) {
+            approveToSportsClub(applyEntity.getId());
+        }
+    }
+
+    private RegSportsClubApplyStatus resolveActionStatus(String actionKey, Long currentStatusCodeId) {
+        if ("receipt".equals(actionKey)) {
+            return RegSportsClubApplyStatus.RECEIVED;
+        }
+        if ("review".equals(actionKey)) {
+            return RegSportsClubApplyStatus.REVIEW;
+        }
+        if ("approve".equals(actionKey)) {
+            return RegSportsClubApplyStatus.APPROVED;
+        }
+        if (!"reject".equals(actionKey)) {
+            return null;
+        }
+
+        String currentStatusCode = resolveStatusCode(currentStatusCodeId);
+        if (RegSportsClubApplyStatus.APPLY.getCode().equals(currentStatusCode)) {
+            return RegSportsClubApplyStatus.RECEIVED_REJECTED;
+        }
+        if (RegSportsClubApplyStatus.RECEIVED.getCode().equals(currentStatusCode)) {
+            return RegSportsClubApplyStatus.REVIEW_REJECTED;
+        }
+        if (RegSportsClubApplyStatus.REVIEW.getCode().equals(currentStatusCode)) {
+            return RegSportsClubApplyStatus.APPROVED_REJECTED;
+        }
+        throw new ApiException(ErrorCode.BAD_REQUEST, "Reject action is not allowed for current status");
+    }
+
+    private String resolveStatusCode(Long statusCodeId) {
+        if (statusCodeId == null) {
+            throw new ApiException(ErrorCode.BAD_REQUEST, "Apply status code not found");
+        }
+        CommonCodeEntity status = commonCodeMapper.findCodeById(statusCodeId);
+        if (status == null || status.getCode() == null || status.getCode().isBlank()) {
+            throw new ApiException(ErrorCode.BAD_REQUEST, "Apply status code not found");
+        }
+        return status.getCode();
+    }
+
     private Long resolveStatusCodeId(RegSportsClubApplicationUpsertRequest req, RegSportsClubApplyStatus defaultStatus) {
         Long statusCodeId = req.getStatusCodeId();
         if (statusCodeId != null) {
@@ -254,6 +314,14 @@ public class RegSportsClubApplicationService {
             throw new ApiException(ErrorCode.BAD_REQUEST, "Club role code not found");
         }
         return clubRoleCodeId;
+    }
+
+    private RegSportsClubApplyEntity getApplyEntity(Long applyId) {
+        RegSportsClubApplyEntity applyEntity = regSportsClubApplicationMapper.findApplyById(applyId);
+        if (applyEntity == null) {
+            throw new ApiException(ErrorCode.BAD_REQUEST, "Application not found");
+        }
+        return applyEntity;
     }
 
     private void approveToSportsClub(Long applyId) {
